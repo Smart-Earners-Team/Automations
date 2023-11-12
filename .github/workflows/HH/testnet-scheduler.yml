@@ -28,4 +28,4 @@ jobs:
     - name: Call smart contract function
       env:
         PRIVATE_KEY: ${{ secrets.HH_KEY }}
-      run: node Automations/HH/callContract.js
+      run: node call.js
