@@ -1,10 +1,10 @@
-name: HH Autorenew 1
+name: HH Autorenew Mainnet
 
 on:
   schedule:
     # Runs at the start of every hour
-    - cron: '0 */12 * * *'
-    
+    - cron: "0 */12 * * *"
+
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -13,19 +13,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out repository code
-      uses: actions/checkout@v3
+      - name: Check out repository code
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
 
-    - name: Install dependencies
-      run: |
-        npm install ethers
+      - name: Install dependencies
+        run: |
+          npm install ethers
 
-    - name: Call smart contract function
-      env:
-        PRIVATE_KEY: ${{ secrets.HH_KEY }}
-      run: node HH/call.js
+      - name: Call smart contract function
+        env:
+          PRIVATE_KEY: ${{ secrets.HH_KEY }}
+        run: node HH/call.js
