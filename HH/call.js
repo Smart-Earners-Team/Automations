@@ -5,12 +5,14 @@ const path = require('path');
 const hhABI = require("./ABI.json");
 const erc20ABI = require("./ERC20ABI.json");
 const dexABI = require("./DEXABI.json");
+const proxyABI = require("./PROXY.json");
 
 const key = process.env.PRIVATE_KEY;
 // const key = "";
 const hhCA = '0x178365Ee4Cd481321C8aB3Aef71979b510cab643';
 const usdtCA = '0x55d398326f99059fF775485246999027B3197955';
 const dexCA = '0xfD28480E8fABbC1f3D66cF164DFe6B0818249A25';
+const proxyCA = '0xbc1f6Ba807bCdf61769e88cA554bD4b804AF36a0';
 // const prov = 'https://bsc-testnet.publicnode.com';
 const prov = 'https://bsc-dataseed.binance.org/';
 
@@ -26,6 +28,7 @@ const hh2 = new ethers.Contract(hhCA, hhABI, signer);
 const USDT1 = new ethers.Contract(usdtCA, erc20ABI, provider);
 const USDT2 = new ethers.Contract(usdtCA, erc20ABI, signer);
 const dex = new ethers.Contract(dexCA, dexABI, signer);
+const proxy = new ethers.Contract(proxyCA, proxyABI, provider);
 
 async function main() {
 
@@ -56,21 +59,27 @@ async function main() {
     console.log("Low USDT balance")
   }
 
-  // Call the smart contract function
-  const tx = await hh2.autoReNew();
-  console.log('Transaction hash(renewals):', tx.hash);
+  const usersFit4RenewalRN = await proxy.usersFit4RenewalRN();
+  console.log("usersFit4RenewalRN: ", usersFit4RenewalRN)
 
-  // Wait for the transaction to be mined
-  const receipt = await tx.wait();
-  console.log('Transaction was mined in block number', receipt.blockNumber);
+  if (BigInt(usersFit4RenewalRN) > BigInt(0)) {
+    // Call the smart contract function
+    const tx = await hh2.autoReNew();
+    console.log('Transaction hash(renewals):', tx.hash);
+
+    // Wait for the transaction to be mined
+    const receipt = await tx.wait();
+    console.log('Transaction was mined in block number', receipt.blockNumber);
+
+  }
 
   const gVar = await hh1.globalVariables();
   const globalVar = {
     date: new Date().toLocaleString(),
     members: ethers.toNumber(gVar[0]),
-    matrixRewardsPaid: `${ethers.formatUnits(gVar[1], 18)} BUSD`,
-    dailyRewardsPaid: `${ethers.formatUnits(gVar[2], 18,)} BUSD`,
-    referralRewardsPaid: `${ethers.formatUnits(gVar[3], 18)} BUSD`,
+    matrixRewardsPaid: `${ethers.formatUnits(gVar[1], 18)} USDT`,
+    dailyRewardsPaid: `${ethers.formatUnits(gVar[2], 18,)} USDT`,
+    referralRewardsPaid: `${ethers.formatUnits(gVar[3], 18)} USDT`,
     renewalsProcessed: ethers.toNumber(gVar[4]),
   }
   console.log(globalVar)

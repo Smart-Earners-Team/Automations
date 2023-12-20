@@ -1,0 +1,245 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "contract IHH",
+                "name": "_helpingHands",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_user",
+                "type": "address"
+            }
+        ],
+        "name": "getChildren",
+        "outputs": [
+            {
+                "internalType": "address[]",
+                "name": "",
+                "type": "address[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getParticipantsCount",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "members",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "globalPendingRewards",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "gPendingRewards",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "globalVariables",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "members",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gEazyMatrix",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gEazyRewards",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gEazyReferral",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "rProcessed",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "helpingHands",
+        "outputs": [
+            {
+                "internalType": "contract IHH",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }
+        ],
+        "name": "userInfo",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "pendingReward",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "endDate",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_user",
+                "type": "address"
+            }
+        ],
+        "name": "users",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "time",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "wallet",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "EazyReferrals",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "renewalVault",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "parent",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "refsCount",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "membership",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "start",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "matrixIndex",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "EazyMatrix",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "eazyRewardsPaid",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "refsWith3",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "lastFreeIndex",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "timesRenewed",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct IHH.User",
+                "name": "user",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "usersFit4RenewalRN",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "Fit4RenewalRN",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "usersWithFullRenewalVaults",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "FullRenewalVaults",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]
