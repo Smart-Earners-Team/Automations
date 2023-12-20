@@ -5,14 +5,14 @@ const path = require('path');
 const hhABI = require("./ABI.json");
 const erc20ABI = require("./ERC20ABI.json");
 const dexABI = require("./DEXABI.json");
-const proxyABI = require("./PROXY.json");
+const helperABI = require("./PROXY.json");
 
 const key = process.env.PRIVATE_KEY;
 // const key = "";
 const hhCA = '0x178365Ee4Cd481321C8aB3Aef71979b510cab643';
 const usdtCA = '0x55d398326f99059fF775485246999027B3197955';
 const dexCA = '0xfD28480E8fABbC1f3D66cF164DFe6B0818249A25';
-const proxyCA = '0xbc1f6Ba807bCdf61769e88cA554bD4b804AF36a0';
+const helperCA = '0xbc1f6Ba807bCdf61769e88cA554bD4b804AF36a0';
 // const prov = 'https://bsc-testnet.publicnode.com';
 const prov = 'https://bsc-dataseed.binance.org/';
 
@@ -28,7 +28,11 @@ const hh2 = new ethers.Contract(hhCA, hhABI, signer);
 const USDT1 = new ethers.Contract(usdtCA, erc20ABI, provider);
 const USDT2 = new ethers.Contract(usdtCA, erc20ABI, signer);
 const dex = new ethers.Contract(dexCA, dexABI, signer);
-const proxy = new ethers.Contract(proxyCA, proxyABI, provider);
+const helper = new ethers.Contract(helperCA, helperABI, provider);
+
+const overrides = {
+  gasLimit: 3000000000,
+};
 
 async function main() {
 
@@ -59,7 +63,7 @@ async function main() {
     console.log("Low USDT balance")
   }
 
-  const usersFit4RenewalRN = await proxy.usersFit4RenewalRN();
+  const usersFit4RenewalRN = await helper.usersFit4RenewalRN({ gasLimit: 3000000000 });
   console.log("usersFit4RenewalRN: ", usersFit4RenewalRN)
 
   if (BigInt(usersFit4RenewalRN) > BigInt(0)) {
