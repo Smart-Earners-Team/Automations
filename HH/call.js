@@ -30,10 +30,6 @@ const USDT2 = new ethers.Contract(usdtCA, erc20ABI, signer);
 const dex = new ethers.Contract(dexCA, dexABI, signer);
 const helper = new ethers.Contract(helperCA, helperABI, provider);
 
-const overrides = {
-  gasLimit: 3000000000,
-};
-
 async function main() {
 
   // Check USDT balance
@@ -63,10 +59,10 @@ async function main() {
     console.log("Low USDT balance")
   }
 
-  const usersFit4RenewalRN = await helper.usersFit4RenewalRN({ gasLimit: 3000000000 });
-  console.log("usersFit4RenewalRN: ", usersFit4RenewalRN)
+  const usersFit4RenewalRN = ethers.toNumber(await helper.usersFit4RenewalRN());
+  // console.log("usersFit4RenewalRN: ", usersFit4RenewalRN)
 
-  if (BigInt(usersFit4RenewalRN) > BigInt(0)) {
+  if (usersFit4RenewalRN > 0) {
     // Call the smart contract function
     const tx = await hh2.autoReNew();
     console.log('Transaction hash(renewals):', tx.hash);
@@ -75,6 +71,8 @@ async function main() {
     const receipt = await tx.wait();
     console.log('Transaction was mined in block number', receipt.blockNumber);
 
+  } else {
+    console.log("No pending renewal!")
   }
 
   const gVar = await hh1.globalVariables();
@@ -84,11 +82,12 @@ async function main() {
     matrixRewardsPaid: `${ethers.formatUnits(gVar[1], 18)} USDT`,
     dailyRewardsPaid: `${ethers.formatUnits(gVar[2], 18,)} USDT`,
     referralRewardsPaid: `${ethers.formatUnits(gVar[3], 18)} USDT`,
-    renewalsProcessed: ethers.toNumber(gVar[4]),
+    renewalsProcessedNow: usersFit4RenewalRN,
+    totalRenewalsProcessed: ethers.toNumber(gVar[4]),
   }
   console.log(globalVar)
 
-  const logString = `Date: ${globalVar.date}\nMembers: ${globalVar.members}\nMatrix Rewards Paid: ${globalVar.matrixRewardsPaid}\nDaily Rewards Paid: ${globalVar.dailyRewardsPaid}\nReferral Rewards Paid: ${globalVar.referralRewardsPaid}\nRenewals Processed: ${globalVar.renewalsProcessed}\n\n`;
+  const logString = `Date: ${globalVar.date}\nMembers: ${globalVar.members}\nMatrix Rewards Paid: ${globalVar.matrixRewardsPaid}\nDaily Rewards Paid: ${globalVar.dailyRewardsPaid}\nReferral Rewards Paid: ${globalVar.referralRewardsPaid}\nRenewals Processed Now: ${globalVar.renewalsProcessedNow}\nTotal Renewals Processed: ${globalVar.totalRenewalsProcessed}\n\n`;
   const logFilePath = path.join(__dirname, 'results_log.txt');
   appendLogToFile(logFilePath, logString);
 }
