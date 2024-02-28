@@ -1,14 +1,16 @@
 const ethers = require('ethers');
 
-// const voterABI = require('./ABIs/VoterABI.json');
+const voterABI = require('./ABIs/VoterABI.json');
 const minterABI = require('./ABIs/MinterABI.json');
 
 const key = process.env.PRIVATE_KEY;
 // const key = "";
 
-const minterCA = "0x6c55BC74C70578bfdb7704D1fB6BABaa34dccF2c"; // zeta testnet
+// const minterCA = "0x6c55BC74C70578bfdb7704D1fB6BABaa34dccF2c"; // zeta testnet
+const minterCA = "0x6c55BC74C70578bfdb7704D1fB6BABaa34dccF2c"; // zeta mainnet
+const voterCA = "0x6c55BC74C70578bfdb7704D1fB6BABaa34dccF2c"; // zeta mainnet
 
-const prov = 'https://rpc.ankr.com/zetachain_evm_athens_testnet/';
+const prov = 'https://zetachain-evm.blockpi.network/v1/rpc/public';
 
 // Set up the provider
 const provider = new ethers.JsonRpcProvider(prov);
@@ -18,10 +20,27 @@ const wallet = new ethers.Wallet(key, prov);
 const signer = wallet.connect(provider);
 
 const minter = new ethers.Contract(minterCA, minterABI, signer);
+const voter = new ethers.Contract(voterCA, voterABI, signer);
 
 async function main() {
-    const update = await minter.updatePeriod()
+    const update = await minter.updatePeriod();
     const res = await update.wait();
+    console.log('Transaction hash(updatePeriod):', update.hash);
+
+    try {
+        const distribute = await voter.distribute(BigInt(0), BigInt(18));
+        const res2 = await distribute.wait();
+        console.log('Transaction hash(distribute):', distribute.hash);
+    } catch (error) {
+        console.log(error)
+        try {
+            const distribute = await voter.distribute();
+            const res2 = await distribute.wait();
+            console.log('Transaction hash(distribute):', distribute.hash);
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
 
 async function mainWithRetry(retryDelay = 300000, maxRetries = 5) { // retryDelay is in milliseconds, 300000ms = 5 minutes
