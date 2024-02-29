@@ -7,8 +7,8 @@ const key = process.env.PRIVATE_KEY;
 // const key = "";
 
 // const minterCA = "0x6c55BC74C70578bfdb7704D1fB6BABaa34dccF2c"; // zeta testnet
-const minterCA = "0x6c55BC74C70578bfdb7704D1fB6BABaa34dccF2c"; // zeta mainnet
-const voterCA = "0x6c55BC74C70578bfdb7704D1fB6BABaa34dccF2c"; // zeta mainnet
+const minterCA = "0x6B6541d64027ae136fC35Dc58AE65efaACf179C6"; // zeta mainnet
+const voterCA = "0x257d1ef4EF5e4b65967d93F4BBEc9e54af4F1610"; // zeta mainnet
 
 const prov = 'https://zetachain-evm.blockpi.network/v1/rpc/public';
 
@@ -33,13 +33,13 @@ async function main() {
         console.log('Transaction hash(distribute):', distribute.hash);
     } catch (error) {
         console.log(error)
-        try {
-            const distribute = await voter.distribute();
-            const res2 = await distribute.wait();
-            console.log('Transaction hash(distribute):', distribute.hash);
-        } catch (error) {
-            console.log(error)
-        }
+        //try {
+          //  const distribute = await voter.distribute();
+          //  const res2 = await distribute.wait();
+     //       console.log('Transaction hash(distribute):', distribute.hash);
+       // } catch (error) {
+      //      console.log(error)
+       // }
     }
 }
 
