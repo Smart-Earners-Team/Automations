@@ -28,7 +28,8 @@ async function main() {
     console.log('Transaction hash(updatePeriod):', update.hash);
 
     try {
-        const distribute = await voter.distribute(BigInt(0), BigInt(18));
+        // const distribute = await voter.distribute(BigInt(0), BigInt(18));
+        const distribute = await voter.distribute(["0x4EA73F285A3D0437720a328208BbD589f34B0661"]);
         const res2 = await distribute.wait();
         console.log('Transaction hash(distribute):', distribute.hash);
     } catch (error) {
