@@ -1,0 +1,31 @@
+name: EVM.bet Scheduler
+
+on:
+  schedule:
+    # Runs at the start of every day
+    - cron: "55 23 * * *"
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  call-function:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: |
+          npm install ethers
+
+      - name: Call smart contract function
+        env:
+          PRIVATE_KEY: ${{ secrets.HH_KEY }}
+        run: node EVM-bet/call.js
