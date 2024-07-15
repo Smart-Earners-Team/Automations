@@ -51,20 +51,20 @@ async function main() {
 
     console.log("currentRound: ", String(currentRound));
 
-    const closeTx = await lottery.closeLottery(currentRound, callbackGasLimit, amountOfGas);
+    // const closeTx = await lottery.closeLottery(currentRound, callbackGasLimit, amountOfGas);
 
-    await closeTx.wait();
+    // await closeTx.wait();
 
-    console.log('Transaction hash(closeTx):', closeTx.hash);
+    // console.log('Transaction hash(closeTx):', closeTx.hash);
 
     // Add a 2-minute delay before proceeding
-    await new Promise(resolve => setTimeout(resolve, 120000));
+    // await new Promise(resolve => setTimeout(resolve, 120000));
 
-    const drawTx = await lottery.drawFinalNumberAndMakeLotteryClaimable(currentRound, true)
+    // const drawTx = await lottery.drawFinalNumberAndMakeLotteryClaimable(currentRound, true)
 
-    await drawTx.wait();
+    // await drawTx.wait();
 
-    console.log('Transaction hash(drawTx):', drawTx.hash);
+    // console.log('Transaction hash(drawTx):', drawTx.hash);
 
     // Get the current date and time
     const now = new Date();
