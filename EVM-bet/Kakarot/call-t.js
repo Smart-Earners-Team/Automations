@@ -38,6 +38,7 @@ async function closeLottery(currentRound, callbackGasLimit, amountOfGas) {
     console.log("Transaction hash(closeTx):", closeTx.hash);
   } catch (error) {
     console.log("Erroe closing lottery: ", error);
+    throw error;
   }
 }
 
@@ -53,6 +54,7 @@ async function drawFinalNumberAndMakeLotteryClaimable(currentRound) {
     console.log("Transaction hash(drawTx):", drawTx.hash);
   } catch (error) {
     console.log("Erroe with drawFinalNumberAndMakeLotteryClaimable: ", error);
+    throw error;
   }
 }
 
@@ -92,6 +94,7 @@ async function startLottery() {
     console.log("Transaction hash(newRoundTx):", newRoundTx.hash);
   } catch (error) {
     console.log("Erroe starting lottery: ", error);
+    throw error;
   }
 }
 
@@ -168,8 +171,9 @@ async function startLotteryWithRetry(retryDelay = 5000, maxRetries = 3) {
       if (retries < maxRetries) {
         await new Promise((resolve) => setTimeout(resolve, retryDelay)); // Wait for 5 seconds before retrying
       } else {
-        console.log("Max retries reached. Skipping startLottery!");
-        break;
+        // Max retries reached, throw an error
+        console.log("Max retries reached for startLottery. Throwing error.");
+        throw new Error("Failed to start lottery after multiple retries.");
       }
     }
   }
@@ -182,7 +186,6 @@ async function main() {
   console.log(
     `Current gas price: ${ethers.formatUnits(fees.gasPrice, "gwei")} gwei`
   );
-  //   console.log("address: ", wallet.address);
 
   const callbackGasLimit = BigInt(200000);
 
@@ -200,64 +203,12 @@ async function main() {
 
     console.log("currentRound: ", String(currentRound));
 
-    // const closeTx = await lottery.closeLottery(
-    //   currentRound,
-    //   callbackGasLimit,
-    //   amountOfGas
-    // );
-
-    // await closeTx.wait();
-
-    // console.log("Transaction hash(closeTx):", closeTx.hash);
-
-    // await closeLotteryWithRetry();
+    await closeLotteryWithRetry(currentRound, callbackGasLimit, amountOfGas);
 
     // Add a 90 seconds delay before proceeding
-    // await delay(90000);
+    await delay(90000);
 
-    // const drawTx = await lottery.drawFinalNumberAndMakeLotteryClaimable(
-    //   currentRound,
-    //   true
-    // );
-
-    // await drawTx.wait();
-
-    // console.log("Transaction hash(drawTx):", drawTx.hash);
-
-    // await drawFinalNumberAndMakeLotteryClaimableWithRetry(currentRound);
-
-    // // Get the current date and time
-    // const now = new Date();
-
-    // // Create a new Date object for midnight of the next day in UTC
-    // const nextZeroHourUTC = new Date(
-    //   Date.UTC(
-    //     now.getUTCFullYear(),
-    //     now.getUTCMonth(),
-    //     now.getUTCDate(),
-    //     0,
-    //     0,
-    //     0
-    //   )
-    // );
-
-    // // Increment the date by one day
-    // nextZeroHourUTC.setUTCDate(nextZeroHourUTC.getUTCDate() + 1);
-
-    // // Get the timestamp of the next zerohour in UTC
-    // const nextZeroHourTimestampUTC = nextZeroHourUTC.getTime();
-
-    // console.log((nextZeroHourTimestampUTC / 1000).toFixed());
-
-    // const newRoundTx = await lottery.startLottery(
-    //   (nextZeroHourTimestampUTC / 1000).toFixed(),
-    //   ethers.parseEther("0.002"),
-    //   2000,
-    //   [250, 375, 625, 1250, 2500, 5000],
-    //   200
-    // );
-    // await newRoundTx.wait();
-    // console.log("Transaction hash(newRoundTx):", newRoundTx.hash);
+    await drawFinalNumberAndMakeLotteryClaimableWithRetry(currentRound);
 
     await startLotteryWithRetry();
   } catch (error) {
