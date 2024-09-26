@@ -2,11 +2,13 @@ const ethers = require("ethers");
 
 const lotteryABI = require("../ABIs/lotteryABI.json");
 const randomizerABI = require("../ABIs/randomizerABI.json");
+const pragmaABI = require("../ABIs/PragmaEthFeedABI.json");
 
 const key = process.env.PRIVATE_KEY;
 
 const lotteryCA = "0xCFB024DE4bD45700d53d91CDdF7836348DA3c8CC";
 const randomizerCA = "0xbAe61D17445AdD862C306A24d12F41906cc0FFa3";
+const pragmaEthFeed = "0x3899D87a02eFaB864C9306DCd2EDe06B90f28B14";
 
 const prov = "https://sepolia-rpc.kakarot.org/";
 
@@ -23,6 +25,14 @@ const randomizer = new ethers.Contract(randomizerCA, randomizerABI, signer);
 // Function to pause execution for a given duration
 async function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function getEthPrice() {
+  const oracle = new ethers.Contract(pragmaEthFeed, pragmaABI, signer);
+
+  const res = await oracle.latestAnswer();
+
+  return Number(ethers.formatUnits(res, 8));
 }
 
 async function closeLottery(currentRound, callbackGasLimit, amountOfGas) {
@@ -81,11 +91,19 @@ async function startLottery() {
     // Get the timestamp of the next zerohour in UTC
     const nextZeroHourTimestampUTC = nextZeroHourUTC.getTime();
 
-    console.log((nextZeroHourTimestampUTC / 1000).toFixed());
+    // console.log((nextZeroHourTimestampUTC / 1000).toFixed());
+
+    let ethPrice = await getEthPrice();
+    console.log("ethPrice: ", ethPrice);
+
+    // Calculate how much ETH is worth $5
+    const ethForFiveDollars = 5 / ethPrice;
 
     const newRoundTx = await lottery.startLottery(
       (nextZeroHourTimestampUTC / 1000).toFixed(),
-      ethers.parseEther("0.002"),
+      ethers.parseEther(
+        ethForFiveDollars > 0.0015 ? String(ethForFiveDollars) : "0.002"
+      ),
       2000,
       [250, 375, 625, 1250, 2500, 5000],
       200
@@ -111,7 +129,9 @@ async function closeLotteryWithRetry(
   while (retries < maxRetries) {
     try {
       await closeLottery(currentRound, callbackGasLimit, amountOfGas);
-      break; // If main() succeeds, exit the loop
+      // Add a 90 seconds delay before proceeding
+      await delay(90000);
+      break; // If closeLottery() succeeds, exit the loop
     } catch (error) {
       console.error(error);
       retries++;
@@ -204,9 +224,6 @@ async function main() {
     console.log("currentRound: ", String(currentRound));
 
     await closeLotteryWithRetry(currentRound, callbackGasLimit, amountOfGas);
-
-    // Add a 90 seconds delay before proceeding
-    await delay(90000);
 
     await drawFinalNumberAndMakeLotteryClaimableWithRetry(currentRound);
 
