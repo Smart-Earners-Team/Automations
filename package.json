@@ -1,5 +1,24 @@
 {
+  "scripts": {
+    "report:db": "tsx HHV2DEMO/report-daily-rewards.ts",
+    "report:graph": "tsx HHV2DEMO/subgraph-daily-rewards.ts",
+    "report:graph10x": "tsx HHV2DEMO/subgraph-daily-rewards-10x.ts",
+    "report:graph10x:test": "tsx HHV2DEMO/subgraph-daily-rewards-10x-test.ts",
+    "upgrades:graph": "tsx HHV2DEMO/track-upgrades.ts",
+    "upgrades:graph10x": "tsx HHV2DEMO/track-upgrades-10x.ts"
+  },
+  "ts-node": {
+    "esm": true
+  },
   "dependencies": {
-    "ethers": "^6.13.0"
+    "ethers": "^6.13.0",
+    "graphql-request": "^7.1.2",
+    "sequelize": "^6.37.7",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "mysql2": "^3.14.1",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
   }
 }
