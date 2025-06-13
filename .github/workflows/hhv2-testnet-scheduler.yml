@@ -1,0 +1,32 @@
+name: HHV2 Autorenew Testnet
+
+on:
+  schedule:
+    # Runs at the start of every hour
+    - cron: "0 */12 * * *"
+
+  # Allows us to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  call-function:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: |
+          npm install ethers graphql-request
+
+      - name: Call smart contract function
+        env:
+          HH_PRIVATE_KEY: ${{ secrets.HH_KEY }}
+          HH10X_SUBGRAPH_DEMO: ${{ secrets.HH10X_SUBGRAPH_DEMO }}
+        run: node HHV2/call.js

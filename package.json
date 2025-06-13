@@ -1,16 +1,27 @@
 {
   "scripts": {
+    "renew": "node HHV2DEMO/call.js",
     "report:db": "tsx HHV2DEMO/report-daily-rewards.ts",
     "report:graph": "tsx HHV2DEMO/subgraph-daily-rewards.ts",
     "report:graph10x": "tsx HHV2DEMO/subgraph-daily-rewards-10x.ts",
+    "fetch:10x": "tsx HHV2DEMO/fetchUsers.ts",
+    "fetchv2:10x": "tsx HHV2DEMO/fetchUsersV2.ts --out=users10x2.json",
+    "migrate:demo": "tsx HHV2DEMO/migrateUsers.ts",
+    "global": "tsx HHV2DEMO/fetchGlobal.ts",
+    "migrate:batch": "tsx HHV2DEMO/migrateUsersBatch.ts",
+    "fetch:10x:csv": "tsx HHV2DEMO/fetchUsers.ts --file=usersRegular.csv",
+    "fetch:10x:json": "tsx HHV2DEMO/fetchUsers.ts --json=usersRegular.json",
     "report:graph10x:test": "tsx HHV2DEMO/subgraph-daily-rewards-10x-test.ts",
     "upgrades:graph": "tsx HHV2DEMO/track-upgrades.ts",
+    "zzz": "tsx HHV2DEMO/nonzerorewardusers.ts",
     "upgrades:graph10x": "tsx HHV2DEMO/track-upgrades-10x.ts"
   },
   "ts-node": {
     "esm": true
   },
   "dependencies": {
+    "@evmlord/multicall-sdk": "^0.0.4",
+    "dotenv": "^16.5.0",
     "ethers": "^6.13.0",
     "graphql-request": "^7.1.2",
     "sequelize": "^6.37.7",

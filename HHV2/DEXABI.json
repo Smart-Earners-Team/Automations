@@ -1,0 +1,53 @@
+[
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "fork",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "referee",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "fee",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct KryptoliteMultichainRouter.SwapData",
+                "name": "swapData",
+                "type": "tuple"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amountIn",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amountOutMin",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address[]",
+                "name": "path",
+                "type": "address[]"
+            }
+        ],
+        "name": "swapExactTokensForETH",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "amounts",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]
