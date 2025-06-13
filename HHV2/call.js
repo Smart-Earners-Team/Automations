@@ -126,7 +126,7 @@ async function fetchUsersDue(level) {
 
     try {
       res = await graphQLClient.request(query, vars);
-      console.log({ res });
+      // console.log({ res });
     } catch (e) {
       console.error("GraphQL query failed:", e);
       appendLog(`GraphQL ERROR level=${lvl}: ${e.message}`);
