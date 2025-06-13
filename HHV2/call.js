@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const dotenv = require("dotenv");
+// const dotenv = require("dotenv");
 
 const {
   parseEther,
@@ -11,7 +11,7 @@ const {
 } = require("ethers");
 const { GraphQLClient, gql } = require("graphql-request");
 
-dotenv.config();
+// dotenv.config();
 
 // ── Config ──
 const SECONDS_IN_DAY = 86_400;
