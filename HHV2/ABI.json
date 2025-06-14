@@ -5,118 +5,6 @@
     "type": "constructor"
   },
   {
-    "inputs": [],
-    "name": "AccessControlBadConfirmation",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "neededRole",
-        "type": "bytes32"
-      }
-    ],
-    "name": "AccessControlUnauthorizedAccount",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "target",
-        "type": "address"
-      }
-    ],
-    "name": "AddressEmptyCode",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "AlreadyMigrated",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "implementation",
-        "type": "address"
-      }
-    ],
-    "name": "ERC1967InvalidImplementation",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "ERC1967NonPayable",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "FailedInnerCall",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "requested",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "available",
-        "type": "uint256"
-      }
-    ],
-    "name": "InsufficientFunds",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "wallet",
-        "type": "address"
-      }
-    ],
-    "name": "InvalidDevWallet",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "InvalidInitialization",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint8",
-        "name": "level",
-        "type": "uint8"
-      }
-    ],
-    "name": "InvalidLevel",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "referrer",
-        "type": "address"
-      }
-    ],
-    "name": "InvalidReferrer",
-    "type": "error"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -125,103 +13,6 @@
       }
     ],
     "name": "InvalidUser",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      }
-    ],
-    "name": "InvalidWallet",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "NoFreeReferrer",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "NotEligible",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "NotInitializing",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "NotRegistered",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "caller",
-        "type": "address"
-      }
-    ],
-    "name": "OnlyDev",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "payer",
-        "type": "address"
-      }
-    ],
-    "name": "PayerNotRegistered",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "uint8",
-        "name": "level",
-        "type": "uint8"
-      }
-    ],
-    "name": "ReferralSlotsFull",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "UUPSUnauthorizedCallContext",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "slot",
-        "type": "bytes32"
-      }
-    ],
-    "name": "UUPSUnsupportedProxiableUUID",
     "type": "error"
   },
   {
@@ -239,19 +30,32 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "address",
-        "name": "user",
+        "name": "previousAdmin",
         "type": "address"
       },
       {
         "indexed": false,
-        "internalType": "bool",
-        "name": "status",
-        "type": "bool"
+        "internalType": "address",
+        "name": "newAdmin",
+        "type": "address"
       }
     ],
-    "name": "AutoUpgradeChanged",
+    "name": "AdminChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "beacon",
+        "type": "address"
+      }
+    ],
+    "name": "BeaconUpgraded",
     "type": "event"
   },
   {
@@ -265,9 +69,9 @@
       },
       {
         "indexed": false,
-        "internalType": "uint256[]",
+        "internalType": "uint256[6]",
         "name": "levelAmounts",
-        "type": "uint256[]"
+        "type": "uint256[6]"
       },
       {
         "indexed": false,
@@ -283,37 +87,6 @@
       }
     ],
     "name": "DailyRewardClaimed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "mask",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
-      }
-    ],
-    "name": "DailyRewardsClaimed",
     "type": "event"
   },
   {
@@ -339,94 +112,44 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "uint64",
-        "name": "version",
-        "type": "uint64"
-      }
-    ],
-    "name": "Initialized",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
         "indexed": true,
         "internalType": "address",
-        "name": "user",
+        "name": "dao",
         "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint8",
+        "name": "level",
+        "type": "uint8"
       },
       {
         "indexed": false,
         "internalType": "uint8",
-        "name": "level",
+        "name": "depth",
         "type": "uint8"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "payment",
+        "name": "amount",
         "type": "uint256"
       }
     ],
-    "name": "Matrix2x2Created",
+    "name": "HolePaid",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "referrer",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
         "indexed": false,
         "internalType": "uint8",
-        "name": "level",
+        "name": "version",
         "type": "uint8"
       }
     ],
-    "name": "Matrix2x2Cycle",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "referrer",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "level",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "place",
-        "type": "uint8"
-      }
-    ],
-    "name": "Matrix2x2Updated",
+    "name": "Initialized",
     "type": "event"
   },
   {
@@ -477,6 +200,37 @@
       }
     ],
     "name": "Matrix3x6Updated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sponsor",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "level",
+        "type": "uint8"
+      }
+    ],
+    "name": "MissedRewards",
     "type": "event"
   },
   {
@@ -609,31 +363,6 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "level",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "RewardPaid",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
         "internalType": "bytes32",
         "name": "role",
         "type": "bytes32"
@@ -710,6 +439,31 @@
       {
         "indexed": true,
         "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "level",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newTotal",
+        "type": "uint256"
+      }
+    ],
+    "name": "SharesUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
         "name": "referrer",
         "type": "address"
       },
@@ -757,7 +511,7 @@
         "type": "bool"
       }
     ],
-    "name": "TransactionExecuted",
+    "name": "TxExecuted",
     "type": "event"
   },
   {
@@ -832,32 +586,6 @@
   },
   {
     "inputs": [],
-    "name": "DAO_1",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "DAO_2",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "DAO_WALLET",
     "outputs": [
       {
@@ -896,19 +624,26 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "PAYOUT_PERCENTAGES",
+    "inputs": [],
+    "name": "MONTHLY_FEE",
     "outputs": [
       {
-        "internalType": "uint8",
+        "internalType": "uint96",
         "name": "",
-        "type": "uint8"
+        "type": "uint96"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "P3",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -919,9 +654,9 @@
     "name": "RENEW_DURATION",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "uint32",
         "name": "",
-        "type": "uint256"
+        "type": "uint32"
       }
     ],
     "stateMutability": "view",
@@ -929,77 +664,12 @@
   },
   {
     "inputs": [],
-    "name": "SHARED_1_1",
+    "name": "RENEW_WINDOW",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "uint32",
         "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "SHARED_1_2",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "SHARED_2_1",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "SHARED_2_2",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "SIGN_DURATION",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "UPGRADE_INTERFACE_VERSION",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
+        "type": "uint32"
       }
     ],
     "stateMutability": "view",
@@ -1043,19 +713,6 @@
   },
   {
     "inputs": [],
-    "name": "authAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "autoRenewalsProcessed",
     "outputs": [
       {
@@ -1086,7 +743,13 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
     "name": "claimRewards",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -1110,7 +773,7 @@
         "type": "uint8"
       }
     ],
-    "name": "createMatrices2x2",
+    "name": "createMatrices",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1128,7 +791,7 @@
         "type": "address"
       }
     ],
-    "name": "createMatrix2x2",
+    "name": "createMatrix",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1173,7 +836,7 @@
         "type": "uint8"
       }
     ],
-    "name": "getMatrix3x6Entry",
+    "name": "get3x6Entry",
     "outputs": [
       {
         "components": [
@@ -1193,29 +856,72 @@
             "type": "address[]"
           },
           {
-            "internalType": "uint256",
-            "name": "renewPayment",
-            "type": "uint256"
+            "internalType": "uint96",
+            "name": "vault",
+            "type": "uint96"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint40",
             "name": "lastRenewTime",
-            "type": "uint256"
+            "type": "uint40"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint40",
             "name": "lastClaimTime",
-            "type": "uint256"
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint24",
+            "name": "refsCount",
+            "type": "uint24"
+          },
+          {
+            "internalType": "uint24",
+            "name": "refsWith3",
+            "type": "uint24"
+          },
+          {
+            "internalType": "uint24",
+            "name": "cycles",
+            "type": "uint24"
           },
           {
             "internalType": "bool",
             "name": "isActive",
             "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "refRewards",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "payout",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "dailyRewards",
+            "type": "uint256"
           }
         ],
         "internalType": "struct IHelpingHandsMatrix.Matrix3x6",
         "name": "entry",
         "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getLevelWiseUserCount",
+    "outputs": [
+      {
+        "internalType": "uint256[6]",
+        "name": "levelWiseUserCount",
+        "type": "uint256[6]"
       }
     ],
     "stateMutability": "view",
@@ -1235,57 +941,6 @@
         "internalType": "bytes32",
         "name": "",
         "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "uint8",
-        "name": "lvl",
-        "type": "uint8"
-      }
-    ],
-    "name": "getX6Entry",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "currentReferrer",
-            "type": "address"
-          },
-          {
-            "internalType": "address[]",
-            "name": "firstLevelReferrals",
-            "type": "address[]"
-          },
-          {
-            "internalType": "address[]",
-            "name": "secondLevelReferrals",
-            "type": "address[]"
-          },
-          {
-            "internalType": "uint256",
-            "name": "reinvestCount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "address",
-            "name": "closedPart",
-            "type": "address"
-          }
-        ],
-        "internalType": "struct IHelpingHandsMatrix.X6",
-        "name": "entry",
-        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -1337,12 +992,62 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_adminAddress",
+        "name": "_usdt",
         "type": "address"
       },
       {
         "internalType": "address",
         "name": "_distributorImpl",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_adminAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_manager",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_daoWallet",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_3",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_4",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_5",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_6",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_7",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_p3",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_devWallet",
         "type": "address"
       }
     ],
@@ -1357,9 +1062,14 @@
         "internalType": "address",
         "name": "user",
         "type": "address"
+      },
+      {
+        "internalType": "uint8",
+        "name": "level",
+        "type": "uint8"
       }
     ],
-    "name": "isActive3x6User",
+    "name": "isActive3x6UserAtLevel",
     "outputs": [
       {
         "internalType": "bool",
@@ -1399,35 +1109,21 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "name": "isValidSign",
-    "outputs": [
+        "internalType": "address",
+        "name": "wallet",
+        "type": "address"
+      },
       {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
+        "internalType": "uint8",
+        "name": "level",
+        "type": "uint8"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "matrixPlans",
+    "name": "levelSharesOf",
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "shares",
         "type": "uint256"
       }
     ],
@@ -1448,16 +1144,33 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "nextRenewTime",
-    "outputs": [
+    "inputs": [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        "components": [
+          {
+            "internalType": "address",
+            "name": "user",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "referrer",
+            "type": "address"
+          },
+          {
+            "internalType": "uint8",
+            "name": "levels",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct IHelpingHandsMatrix.MigratePayload[]",
+        "name": "payload",
+        "type": "tuple[]"
       }
     ],
-    "stateMutability": "view",
+    "name": "migrateBatch",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -1481,6 +1194,44 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "depth",
+        "type": "uint8"
+      }
+    ],
+    "name": "payoutPct",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "level",
+        "type": "uint8"
+      }
+    ],
+    "name": "plan",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "proxiableUUID",
     "outputs": [
@@ -1496,12 +1247,17 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
         "internalType": "uint8",
         "name": "lvl",
         "type": "uint8"
       }
     ],
-    "name": "renewMe",
+    "name": "renewUser",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1515,37 +1271,13 @@
       },
       {
         "internalType": "address",
-        "name": "callerConfirmation",
+        "name": "account",
         "type": "address"
       }
     ],
     "name": "renounceRole",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "uint8",
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "name": "restakeCount",
-    "outputs": [
-      {
-        "internalType": "uint8",
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1562,19 +1294,6 @@
       }
     ],
     "name": "revokeRole",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_authAddress",
-        "type": "address"
-      }
-    ],
-    "name": "setAuthAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1608,6 +1327,62 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "_manager",
+        "type": "address"
+      }
+    ],
+    "name": "setRenewalManager",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "stats",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "totalUsers",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalPayouts",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalPayItForwardCount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalDailyRewardsClaimed",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalReferralBonusPaid",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalDeposits",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalMatrixRewards",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "bytes4",
         "name": "interfaceId",
         "type": "bytes4"
@@ -1625,19 +1400,18 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "toggleAutoUpgrade",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "totalUsers",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "wallet",
+        "type": "address"
+      }
+    ],
+    "name": "totalShares",
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "total",
         "type": "uint256"
       }
     ],
@@ -1647,6 +1421,19 @@
   {
     "inputs": [],
     "name": "unpause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newImplementation",
+        "type": "address"
+      }
+    ],
+    "name": "upgradeTo",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1667,30 +1454,6 @@
     "name": "upgradeToAndCall",
     "outputs": [],
     "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      },
-      {
-        "internalType": "uint8",
-        "name": "level",
-        "type": "uint8"
-      }
-    ],
-    "name": "userInfo",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "refsWith3",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1719,19 +1482,14 @@
         "type": "uint256"
       },
       {
-        "internalType": "uint8",
-        "name": "matrix2x2Level",
-        "type": "uint8"
+        "internalType": "uint24",
+        "name": "refsCount",
+        "type": "uint24"
       },
       {
         "internalType": "uint8",
         "name": "matrix3x6Level",
         "type": "uint8"
-      },
-      {
-        "internalType": "bool",
-        "name": "autoUpgrade",
-        "type": "bool"
       }
     ],
     "stateMutability": "view",
