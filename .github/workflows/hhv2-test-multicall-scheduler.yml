@@ -1,16 +1,20 @@
 name: HH Multicall Autorenew Testnet
 
+concurrency:
+  group: ${{ github.workflow }} # one live run of this workflow at a time
+  cancel-in-progress: true # newer run wins
+
 on:
   schedule:
     # Runs at the start of every hour
-    - cron: "0 */12 * * *"
+    - cron: "11 2/14 * * *"
 
   # Allows us to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
   call-function:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # small, quick-to-start runner
 
     steps:
       - name: Check out repository (with full history & write access)
@@ -25,6 +29,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "20"
+          cache: npm # built-in ~/.npm cache
 
       - name: Install dependencies
         run: |
