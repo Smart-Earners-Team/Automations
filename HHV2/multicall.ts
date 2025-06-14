@@ -628,5 +628,4 @@ mainWithRetry()
   .catch((e) => console.error("Fatal error:", e))
   .then(async () => {
     await sendLogToTelegram();
-    process.exit(1);
   });
