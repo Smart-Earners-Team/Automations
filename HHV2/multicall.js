@@ -16,8 +16,9 @@ const CACHE_FILE = path.join(__dirname, "wallets-cache.json");
 
 // ── Config ──
 const SECONDS_IN_DAY = 86_400;
-const MATRIX_ADDRESS = "0x7E623888B34E3c66C40751f5A4689A8DE56B595C";
-// "0x0e950F60387C5d9DE09D5710E135776370c713dc";
+const MATRIX_ADDRESS =
+  // "0x7E623888B34E3c66C40751f5A4689A8DE56B595C";
+  "0x0e950F60387C5d9DE09D5710E135776370c713dc";
 const USDT_ADDRESS = "0x3807C468D722aAf9e9A82d8b4b1674E66a12E607";
 const DEX_ADDRESS = "0xfD28480E8fABbC1f3D66cF164DFe6B0818249A25";
 const PRIVATE_KEY = process.env.HH_PRIVATE_KEY;
@@ -42,10 +43,19 @@ const matrix = new Contract(MATRIX_ADDRESS, hhABI, signer);
 const usdt = new Contract(USDT_ADDRESS, erc20ABI, signer);
 const dex = new Contract(DEX_ADDRESS, dexABI, signer);
 
+// Spin up ONE Multicall instance and reuse it
+const mc = new Multicall({ chainId: CHAIN_ID, provider });
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function appendLog(text) {
   const logFilePath = path.join(__dirname, "renewals_log.txt");
   appendLogToFile(logFilePath, text + "\n");
+}
+
+// High-precision timer helper
+function hrTimeMs(start) {
+  const [sec, nano] = process.hrtime(start);
+  return sec * 1e3 + nano / 1e6; // → milliseconds
 }
 
 /**
@@ -79,7 +89,7 @@ function saveCachedWallets(wallets) {
 
 // — fetch just a slice of IDs via multicall
 async function fetchWalletsRange(startId, endId) {
-  const mc = new Multicall({ chainId: CHAIN_ID, provider });
+  // const mc = new Multicall({ chainId: CHAIN_ID, provider });
   const calls = [];
   for (let id = startId; id <= endId; id++) {
     calls.push({
@@ -104,12 +114,16 @@ async function fetchWalletsRange(startId, endId) {
  */
 async function fetchAllWallets() {
   console.log("⏳ load wallet cache…");
+
+  const hrStart = process.hrtime();
+
   const cached = loadCachedWallets();
   const stats = await matrix.stats();
   const totalUsers = Number(stats.totalUsers);
 
   if (cached.length === totalUsers) {
     console.log(`✅ cache is up-to-date (${totalUsers} wallets)`);
+    console.log(`   fetchAllWallets took ${hrTimeMs(hrStart).toFixed(2)} ms`);
     return cached;
   }
 
@@ -132,7 +146,11 @@ async function fetchAllWallets() {
   }
 
   const all = cached.concat(newWallets);
+
   saveCachedWallets(all);
+
+  console.log(`   fetchAllWallets took ${hrTimeMs(hrStart).toFixed(2)} ms`);
+
   return all;
 }
 
@@ -149,12 +167,14 @@ async function fetchUsersDue(level, wallets) {
   const cutoff = Math.floor(Date.now() / 1000) - RENEW_DURATION;
   const renewAmt = plan(level) + MONTHLY_FEE;
 
-  const mc = new Multicall({ chainId: CHAIN_ID, provider });
+  // const mc = new Multicall({ chainId: CHAIN_ID, provider });
 
   // For this level, multicall get3x6Entry(...) in chunks
   const due = [];
 
   console.log(`⏳ level ${level}: scanning ${wallets.length} wallets…`);
+
+  const hrStart = process.hrtime();
 
   for (let i = 0; i < wallets.length; i += READ_BATCH_SIZE) {
     const chunk = wallets.slice(i, i + READ_BATCH_SIZE);
@@ -180,7 +200,11 @@ async function fetchUsersDue(level, wallets) {
     console.log(`  → scanned wallets ${i + 1}–${i + chunk.length}`);
   }
 
-  console.log(`✅ level ${level}: ${due.length} users due`);
+  console.log(
+    `✅ level ${level}: ${due.length} users due` +
+      `  (took ${hrTimeMs(hrStart).toFixed(2)} ms)`
+  );
+
   return due;
 }
 
@@ -239,6 +263,35 @@ async function main() {
 
   // await processUSDT();
 
+  // // Kick off all level‐scans at once
+  // const levelPromises = Array.from({ length: MAX_LEVEL }, (_, i) => {
+  //   const lvl = i + 1;
+  //   console.log(`→ launching scan for level ${lvl}`);
+  //   return fetchUsersDue(lvl, allWallets);
+  // });
+
+  // // Wait for all six
+  // const allDueArrays = await Promise.all(levelPromises);
+  // // now allDueArrays = [ dueForLvl1, dueForLvl2, …, dueForLvl6 ]
+
+  // // Dispatch renewals level by level (we could even parallelize this too,
+  // //    but beware nonce‐ordering; NonceManager queues for us, so it’s safe)
+  // for (let lvl = 1; lvl <= MAX_LEVEL; lvl++) {
+  //   const due = allDueArrays[lvl - 1];
+  //   console.log(`\n--> Level ${lvl}: ${due.length} users due`);
+  //   appendLog(`Level ${lvl}: ${due.length} due`);
+  //   if (!due.length) continue;
+
+  //   for (let i = 0; i < due.length; i += RENEW_BATCH_SIZE) {
+  //     const chunk = due.slice(i, i + RENEW_BATCH_SIZE);
+  //     console.log(`Renewing ${chunk.length} users at level ${lvl}`);
+  //     const t0 = process.hrtime();
+  //     const txHash = await renewBatch(chunk, lvl);
+  //     console.log(`→ TX hash: ${txHash} (took ${hrMs(t0)}ms)`);
+  //     appendLog(`batchRenew lvl=${lvl} idx=${i}: ${txHash}`);
+  //   }
+  // }
+
   for (let lvl = 1; lvl <= MAX_LEVEL; lvl++) {
     console.log(`\n--> Level ${lvl}: fetching due users…`);
     const due = await fetchUsersDue(lvl, allWallets);
@@ -255,7 +308,9 @@ async function main() {
       const chunk = due.slice(i, i + RENEW_BATCH_SIZE);
       console.log(`Renewing ${chunk.length} users at level ${lvl}`);
       try {
-        const txHash = "txHash"; // await renewBatch(chunk, lvl);
+        const txHash =
+          // "txHash";
+          await renewBatch(chunk, lvl);
 
         console.log("→ TX (renewals):", txHash);
         appendLog(`batchRenew lvl=${lvl} idx=${i}: ${txHash}`);

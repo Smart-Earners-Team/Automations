@@ -2,6 +2,7 @@
   "scripts": {
     "renew": "node HHV2DEMO/call.js",
     "renew:mc": "node HHV2/multicall.js",
+    "renew:tsmc": "tsx HHV2/multicall.ts",
     "report:db": "tsx HHV2DEMO/report-daily-rewards.ts",
     "report:graph": "tsx HHV2DEMO/subgraph-daily-rewards.ts",
     "report:graph10x": "tsx HHV2DEMO/subgraph-daily-rewards-10x.ts",

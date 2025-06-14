@@ -28,12 +28,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install ethers @evmlord/multicall-sdk
+          npm install ethers @evmlord/multicall-sdk tsx
 
       - name: Call smart contract function (and regenerate cache)
         env:
           HH_PRIVATE_KEY: ${{ secrets.HH_KEY }}
-        run: node HHV2/multicall.js
+          TELEGRAM_BOT_TOKEN: ${{ secrets.HHLOGS_TG_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.HHLOGS_TG_CHATID }}
+        run: tsx HHV2/multicall.ts
 
         # — now commit+push the updated cache file —
       - name: Configure Git for Actions
