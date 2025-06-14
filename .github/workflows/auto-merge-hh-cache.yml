@@ -1,10 +1,14 @@
 name: Auto-merge cache PR
 
+# Only on PRs against main
 on:
   pull_request:
+    branches:
+      - main
     types: [opened, synchronize, reopened]
+    # Only trigger when this file is touched
     paths:
-      - "wallets-cache.json"
+      - "HHV2/wallets-cache.json"
 
 permissions:
   contents: read
@@ -20,10 +24,9 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const pr = context.payload.pull_request;
-            const prNumber = pr.number;
+            const prNumber = context.payload.pull_request.number;
 
-            // 1) Fetch all files modified in this PR
+            // Fetch all files modified in this PR
             const { data: files } = await github.rest.pulls.listFiles({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -33,13 +36,13 @@ jobs:
             const filenames = files.map(f => f.filename);
             console.log("Changed files:", filenames);
 
-            // 2) Only auto-merge if exactly this one file changed
+            // Only auto-merge if exactly wallets-cache.json changed
             if (filenames.length !== 1 || filenames[0] !== 'wallets-cache.json') {
-              console.log("❌ Not auto-merging: more than just wallets-cache.json changed.");
+              console.log("❌ skipping: more than just wallets-cache.json changed.");
               return;
             }
 
-            // 3) Re-fetch PR to check mergeable state
+            // Re-fetch PR to check mergeable state
             const { data: fresh } = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
