@@ -13,8 +13,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository code
+      - name: Check out repository (with full history & write access)
         uses: actions/checkout@v3
+        with:
+          # Fetch everything, not just one commit (needed for pushes)
+          fetch-depth: 0
+          # Persist the GITHUB_TOKEN into .git/config so that git push works
+          persist-credentials: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -25,7 +30,22 @@ jobs:
         run: |
           npm install ethers @evmlord/multicall-sdk
 
-      - name: Call smart contract function
+      - name: Call smart contract function (and regenerate cache)
         env:
           HH_PRIVATE_KEY: ${{ secrets.HH_KEY }}
         run: node HHV2/multicall.js
+
+        # — now commit+push the updated cache file —
+      - name: Commit updated wallets-cache.json
+        run: |
+          # tell git who we are
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # only commit if there are changes
+          git diff --exit-code --quiet wallets-cache.json \
+            || ( \
+                 git add wallets-cache.json \
+              && git commit -m "chore: update wallets-cache.json [ci skip]" \
+              && git push \
+             )
