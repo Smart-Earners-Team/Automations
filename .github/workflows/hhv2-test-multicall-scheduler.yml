@@ -40,21 +40,19 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Create or reset cache branch
         run: |
           git fetch origin main
           # use the same branch name each run
           git checkout -B cache/update-wallets-cache origin/main
-      - name: Stage & commit cache changes
+
+      - name: Force commit cache file (always commit)
         run: |
-          # only commit if the cache file actually changed
-          if git diff --quiet HEAD HHV2/wallets-cache.json; then
-            echo "No cache changes, skipping commit."
-          else
-            git add HHV2/wallets-cache.json
-            git commit -m "chore: update wallets-cache.json [ci skip]"
-            git push --set-upstream origin cache/update-wallets-cache --force
-          fi
+          git add HHV2/wallets-cache.json
+          git commit -m "chore: update wallets-cache.json [ci skip]" || echo "No changes to commit."
+          git push --set-upstream origin cache/update-wallets-cache --force
+
       - name: Open (or update) Pull Request
         uses: actions/github-script@v7
         with:
