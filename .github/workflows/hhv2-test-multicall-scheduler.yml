@@ -65,11 +65,14 @@ jobs:
             git add HHV2/wallets-cache.json
             git commit -m "chore: update wallets-cache.json [ci skip]"
             echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Committed new cache"
           fi
 
       - name: Push branch
         if: steps.commit.outputs.changed == 'true'
         run: |
+          set -xe
+          git rev-parse --short HEAD            # show the commit we’re about to push
           git push --set-upstream origin cache/update-wallets-cache --force
 
       - name: Open (or update) Pull Request → only when branch was pushed
