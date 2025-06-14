@@ -36,16 +36,18 @@ jobs:
         run: node HHV2/multicall.js
 
         # — now commit+push the updated cache file —
-      - name: Commit updated wallets-cache.json
+      - name: Commit updated wallets cache
         run: |
           # tell git who we are
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           # only commit if there are changes
-          git diff --exit-code --quiet wallets-cache.json \
-            || ( \
-                 git add wallets-cache.json \
-              && git commit -m "chore: update wallets-cache.json [ci skip]" \
-              && git push \
-             )
+          if [[ -f HHV2/wallets-cache.json ]]; then
+            cd HHV2
+            git add wallets-cache.json
+            git commit -m "chore: update wallets-cache.json [ci skip]" || echo "⏩ no changes to commit"
+            git push
+          else
+            echo "⚠️  HHV2/wallets-cache.json not found, skipping commit"
+          fi
