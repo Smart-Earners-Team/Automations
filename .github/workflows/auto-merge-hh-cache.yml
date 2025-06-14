@@ -1,0 +1,61 @@
+name: Auto-merge cache PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "wallets-cache.json"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Fetch changed files and conditionally merge
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const prNumber = pr.number;
+
+            // 1) Fetch all files modified in this PR
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+
+            const filenames = files.map(f => f.filename);
+            console.log("Changed files:", filenames);
+
+            // 2) Only auto-merge if exactly this one file changed
+            if (filenames.length !== 1 || filenames[0] !== 'wallets-cache.json') {
+              console.log("❌ Not auto-merging: more than just wallets-cache.json changed.");
+              return;
+            }
+
+            // 3) Re-fetch PR to check mergeable state
+            const { data: fresh } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+
+            if (fresh.mergeable_state !== 'clean') {
+              console.log(`❌ PR not ready to merge (state=${fresh.mergeable_state}).`);
+              return;
+            }
+
+            // 4) Merge it
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+              merge_method: 'squash'
+            });
+            console.log(`✅ Auto-merged PR #${prNumber}`);
