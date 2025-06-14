@@ -40,7 +40,7 @@ jobs:
             console.log("Changed files:", filenames);
 
             // Only auto-merge if exactly wallets-cache.json changed
-            if (filenames.length !== 1 || filenames[0] !== 'wallets-cache.json') {
+            if (filenames.length !== 1 || filenames[0] !== 'HHV2/wallets-cache.json') {
               console.log("❌ skipping: more than just wallets-cache.json changed.");
               return;
             }
