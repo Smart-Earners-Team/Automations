@@ -166,6 +166,19 @@ async function fetchWalletsRange(
   });
 }
 
+function sample<T>(array: T[], count: number): T[] {
+  const result: T[] = [];
+  const taken = new Set<number>();
+  while (result.length < count && result.length < array.length) {
+    const i = Math.floor(Math.random() * array.length);
+    if (!taken.has(i)) {
+      taken.add(i);
+      result.push(array[i]);
+    }
+  }
+  return result;
+}
+
 /**
  * Ensure we have an up-to-date cache of all user wallets.
  * 1) Read local cache
@@ -182,10 +195,30 @@ async function fetchAllWallets() {
   const stats = await matrix.stats();
   const totalUsers = Number(stats.totalUsers);
 
-  if (cached.length === totalUsers) {
-    log(`✅ cache is up-to-date (${totalUsers} wallets)`);
-    log(`   fetchAllWallets took ${hrTimeMs(hrStart).toFixed(2)} ms`);
-    return cached;
+  // Skip if cache is empty
+  if (cached.length > 0 && cached.length === totalUsers) {
+    const sampleSize = Math.min(10, cached.length);
+    const sampleIndices = sample([...Array(cached.length).keys()], sampleSize);
+
+    let mismatchFound = false;
+
+    for (const index of sampleIndices) {
+      const [fetched] = await fetchWalletsRange(index + 1, index + 1); // 1-based indexing
+      if (fetched[0] !== cached[index]) {
+        mismatchFound = true;
+        break;
+      }
+    }
+
+    if (!mismatchFound) {
+      log(`✅ cache sample passed (${sampleSize} checks)`);
+      log(`   fetchAllWallets took ${hrTimeMs(hrStart).toFixed(2)} ms`);
+      return cached;
+    } else {
+      log(`⚠️ sample mismatch — refreshing full wallet cache`);
+    }
+  } else {
+    log(`⚠️ cache length mismatch: ${cached.length} vs ${totalUsers}`);
   }
 
   log(
@@ -193,6 +226,7 @@ async function fetchAllWallets() {
       `Fetching IDs ${cached.length + 1}–${totalUsers}…`
   );
 
+  // Full refresh fallback
   const newWallets: string[] = [];
 
   for (
@@ -208,7 +242,11 @@ async function fetchAllWallets() {
 
   const all = [...cached, ...newWallets];
 
-  saveCachedWallets(all);
+  if (JSON.stringify(cached) !== JSON.stringify(all)) {
+    saveCachedWallets(all);
+  } else {
+    log(`✅ cache contents match, skipping write`);
+  }
 
   log(`   fetchAllWallets took ${hrTimeMs(hrStart).toFixed(2)} ms`);
 
