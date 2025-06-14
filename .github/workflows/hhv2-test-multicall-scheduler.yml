@@ -1,9 +1,5 @@
 name: HH Multicall Autorenew Testnet
 
-concurrency:
-  group: ${{ github.workflow }} # one live run of this workflow at a time
-  cancel-in-progress: true # newer run wins
-
 on:
   schedule:
     - cron: "11 2/14 * * *"
