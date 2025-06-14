@@ -52,9 +52,9 @@ jobs:
               pull_number: prNumber
             });
 
-            if (fresh.mergeable_state !== 'clean') {
-              console.log(`❌ PR not ready to merge (state=${fresh.mergeable_state}).`);
-              return;
+            if (!fresh.mergeable) {
+                console.log(`❌ PR not mergeable (mergeable=${fresh.mergeable}).`);
+                return;
             }
 
             // 4) Merge it
