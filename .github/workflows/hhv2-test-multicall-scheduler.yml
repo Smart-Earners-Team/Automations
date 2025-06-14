@@ -35,7 +35,7 @@ jobs:
           HH_PRIVATE_KEY: ${{ secrets.HH_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.HHLOGS_TG_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.HHLOGS_TG_CHATID }}
-        run: tsx HHV2/multicall.ts
+        run: npx tsx HHV2/multicall.ts
 
         # — now commit+push the updated cache file —
       - name: Configure Git for Actions
