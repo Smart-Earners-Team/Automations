@@ -37,7 +37,6 @@ const dexABI = require("./DEXABI.json");
 // ── Setup RPC, Wallet, Contracts ───────────────────────────────────────────────
 const provider = new JsonRpcProvider(RPC_URL);
 const wallet = new Wallet(PRIVATE_KEY, provider);
-// const signer = wallet.connect(provider);
 const signer = new NonceManager(wallet.connect(provider));
 const matrix = new Contract(MATRIX_ADDRESS, hhABI, signer);
 const usdt = new Contract(USDT_ADDRESS, erc20ABI, signer);
@@ -254,12 +253,7 @@ async function main() {
     // batch on-chain calls
     for (let i = 0; i < due.length; i += RENEW_BATCH_SIZE) {
       const chunk = due.slice(i, i + RENEW_BATCH_SIZE);
-      console.log(
-        `Renewing ${chunk.length} users at level ${lvl}`
-        // [${i}–${
-        //   i + chunk.length - 1
-        // }]
-      );
+      console.log(`Renewing ${chunk.length} users at level ${lvl}`);
       try {
         const txHash = "txHash"; // await renewBatch(chunk, lvl);
 
