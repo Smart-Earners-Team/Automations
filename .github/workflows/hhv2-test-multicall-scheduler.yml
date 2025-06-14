@@ -31,18 +31,6 @@ jobs:
           node-version: "20"
           cache: npm # built-in ~/.npm cache
 
-      - name: Install dependencies
-        run: |
-          npm install ethers @evmlord/multicall-sdk tsx
-
-      - name: Call smart contract function (and regenerate cache)
-        env:
-          HH_PRIVATE_KEY: ${{ secrets.HH_KEY }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.HHLOGS_TG_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.HHLOGS_TG_CHATID }}
-        run: npx tsx HHV2/multicall.ts
-
-        # — now commit+push the updated cache file —
       - name: Configure Git for Actions
         run: |
           git config user.name "github-actions[bot]"
@@ -54,25 +42,35 @@ jobs:
           # use the same branch name each run
           git checkout -B cache/update-wallets-cache origin/main
 
+      - name: Install dependencies
+        run: |
+          npm install ethers @evmlord/multicall-sdk tsx
+
+      - name: Call smart contract function (and regenerate cache)
+        env:
+          HH_PRIVATE_KEY: ${{ secrets.HH_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.HHLOGS_TG_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.HHLOGS_TG_CHATID }}
+        run: npx tsx HHV2/multicall.ts
+
       - name: Stage & commit cache changes
         id: commit
         run: |
           # only commit if the cache file actually changed
-          if git diff --quiet HEAD HHV2/wallets-cache.json; then
+          git add -N HHV2/wallets-cache.json # stage path even if new
+          if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "No cache changes, skipping commit."
+            echo "::notice::No cache changes"
           else
             git add HHV2/wallets-cache.json
             git commit -m "chore: update wallets-cache.json [ci skip]"
             echo "changed=true" >> "$GITHUB_OUTPUT"
-            echo "::notice::Committed new cache"
+            echo "::notice::Committed new/updated cache"
           fi
 
       - name: Push branch
         if: steps.commit.outputs.changed == 'true'
         run: |
-          set -xe
-          git rev-parse --short HEAD            # show the commit we’re about to push
           git push --set-upstream origin cache/update-wallets-cache --force
 
       - name: Open (or update) Pull Request → only when branch was pushed
