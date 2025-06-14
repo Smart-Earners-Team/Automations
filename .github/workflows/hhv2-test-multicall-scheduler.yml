@@ -6,7 +6,6 @@ concurrency:
 
 on:
   schedule:
-    # Runs at the start of every hour
     - cron: "11 2/14 * * *"
 
   # Allows us to run this workflow manually from the Actions tab
@@ -29,23 +28,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "20"
-          cache: npm # built-in ~/.npm cache
-
-      - name: Configure Git for Actions
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Create or reset cache branch
-        run: |
-          git fetch origin main
-          # use the same branch name each run
-          git checkout -B cache/update-wallets-cache origin/main
 
       - name: Install dependencies
         run: |
           npm install ethers @evmlord/multicall-sdk tsx
-
       - name: Call smart contract function (and regenerate cache)
         env:
           HH_PRIVATE_KEY: ${{ secrets.HH_KEY }}
@@ -53,28 +39,27 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.HHLOGS_TG_CHATID }}
         run: npx tsx HHV2/multicall.ts
 
+        # — now commit+push the updated cache file —
+      - name: Configure Git for Actions
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Create or reset cache branch
+        run: |
+          git fetch origin main
+          # use the same branch name each run
+          git checkout -B cache/update-wallets-cache origin/main
       - name: Stage & commit cache changes
-        id: commit
         run: |
           # only commit if the cache file actually changed
-          git add -N HHV2/wallets-cache.json # stage path even if new
-          if git diff --cached --quiet; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::No cache changes"
+          if git diff --quiet HEAD HHV2/wallets-cache.json; then
+            echo "No cache changes, skipping commit."
           else
             git add HHV2/wallets-cache.json
             git commit -m "chore: update wallets-cache.json [ci skip]"
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-            echo "::notice::Committed new/updated cache"
+            git push --set-upstream origin cache/update-wallets-cache --force
           fi
-
-      - name: Push branch
-        if: steps.commit.outputs.changed == 'true'
-        run: |
-          git push --set-upstream origin cache/update-wallets-cache --force
-
-      - name: Open (or update) Pull Request → only when branch was pushed
-        if: steps.commit.outputs.changed == 'true'
+      - name: Open (or update) Pull Request
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
