@@ -27,7 +27,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install ethers @evmlord/multicall-sdk tsx
+          npm install ethers @evmlord/multicall-sdk@1.0.0 tsx
+
       - name: Call smart contract function (and regenerate cache)
         env:
           HH_PRIVATE_KEY: ${{ secrets.HH_KEY }}
