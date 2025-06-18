@@ -1,8 +1,9 @@
 {
   "scripts": {
     "renew": "node HHV2DEMO/call.js",
-    "renew:mc": "node HHV2/multicall.js",
-    "renew:tsmc": "npx --y tsx HHV2/multicall.ts",
+    "renew:js": "node HHV2/multicall.js",
+    "renew:ts": "tsx HHV2/multicall.ts",
+    "renew:v1": "tsx HHV2/multicall-v1.ts",
     "report:db": "tsx HHV2DEMO/report-daily-rewards.ts",
     "report:graph": "tsx HHV2DEMO/subgraph-daily-rewards.ts",
     "report:graph10x": "tsx HHV2DEMO/subgraph-daily-rewards-10x.ts",
@@ -22,7 +23,7 @@
     "esm": true
   },
   "dependencies": {
-    "@evmlord/multicall-sdk": "^0.0.4",
+    "@evmlord/multicall-sdk": "^1.0.1",
     "dotenv": "^16.5.0",
     "ethers": "^6.13.0",
     "graphql-request": "^7.1.2",
