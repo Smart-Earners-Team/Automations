@@ -388,7 +388,7 @@ async function processUSDT(): Promise<void> {
     return;
   }
 
-  if ((await mc.getEthBalance(wallet.address)) >= parseEther("0.1")) {
+  if ((await mc.getEthBalance(wallet.address)) >= parseEther("0.05")) {
     console.log("USDT Withdrawal");
     const withdrawal = await usdt.transfer(
       "0x9B71B4Dc9E9DCeFAF0e291Cf2DC5135A862A463d",
