@@ -67,7 +67,8 @@ jobs:
             const { data: prs } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              head: BRANCH,
+              head: `${context.repo.owner}:${BRANCH}`,  // owner + ':' + branch
+              # head: BRANCH,
               state: "open",
             });
             if (prs.length === 0) {
