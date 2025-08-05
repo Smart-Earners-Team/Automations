@@ -68,7 +68,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               head: `${context.repo.owner}:${BRANCH}`,  // owner + ':' + branch
-              # head: BRANCH,
+              // head: BRANCH,
               state: "open",
             });
             if (prs.length === 0) {
