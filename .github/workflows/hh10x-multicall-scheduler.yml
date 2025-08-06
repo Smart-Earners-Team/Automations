@@ -64,13 +64,13 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const BRANCH = "cache/update-wallets-10x-main-cache";
+            const REVIEWERS = ["EVMlord"];           // ⇦ GitHub usernames
 
             // look for an open PR whose head is this exact branch **in this repo**
             const { data: prs } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
               head: `${context.repo.owner}:${BRANCH}`,  // owner + ':' + branch
-              // head: BRANCH,
               state: "open",
             });
             if (prs.length === 0) {
@@ -85,4 +85,19 @@ jobs:
               console.log("Opened PR:", pr.data.html_url);
             } else {
               console.log("PR already open:", prs[0].html_url);
+            }
+
+            // ask for review
+            try {
+              await github.rest.pulls.requestReviewers({
+                owner: context.repo.owner,
+                repo:  context.repo.repo,
+                pull_number: pr.data.number,
+                reviewers: REVIEWERS,         // users
+              });
+              console.log("Review requested from:", [...REVIEWERS].join(", "));
+            } catch (e) {
+              // 422 = reviewers already requested — safe to ignore
+              if (e.status !== 422) throw e;
+              console.log("Reviewers already requested, skipping.");
             }
