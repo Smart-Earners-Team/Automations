@@ -73,6 +73,8 @@ jobs:
               head: `${context.repo.owner}:${BRANCH}`,  // owner + ':' + branch
               state: "open",
             });
+
+            let pr; // will always have a .data property
             if (prs.length === 0) {
               const pr = await github.rest.pulls.create({
                 owner: context.repo.owner,
@@ -84,20 +86,29 @@ jobs:
               });
               console.log("Opened PR:", pr.data.html_url);
             } else {
-              console.log("PR already open:", prs[0].html_url);
+              pr = { data: prs[0] }; // normalize shape to match create() response
+              console.log("PR already open:", pr.data.html_url);
             }
 
             // ask for review
-            try {
+            // don't request review from the PR author
+            const author = pr.data.user.login;
+            const reviewers = REVIEWERS.filter(u => u !== author);
+
+            if (reviewers.length) {
+              try {
               await github.rest.pulls.requestReviewers({
                 owner: context.repo.owner,
                 repo:  context.repo.repo,
                 pull_number: pr.data.number,
-                reviewers: REVIEWERS,         // users
+                reviewers,       // users
               });
-              console.log("Review requested from:", [...REVIEWERS].join(", "));
+              console.log("Review requested from:", [...reviewers].join(", "));
             } catch (e) {
               // 422 = reviewers already requested — safe to ignore
               if (e.status !== 422) throw e;
               console.log("Reviewers already requested, skipping.");
             }
+            } else {
+             console.log("No eligible reviewers to request.");
+             }
