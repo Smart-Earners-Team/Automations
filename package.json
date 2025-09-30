@@ -11,16 +11,25 @@
     "report:graph10x": "tsx HHV2DEMO/subgraph-daily-rewards-10x.ts",
     "fetch:10x": "tsx HHV2DEMO/fetchUsers.ts",
     "fetchv2:10x": "tsx HHV2DEMO/fetchUsersV2.ts --out=HH10XSnapshot.json",
+    "fetchv2:5x": "tsx HHV2DEMO/fetchUsersV2.ts --out=HHSnapshot.json",
     "migrate:demo": "tsx HHV2DEMO/migrateUsers.ts",
+    "countlogs": "tsx HHV2DEMO/countlogs.ts",
     "global": "tsx HHV2DEMO/fetchGlobal.ts",
     "migrate:batch": "tsx HHV2DEMO/migrateUsersBatch.ts",
+    "migrate:cost": "tsx HHV2DEMO/calcMigrationCost.ts",
     "migrate:10x": "tsx HHV2DEMO/migrateUsersBatch.ts",
     "fetch:10x:csv": "tsx HHV2DEMO/fetchUsers.ts --file=usersRegular.csv",
     "fetch:10x:json": "tsx HHV2DEMO/fetchUsers.ts --json=usersRegular.json",
     "report:graph10x:test": "tsx HHV2DEMO/subgraph-daily-rewards-10x-test.ts",
     "upgrades:graph": "tsx HHV2DEMO/track-upgrades.ts",
     "zzz": "tsx HHV2DEMO/nonzerorewardusers.ts",
-    "upgrades:graph10x": "tsx HHV2DEMO/track-upgrades-10x.ts"
+    "upgrades:graph10x": "tsx HHV2DEMO/track-upgrades-10x.ts",
+    "migrate:vva:ref": "tsx HHV2DEMO/migrate-vva-referrals.ts",
+    "vva:ref-snapshot": "tsx HHV2/export-vva-referral-tree.ts --endpoint=https://gateway.thegraph.com/api/subgraphs/id/27KnKCJqV7Nwmww52sbyF63UENSLNuratAsgh3DuLX4Q --pageSize=1000 --outDir=./VVA-Snapshot --withLevelLinks",
+    "vva:ref-snapshot:events": "tsx HHV2DEMO/vva-snapshot-ref-onchain-events.ts",
+    "vva:ref-anchors:events": "tsx HHV2DEMO/snapshot-vva-referral-anchors.ts",
+    "vva:staking-snapshot": "tsx HHV2DEMO/export-vva-staking-snapshot.ts --endpoint=https://gateway.thegraph.com/api/subgraphs/id/27KnKCJqV7Nwmww52sbyF63UENSLNuratAsgh3DuLX4Q --pageSize=1000 --outDir=./VVA-Snapshot",
+    "poke:svva": "tsx Veritas/vva-poke.ts"
   },
   "ts-node": {
     "esm": true
