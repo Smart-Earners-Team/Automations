@@ -75,7 +75,7 @@ jobs:
 
             let pr; // will always have a .data property
             if (prs.length === 0) {
-              const pr = await github.rest.pulls.create({
+              pr = await github.rest.pulls.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 title: "chore: update vva-main-cache.json [ci skip]",
@@ -92,9 +92,9 @@ jobs:
             // ask for review
             // don't request review from the PR author
             const author = pr.data.user.login;
-            const reviewers = REVIEWERS.filter(u => u !== author);
+            const reviewers = REVIEWERS.filter(u => u && u !== author);
 
-            if (reviewers.length) {
+            if (reviewers.length > 0) {
               try {
               await github.rest.pulls.requestReviewers({
                 owner: context.repo.owner,
@@ -109,5 +109,5 @@ jobs:
               console.log("Reviewers already requested, skipping.");
             }
             } else {
-             console.log("No eligible reviewers to request.");
+             console.log("No eligible reviewers to request (reviewer list empty or only author).");
              }
