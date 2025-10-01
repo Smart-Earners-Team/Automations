@@ -80,7 +80,7 @@ const CHAIN_ID = 56;
 const READ_BATCH_SIZE = 1000; // how many wallets to read per Multicall
 const PAGES_PER_CALL = 5; // how many pages we batch in one aggregate3
 const BATCH_SIZE = READ_BATCH_SIZE * PAGES_PER_CALL; // 5 000 addresses
-const POKE_BATCH_SIZE = 1000; // how many addresses to poke per tx
+const POKE_BATCH_SIZE = 2048; // how many addresses to poke max per tx
 const GAS_HEADROOM_BPS = 500n; // +5% on top of estimate
 
 // ── Setup RPC, Wallet, Contracts ───────────────────────────────────────────────

@@ -1,0 +1,1 @@
+[![VVA Auto Settle Rebase](https://github.com/Smart-Earners-Team/Automations/actions/workflows/vva-settle-scheduler.yml/badge.svg)](https://github.com/Smart-Earners-Team/Automations/actions/workflows/vva-settle-scheduler.yml)
