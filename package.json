@@ -29,7 +29,8 @@
     "vva:ref-snapshot:events": "tsx HHV2DEMO/vva-snapshot-ref-onchain-events.ts",
     "vva:ref-anchors:events": "tsx HHV2DEMO/snapshot-vva-referral-anchors.ts",
     "vva:staking-snapshot": "tsx HHV2DEMO/export-vva-staking-snapshot.ts --endpoint=https://gateway.thegraph.com/api/subgraphs/id/27KnKCJqV7Nwmww52sbyF63UENSLNuratAsgh3DuLX4Q --pageSize=1000 --outDir=./VVA-Snapshot",
-    "poke:svva": "tsx Veritas/vva-poke.ts"
+    "poke:svva": "tsx Veritas/vva-poke.ts",
+    "settle:svva": "tsx Veritas/vva-settle.ts"
   },
   "ts-node": {
     "esm": true

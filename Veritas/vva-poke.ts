@@ -321,7 +321,7 @@ async function filterAddressesByBalance(
   const chunkSize = READ_BATCH_SIZE;
 
   log(
-    `→ scanning ${uniqueValid.length} wallets in chunks of ${chunkSize} each`
+    `→ scanning ${uniqueValid.length} unique wallets in chunks of ${chunkSize} each`
   );
 
   const rich: string[] = [];
