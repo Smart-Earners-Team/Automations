@@ -11,36 +11,68 @@ import fs from "fs";
 import path from "path";
 import RegistryAbi from "./abis/Registry.json";
 import StakingAbi from "./abis/Staking.json";
-import { REGISTRY_CONTRACT, STAKING_CONTRACT } from "./constants";
+import {
+  REGISTRY_CONTRACT,
+  STAKING_CONTRACT,
+  sVVA_CONTRACT,
+} from "./constants";
 import { Call3, Multicall } from "@evmlord/multicall-sdk";
 
-// --- SETUP ---
-const provider = new JsonRpcProvider(process.env.VVA_RPC_URL);
-const registry = new Contract(REGISTRY_CONTRACT, RegistryAbi, provider);
-const staking = new Contract(STAKING_CONTRACT, StakingAbi, provider);
-
-const mc = new Multicall({ provider, chainId: 56 });
-
-const dataDir = path.join(__dirname, "data");
-const weeksDir = path.join(dataDir, "weeks");
-const checkpointFile = path.join(dataDir, "checkpoint.json");
-const participantsFile = path.join(dataDir, "participants.json");
-const sponsorsFile = path.join(dataDir, "sponsors.json");
+/* -------------------- ENV / CONSTANTS -------------------- */
+const VVA_RPC_URL = process.env.VVA_RPC_URL;
+if (!VVA_RPC_URL) {
+  throw new Error("Missing VVA_RPC_URL env");
+}
 
 const blockChunk = 10000;
 const startBlockDefault = 64582380; // 0x59fda2d8207e1bf3e16991878daf739302021489bda215a5f0d0930c6f20c926 demo
 const weekStartUnix = 1760313600; // October 13 demo
 const MIN_STAKE = parseUnits("200", 9);
 
+const FIRST_CLAIM_QUALIFY = parseUnits("100", 9); // 100 VVA
+const SHARES_PER = parseUnits("100", 9); // 100 VVA -> 1 share
+const SHARES_CAP = 20;
+
+const ERC20_IFACE = new Interface([
+  "function balanceOf(address) view returns (uint256)",
+]);
+
+// --- SETUP ---
+const provider = new JsonRpcProvider(VVA_RPC_URL);
+const registry = new Contract(REGISTRY_CONTRACT, RegistryAbi, provider);
+const staking = new Contract(STAKING_CONTRACT, StakingAbi, provider);
+const sVVA = new Contract(sVVA_CONTRACT, ERC20_IFACE, provider);
+
+const mc = new Multicall({ provider, chainId: 56 });
+
+/* -------------------- FILES / PATHS -------------------- */
+const dataDir = path.join(__dirname, "data");
+const weeksDir = path.join(dataDir, "weeks");
+const checkpointFile = path.join(dataDir, "checkpoint.json");
+const participantsFile = path.join(dataDir, "participants.json");
+const sponsorsFile = path.join(dataDir, "sponsors.json");
+
 // --- TYPES ---
+type WeekMeta = {
+  // extendable per-user bag; we store shares now
+  [userAddrLower: string]: { shares: number };
+};
 type WeekAggregate = {
   week: number;
   eligibility: string[];
   ineligible: string[];
+  meta?: WeekMeta;
   // we may have other leaderboard fields here; keep them optional
   [k: string]: any;
 };
-
+type ParticipantWeek = {
+  staked: string;
+  claimed: string;
+  forfeited: string;
+  stakes: number;
+  claims: number;
+  forfeits: number;
+};
 type Participant = {
   address: string;
   referee: string | null;
@@ -57,24 +89,21 @@ type Participant = {
   lastForfeitAt?: number;
   principalNow?: string;
   minPrincipalByWeek?: Record<string, string>;
-  byWeek?: Record<
-    string,
-    {
-      staked: string;
-      claimed: string;
-      forfeited: string;
-      stakes: number;
-      claims: number;
-      forfeits: number;
-    }
-  >;
+  byWeek?: Record<string, ParticipantWeek>;
   // internal non-persisted marker to avoid double teamSize bumps
   _teamCounted?: boolean;
 };
+type SponsorWeek = {
+  newMembers: number;
+  firstClaimSum: string;
+  // # of new members with first claim >= 100 VVA in this week
+  qualifying?: number;
+};
+
 type Sponsor = {
   address: string;
   teamSize: number;
-  byWeek: Record<string, { newMembers: number; firstClaimSum: string }>;
+  byWeek: Record<string, SponsorWeek>;
 };
 type Checkpoint = { lastProcessedBlock: number };
 
@@ -94,6 +123,14 @@ function subFloor(a: string, b: string) {
 function getWeekIndex(ts: number) {
   if (!weekStartUnix || ts < weekStartUnix) return 0;
   return Math.floor((ts - weekStartUnix) / (7 * 24 * 60 * 60));
+}
+function computeWeeklyShares(stakedStr: string): number {
+  // stakedStr and SHARES_PER are both 1e9 units (sVVA 9 decimals)
+  const shares = toBN(stakedStr) / toBN(SHARES_PER); // bigint division (floor)
+  const asNum = Number(
+    shares > BigInt(SHARES_CAP) ? BigInt(SHARES_CAP) : shares
+  );
+  return asNum;
 }
 
 // --- FS HELPERS (native) ---
@@ -165,9 +202,13 @@ function initSponsorIfMissing(s: Record<string, Sponsor>, addr: string) {
 }
 function bumpSponsorWeekFirstClaim(s: Sponsor, week: number, amount: string) {
   const key = String(week);
-  if (!s.byWeek[key]) s.byWeek[key] = { newMembers: 0, firstClaimSum: "0" };
+  if (!s.byWeek[key])
+    s.byWeek[key] = { newMembers: 0, firstClaimSum: "0", qualifying: 0 };
   s.byWeek[key].newMembers++;
   s.byWeek[key].firstClaimSum = addStr(s.byWeek[key].firstClaimSum, amount);
+  if (toBN(amount) >= FIRST_CLAIM_QUALIFY) {
+    s.byWeek[key].qualifying = (s.byWeek[key].qualifying ?? 0) + 1;
+  }
 }
 
 // --- DIFF LOGGER (lightweight) ---
@@ -297,21 +338,67 @@ async function mcBatchGetReferee(
   return out;
 }
 
+// Use sVVA.balanceOf(user) to bootstrap pre-campaign principal
+async function mcBatchGetUserBalance(
+  users: string[]
+): Promise<Record<string, string>> {
+  if (!users.length) return {};
+  const calls: Call3[] = users.map((u) => ({
+    contract: sVVA,
+    functionFragment: "balanceOf",
+    args: [u],
+    allowFailure: true,
+  }));
+  const out: Record<string, string> = {};
+  for (const c of chunk(calls, 1000)) {
+    const start = calls.indexOf(c[0]);
+    const ret = await mc.aggregate3(c);
+    ret.forEach((r, i) => {
+      const [ok, data] = r;
+      const who = users[start + i];
+      out[who.toLowerCase()] = ok ? ((data as bigint) ?? 0n).toString() : "0";
+    });
+  }
+  return out;
+}
+
 function buildEligibilityForWeeks(
   weeks: number[],
   participants: Record<string, Participant>,
-  minStake: bigint
-): Record<string, { eligible: string[]; ineligible: string[] }> {
-  const out: Record<string, { eligible: string[]; ineligible: string[] }> = {};
+  minStake: bigint,
+  sponsors: Record<string, Sponsor>
+): Record<
+  string,
+  { eligible: string[]; ineligible: string[]; meta?: WeekMeta }
+> {
+  const out: Record<
+    string,
+    { eligible: string[]; ineligible: string[]; meta?: WeekMeta }
+  > = {};
   for (const wk of weeks) {
     const key = String(wk);
-    const rec = { eligible: [] as string[], ineligible: [] as string[] };
+    const rec: { eligible: string[]; ineligible: string[]; meta: WeekMeta } = {
+      eligible: [],
+      ineligible: [],
+      meta: {},
+    };
     for (const [addr, p] of Object.entries(participants)) {
       const mpbw = p.minPrincipalByWeek || {};
       const minStr = mpbw[key];
       if (!minStr) continue; // user had no activity for that week yet
+      const byWeek = p.byWeek || {};
+
+      // shares
+      const shares = byWeek[key] ? computeWeeklyShares(byWeek[key].staked) : 0;
+      rec.meta[addr] = { shares };
+
       const minBN = toBN(minStr);
-      if (minBN >= minStake) rec.eligible.push(addr);
+      const sponsorQual = sponsors[addr]?.byWeek?.[key]?.qualifying ?? 0;
+
+      // must have 200 sVVA + 2 qualified new members
+      const eligibleNow = minBN >= minStake && sponsorQual >= 2;
+
+      if (eligibleNow) rec.eligible.push(addr);
       else rec.ineligible.push(addr);
     }
     out[key] = rec;
@@ -361,6 +448,27 @@ async function main() {
   const topicForfeited = staking.interface.getEvent("Forfeited")!.topicHash;
   const topicUnstaked = staking.interface.getEvent("Unstaked")!.topicHash;
 
+  // Bootstrap pre-existing principal for already known participants (first run / safety)
+  const bootstrapUsers = Object.keys(participants).filter(
+    (u) => !participants[u].principalNow
+  );
+
+  if (bootstrapUsers.length) {
+    console.log(`[bootstrap] fetching balances for ${bootstrapUsers.length}`);
+    const balances = await mcBatchGetUserBalance(bootstrapUsers);
+    for (const [u, bal] of Object.entries(balances)) {
+      participants[u].principalNow = bal;
+      // seed week 0 minPrincipal (pre-campaign stake may qualify immediately)
+      const min0 = toBN(bal) >= MIN_STAKE ? bal : "0";
+      participants[u].minPrincipalByWeek =
+        participants[u].minPrincipalByWeek || {};
+      if (!participants[u].minPrincipalByWeek!["0"]) {
+        participants[u].minPrincipalByWeek!["0"] = min0;
+      }
+    }
+    writeJSON(participantsFile, participants); // persist bootstrap
+  }
+
   while (cursor <= latestBlock) {
     const toBlock = Math.min(cursor + blockChunk - 1, latestBlock);
     console.log(`Processing ${cursor} → ${toBlock}`);
@@ -409,6 +517,7 @@ async function main() {
     // queues for multicall
     const needCheckIn: string[] = [];
     const needReferee: string[] = [];
+    const needBalanceBootstrap: string[] = [];
 
     // ---------------- REGISTRY: ReferralAnchorCreated ----------------
     for (const log of refLogs) {
@@ -421,7 +530,7 @@ async function main() {
 
       const ts = await getTs(log.blockNumber); // we can derive check-in from block ts
 
-      if (!participants[user])
+      if (!participants[user]) {
         participants[user] = {
           address: user,
           referee: referee !== ZeroAddress ? referee : null,
@@ -429,10 +538,11 @@ async function main() {
           stakedTotal: "0",
           claimedTotal: "0",
           forfeitedTotal: "0",
-          principalNow: "0",
+          principalNow: undefined,
           minPrincipalByWeek: {},
         };
-      else {
+        needBalanceBootstrap.push(user); // new user: bootstrap balance
+      } else {
         if (!participants[user].checkInTime)
           participants[user].checkInTime = ts;
         participants[user].referee =
@@ -470,9 +580,10 @@ async function main() {
           stakedTotal: "0",
           claimedTotal: "0",
           forfeitedTotal: "0",
-          principalNow: "0",
+          principalNow: undefined,
           minPrincipalByWeek: {},
         };
+        needBalanceBootstrap.push(user);
       } else if (!participants[user].referee && referrer !== ZeroAddress) {
         participants[user].referee = referrer;
       } else if (!participants[user].referee && referrer === ZeroAddress) {
@@ -518,7 +629,7 @@ async function main() {
       })!;
       const user = (parsed.args.user as string).toLowerCase();
       const amount = (parsed.args.amount as bigint).toString();
-      if (!participants[user])
+      if (!participants[user]) {
         participants[user] = {
           address: user,
           referee: null,
@@ -526,9 +637,11 @@ async function main() {
           stakedTotal: "0",
           claimedTotal: "0",
           forfeitedTotal: "0",
-          principalNow: "0",
+          principalNow: undefined,
           minPrincipalByWeek: {},
         };
+        needBalanceBootstrap.push(user);
+      }
 
       const ts = await getTs(log.blockNumber);
       const week = getWeekIndex(ts);
@@ -579,7 +692,7 @@ async function main() {
       })!;
       const user = (parsed.args.user as string).toLowerCase();
       const amount = (parsed.args.amount as bigint).toString();
-      if (!participants[user])
+      if (!participants[user]) {
         participants[user] = {
           address: user,
           referee: null,
@@ -587,9 +700,11 @@ async function main() {
           stakedTotal: "0",
           claimedTotal: "0",
           forfeitedTotal: "0",
-          principalNow: "0",
+          principalNow: undefined,
           minPrincipalByWeek: {},
         };
+        needBalanceBootstrap.push(user);
+      }
 
       const ts = await getTs(log.blockNumber);
       const week = getWeekIndex(ts);
@@ -613,7 +728,7 @@ async function main() {
       })!;
       const user = (parsed.args.user as string).toLowerCase();
       const amount = (parsed.args.amount as bigint).toString();
-      if (!participants[user])
+      if (!participants[user]) {
         participants[user] = {
           address: user,
           referee: null,
@@ -621,9 +736,11 @@ async function main() {
           stakedTotal: "0",
           claimedTotal: "0",
           forfeitedTotal: "0",
-          principalNow: "0",
+          principalNow: undefined,
           minPrincipalByWeek: {},
         };
+        needBalanceBootstrap.push(user);
+      }
 
       const ts = await getTs(log.blockNumber);
       const week = getWeekIndex(ts);
@@ -679,6 +796,26 @@ async function main() {
       }
     }
 
+    // bootstrap balances for new users (pre-campaign holdings)
+    const uniqNewUsers = [...new Set(needBalanceBootstrap)].filter(
+      (u) => !participants[u]?.principalNow
+    );
+    if (uniqNewUsers.length) {
+      const map = await mcBatchGetUserBalance(uniqNewUsers);
+      for (const [u, bal] of Object.entries(map)) {
+        if (participants[u] && !participants[u].principalNow) {
+          participants[u].principalNow = bal;
+          // seed week 0 minPrincipal
+          const min0 = toBN(bal) >= MIN_STAKE ? bal : "0";
+          participants[u].minPrincipalByWeek =
+            participants[u].minPrincipalByWeek || {};
+          if (!participants[u].minPrincipalByWeek!["0"]) {
+            participants[u].minPrincipalByWeek!["0"] = min0;
+          }
+        }
+      }
+    }
+
     // ---------------- FLUSH STATE FOR THIS CHUNK ----------------
     // Persist participants & sponsors first (atomic)
     writeJSON(participantsFile, participants);
@@ -687,7 +824,12 @@ async function main() {
     // Persist affected week aggregates (atomic)
     if (dirtyWeeks.size > 0) {
       const dirty = Array.from(dirtyWeeks.values()).sort((a, b) => a - b);
-      const wkElig = buildEligibilityForWeeks(dirty, participants, MIN_STAKE);
+      const wkElig = buildEligibilityForWeeks(
+        dirty,
+        participants,
+        MIN_STAKE,
+        sponsors
+      );
       for (const wk of dirty) {
         const file = path.join(weeksDir, `week_${wk}.json`);
         // merge with existing if needed (keep extra fields)
@@ -695,12 +837,14 @@ async function main() {
           week: wk,
           eligibility: [],
           ineligible: [],
+          meta: {},
         });
         const merged: WeekAggregate = {
           ...existing,
           week: wk,
           eligibility: wkElig[String(wk)]?.eligible ?? [],
           ineligible: wkElig[String(wk)]?.ineligible ?? [],
+          meta: wkElig[String(wk)]?.meta ?? existing.meta,
         };
         writeJSON(file, merged);
       }
@@ -712,36 +856,42 @@ async function main() {
     cursor = toBlock + 1;
   }
 
-  // ---------------- ELIGIBILITY ----------------
-  const weeklyEligibility: Record<
-    string,
-    { eligible: string[]; ineligible: string[] }
-  > = {};
-
-  for (const [addr, p] of Object.entries(participants)) {
+  // ---------------- ELIGIBILITY (final sweep across all weeks) ----------------
+  // Collect every week index we have data for
+  const allWeeksSet = new Set<number>();
+  for (const p of Object.values(participants)) {
     const mpbw = p.minPrincipalByWeek || {};
-    for (const [wk, minStr] of Object.entries(mpbw)) {
-      const minBN = toBN(minStr || "0");
-      const rec = weeklyEligibility[wk] || { eligible: [], ineligible: [] };
-      if (minBN >= MIN_STAKE) rec.eligible.push(addr);
-      else rec.ineligible.push(addr);
-      weeklyEligibility[wk] = rec;
-    }
+    for (const wk of Object.keys(mpbw)) allWeeksSet.add(Number(wk));
   }
+  const allWeeks = Array.from(allWeeksSet.values()).sort((a, b) => a - b);
 
-  for (const wk of Object.keys(weeklyEligibility)) {
+  // Rebuild using the same combined rule (stake + sponsor.qualifying)
+  const finalElig = buildEligibilityForWeeks(
+    allWeeks,
+    participants,
+    MIN_STAKE,
+    sponsors
+  );
+
+  for (const wk of allWeeks) {
     const file = path.join(weeksDir, `week_${wk}.json`);
-    // initialize with typed default to fix TS errors
     const existing: WeekAggregate = readJSON<WeekAggregate>(file, {
       week: Number(wk),
       eligibility: [],
       ineligible: [],
+      meta: {},
     });
+    const computed = finalElig[String(wk)] || {
+      eligible: [],
+      ineligible: [],
+      meta: {},
+    };
     const agg: WeekAggregate = {
       ...existing,
       week: Number(wk),
-      eligibility: weeklyEligibility[wk].eligible,
-      ineligible: weeklyEligibility[wk].ineligible,
+      eligibility: computed.eligible,
+      ineligible: computed.ineligible,
+      meta: computed.meta ?? existing.meta,
     };
     writeJSON(file, agg);
   }
@@ -755,7 +905,15 @@ async function main() {
     participants,
     beforeSponsors,
     sponsors,
-    weeklyEligibility
+    Object.fromEntries(
+      allWeeks.map((wk) => [
+        String(wk),
+        {
+          eligible: finalElig[String(wk)]?.eligible ?? [],
+          ineligible: finalElig[String(wk)]?.ineligible ?? [],
+        },
+      ])
+    )
   );
 
   console.log(
