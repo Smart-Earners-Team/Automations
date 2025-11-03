@@ -19,9 +19,6 @@ const provider = new JsonRpcProvider(process.env.VVA_RPC_URL);
 const registry = new Contract(REGISTRY_CONTRACT, RegistryAbi, provider);
 const staking = new Contract(STAKING_CONTRACT, StakingAbi, provider);
 
-const StakingInterface = new Interface(StakingAbi);
-const RegistryInterface = new Interface(RegistryAbi);
-
 const mc = new Multicall({ provider, chainId: 56 });
 
 const dataDir = path.join(__dirname, "data");
@@ -356,13 +353,13 @@ async function main() {
   const beforeParticipants = shallowClone(participants);
   const beforeSponsors = shallowClone(sponsors);
 
-  const topicReferralAnchor = RegistryInterface.getEvent(
+  const topicReferralAnchor = registry.interface.getEvent(
     "ReferralAnchorCreated"
   )!.topicHash;
-  const topicStaked = StakingInterface.getEvent("Staked")!.topicHash;
-  const topicClaimed = StakingInterface.getEvent("Claimed")!.topicHash;
-  const topicForfeited = StakingInterface.getEvent("Forfeited")!.topicHash;
-  const topicUnstaked = StakingInterface.getEvent("Unstaked")!.topicHash;
+  const topicStaked = staking.interface.getEvent("Staked")!.topicHash;
+  const topicClaimed = staking.interface.getEvent("Claimed")!.topicHash;
+  const topicForfeited = staking.interface.getEvent("Forfeited")!.topicHash;
+  const topicUnstaked = staking.interface.getEvent("Unstaked")!.topicHash;
 
   while (cursor <= latestBlock) {
     const toBlock = Math.min(cursor + blockChunk - 1, latestBlock);
