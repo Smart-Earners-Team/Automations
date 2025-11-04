@@ -72,6 +72,7 @@ type ParticipantWeek = {
   stakes: number;
   claims: number;
   forfeits: number;
+  qualifiedForShares?: boolean; // downline hit first ≥100 claim this week
 };
 type Participant = {
   address: string;
@@ -96,10 +97,10 @@ type Participant = {
 type SponsorWeek = {
   newMembers: number;
   firstClaimSum: string;
-  // # of new members with first claim >= 100 VVA in this week
-  qualifying?: number;
+  qualifying?: number; // # of new members with first claim >= 100 VVA in this week
+  shareUnits?: string; // total raw units added this week from qualified downlines (1e9)
+  perDownline?: Record<string, string>; // downlineAddr → raw units (1e9)
 };
-
 type Sponsor = {
   address: string;
   teamSize: number;
@@ -124,13 +125,11 @@ function getWeekIndex(ts: number) {
   if (!weekStartUnix || ts < weekStartUnix) return 0;
   return Math.floor((ts - weekStartUnix) / (7 * 24 * 60 * 60));
 }
-function computeWeeklyShares(stakedStr: string): number {
-  // stakedStr and SHARES_PER are both 1e9 units (sVVA 9 decimals)
-  const shares = toBN(stakedStr) / toBN(SHARES_PER); // bigint division (floor)
-  const asNum = Number(
-    shares > BigInt(SHARES_CAP) ? BigInt(SHARES_CAP) : shares
-  );
-  return asNum;
+function computeCappedSharesFromUnits(unitsStr: string | undefined): number {
+  const units = unitsStr ? toBN(unitsStr) : 0n; // raw 1e9
+  const shares = units / toBN(SHARES_PER); // bigint floor
+  const capped = shares > BigInt(SHARES_CAP) ? BigInt(SHARES_CAP) : shares;
+  return Number(capped);
 }
 
 // --- FS HELPERS (native) ---
@@ -173,7 +172,7 @@ function ensureFileSync(file: string, defaultJson: any = {}) {
     fs.writeFileSync(file, JSON.stringify(defaultJson, null, 2), "utf8");
 }
 
-// --- INITIALIZATION ---
+/* -------------------- RECORD MUTATORS -------------------- */
 function bumpParticipantWeek(
   p: Participant,
   week: number,
@@ -200,15 +199,28 @@ function bumpParticipantWeek(
 function initSponsorIfMissing(s: Record<string, Sponsor>, addr: string) {
   if (!s[addr]) s[addr] = { address: addr, teamSize: 0, byWeek: {} };
 }
-function bumpSponsorWeekFirstClaim(s: Sponsor, week: number, amount: string) {
-  const key = String(week);
-  if (!s.byWeek[key])
-    s.byWeek[key] = { newMembers: 0, firstClaimSum: "0", qualifying: 0 };
-  s.byWeek[key].newMembers++;
-  s.byWeek[key].firstClaimSum = addStr(s.byWeek[key].firstClaimSum, amount);
-  if (toBN(amount) >= FIRST_CLAIM_QUALIFY) {
-    s.byWeek[key].qualifying = (s.byWeek[key].qualifying ?? 0) + 1;
-  }
+function initSponsorWeek(sw: SponsorWeek | undefined): SponsorWeek {
+  return (
+    sw ?? {
+      newMembers: 0,
+      firstClaimSum: "0",
+      qualifying: 0,
+      shareUnits: "0",
+      perDownline: {},
+    }
+  );
+}
+function initParticipantWeek(pw: ParticipantWeek | undefined): ParticipantWeek {
+  return (
+    pw ?? {
+      staked: "0",
+      claimed: "0",
+      forfeited: "0",
+      stakes: 0,
+      claims: 0,
+      forfeits: 0,
+    }
+  );
 }
 
 // --- DIFF LOGGER (lightweight) ---
@@ -362,6 +374,7 @@ async function mcBatchGetUserBalance(
   return out;
 }
 
+/* -------------------- ELIGIBILITY & SHARES BUILD -------------------- */
 function buildEligibilityForWeeks(
   weeks: number[],
   participants: Record<string, Participant>,
@@ -380,23 +393,23 @@ function buildEligibilityForWeeks(
     const rec: { eligible: string[]; ineligible: string[]; meta: WeekMeta } = {
       eligible: [],
       ineligible: [],
-      meta: {},
+      meta: {} as WeekMeta,
     };
     for (const [addr, p] of Object.entries(participants)) {
-      const mpbw = p.minPrincipalByWeek || {};
-      const minStr = mpbw[key];
+      const minStr = (p.minPrincipalByWeek || {})[key];
       if (!minStr) continue; // user had no activity for that week yet
-      const byWeek = p.byWeek || {};
-
-      // shares
-      const shares = byWeek[key] ? computeWeeklyShares(byWeek[key].staked) : 0;
-      rec.meta[addr] = { shares };
 
       const minBN = toBN(minStr);
       const sponsorQual = sponsors[addr]?.byWeek?.[key]?.qualifying ?? 0;
 
       // must have 200 sVVA + 2 qualified new members
       const eligibleNow = minBN >= minStake && sponsorQual >= 2;
+
+      // shares
+      const units = sponsors[addr]?.byWeek?.[key]?.shareUnits;
+      const shares = computeCappedSharesFromUnits(units);
+
+      rec.meta[addr] = { shares };
 
       if (eligibleNow) rec.eligible.push(addr);
       else rec.ineligible.push(addr);
@@ -519,7 +532,7 @@ async function main() {
     const needReferee: string[] = [];
     const needBalanceBootstrap: string[] = [];
 
-    // ---------------- REGISTRY: ReferralAnchorCreated ----------------
+    /* ------------- REGISTRY: ReferralAnchorCreated ------------- */
     for (const log of refLogs) {
       const { args } = registry.interface.parseLog({
         topics: log.topics,
@@ -645,30 +658,20 @@ async function main() {
 
       const ts = await getTs(log.blockNumber);
       const week = getWeekIndex(ts);
+      const wkKey = String(week);
 
       dirtyWeeks.add(week);
 
+      // capture BEFORE we mutate
+      const isFirstEver = !participants[user].firstClaimAt;
+      const referee = participants[user].referee || null;
+
+      // aggregate user totals
       participants[user].claimedTotal = addStr(
         participants[user].claimedTotal,
         amount
       );
       participants[user].lastClaimAt = ts;
-      if (!participants[user].firstClaimAt) {
-        participants[user].firstClaimAt = ts;
-        participants[user].firstClaimAmt = amount;
-
-        const referee =
-          participants[user].referee ||
-          null; /* keep as-is; we might fill later via multicall */
-        if (referee && referee !== ZeroAddress) {
-          const ref = referee.toLowerCase();
-          initSponsorIfMissing(sponsors, ref);
-          bumpSponsorWeekFirstClaim(sponsors[ref], week, amount);
-        } else {
-          // we can also try to backfill later:
-          needReferee.push(user);
-        }
-      }
       bumpParticipantWeek(participants[user], week, "claimed", amount);
 
       // principal increases on claim
@@ -676,15 +679,73 @@ async function main() {
         participants[user].principalNow,
         amount
       );
-      const wk = String(week);
       const nowBN = toBN(participants[user].principalNow!);
-      const prev = participants[user].minPrincipalByWeek![wk];
-      participants[user].minPrincipalByWeek![wk] = !prev
+      const prev = participants[user].minPrincipalByWeek![wkKey];
+      participants[user].minPrincipalByWeek![wkKey] = !prev
         ? nowBN.toString()
         : (nowBN < toBN(prev) ? nowBN : toBN(prev)).toString();
+
+      // first claim ever → possibly qualifies + shareUnits
+      participants[user].byWeek = participants[user].byWeek || {};
+      participants[user].byWeek[wkKey] = initParticipantWeek(
+        participants[user].byWeek[wkKey]
+      );
+
+      if (isFirstEver) {
+        // finalize first-claim markers
+        participants[user].firstClaimAt = ts;
+        participants[user].firstClaimAmt = amount;
+
+        if (referee && referee !== ZeroAddress) {
+          const ref = referee.toLowerCase();
+          initSponsorIfMissing(sponsors, ref);
+          sponsors[ref].byWeek = sponsors[ref].byWeek || {};
+          sponsors[ref].byWeek[wkKey] = initSponsorWeek(
+            sponsors[ref].byWeek[wkKey]
+          );
+
+          // always count new member + sum of their first claim
+          const sw = sponsors[ref].byWeek[wkKey]!;
+          sw.newMembers += 1;
+          sw.firstClaimSum = addStr(sw.firstClaimSum, amount);
+
+          // IF first claim ≥ 100 → they qualify this week AND credit shareUnits to sponsor
+          if (toBN(amount) >= FIRST_CLAIM_QUALIFY) {
+            sw.qualifying = (sw.qualifying ?? 0) + 1;
+            participants[user].byWeek[wkKey].qualifiedForShares = true;
+
+            const per = sw.perDownline!;
+            per[user] = addStr(per[user], amount);
+            sw.shareUnits = addStr(sw.shareUnits, amount);
+          }
+        } else {
+          // backfill later
+          needReferee.push(user);
+        }
+      } else {
+        // Not first claim ever: only add shareUnits for subsequent claims in SAME week
+        // if they already qualifiedForShares this week (from a ≥100 first claim).
+        if (referee && referee !== ZeroAddress) {
+          const wasQualified =
+            !!participants[user].byWeek[wkKey]?.qualifiedForShares;
+          if (wasQualified) {
+            const ref = referee.toLowerCase();
+            initSponsorIfMissing(sponsors, ref);
+            sponsors[ref].byWeek = sponsors[ref].byWeek || {};
+            sponsors[ref].byWeek[wkKey] = initSponsorWeek(
+              sponsors[ref].byWeek[wkKey]
+            );
+
+            const sw = sponsors[ref].byWeek[wkKey]!;
+            const per = sw.perDownline!;
+            per[user] = addStr(per[user], amount);
+            sw.shareUnits = addStr(sw.shareUnits, amount);
+          }
+        }
+      }
     }
 
-    // ---------------- FORFEITED ----------------
+    /* --------------------- FORFEITED --------------------- */
     for (const log of forfeitLogs) {
       const parsed = staking.interface.parseLog({
         topics: log.topics,
@@ -692,6 +753,7 @@ async function main() {
       })!;
       const user = (parsed.args.user as string).toLowerCase();
       const amount = (parsed.args.amount as bigint).toString();
+
       if (!participants[user]) {
         participants[user] = {
           address: user,
@@ -720,7 +782,7 @@ async function main() {
       bumpParticipantWeek(participants[user], week, "forfeited", amount);
     }
 
-    // ---------------- UNSTAKED ----------------
+    /* --------------------- UNSTAKED --------------------- */
     for (const log of unstakedLogs) {
       const parsed = staking.interface.parseLog({
         topics: log.topics,
@@ -744,21 +806,41 @@ async function main() {
 
       const ts = await getTs(log.blockNumber);
       const week = getWeekIndex(ts);
-
       dirtyWeeks.add(week);
 
+      // principalNow decreases
       participants[user].principalNow = subFloor(
         participants[user].principalNow!,
         amount
       );
       const wk = String(week);
-      const cur = toBN(
-        participants[user].minPrincipalByWeek![wk] ||
-          participants[user].principalNow!
-      );
+      const curMin =
+        (participants[user].minPrincipalByWeek || {})[wk] ||
+        participants[user].principalNow!;
       const now = toBN(participants[user].principalNow!);
+
+      participants[user].minPrincipalByWeek =
+        participants[user].minPrincipalByWeek || {};
       participants[user].minPrincipalByWeek![wk] =
-        cur === 0n || now < cur ? now.toString() : cur.toString();
+        toBN(curMin) === 0n || now < toBN(curMin)
+          ? now.toString()
+          : toBN(curMin).toString();
+
+      // Anti-gaming: deduct sponsor shareUnits that came from this downline in SAME week
+      const referee = participants[user].referee || null;
+      if (referee && referee !== ZeroAddress) {
+        const ref = referee.toLowerCase();
+        const sw = sponsors[ref]?.byWeek?.[wk];
+        const perDown = sw?.perDownline?.[user];
+        if (sw && perDown) {
+          const credited = toBN(perDown);
+          if (credited > 0n) {
+            const ded = toBN(amount) > credited ? credited : toBN(amount);
+            sw.perDownline![user] = subFloor(perDown, ded.toString());
+            sw.shareUnits = subFloor(sw.shareUnits ?? "0", ded.toString());
+          }
+        }
+      }
     }
 
     // ---------------- MULTICALL BACKFILLS (optional but faster than per-call) ----------------
@@ -779,6 +861,8 @@ async function main() {
     const uniqMissingRefs = [...new Set(needReferee)].filter(
       (u) => !participants[u]?.referee
     );
+    const newlyBackfilled: string[] = []; // track which users we just filled
+
     if (uniqMissingRefs.length) {
       const map = await mcBatchGetReferee(uniqMissingRefs);
       for (const [u, r] of Object.entries(map)) {
@@ -791,9 +875,45 @@ async function main() {
               sponsors[participants[u].referee!].teamSize++;
               participants[u]._teamCounted = true;
             }
+            newlyBackfilled.push(u);
           }
         }
       }
+    }
+
+    // >>> Retroactively apply first-claim side-effects for newly backfilled referees
+    for (const u of newlyBackfilled) {
+      const p = participants[u];
+      if (!p || !p.firstClaimAt || !p.referee) continue;
+
+      const wk = String(getWeekIndex(p.firstClaimAt));
+      const ref = p.referee.toLowerCase();
+
+      // Ensure week bags exist
+      p.byWeek = p.byWeek || {};
+      p.byWeek[wk] = initParticipantWeek(p.byWeek[wk]);
+
+      sponsors[ref].byWeek = sponsors[ref].byWeek || {};
+      sponsors[ref].byWeek[wk] = initSponsorWeek(sponsors[ref].byWeek[wk]);
+      const sw = sponsors[ref].byWeek[wk];
+
+      // Always count first-claim new member + sum
+      const amt = p.firstClaimAmt || "0";
+      sw.newMembers += 1;
+      sw.firstClaimSum = addStr(sw.firstClaimSum, amt);
+
+      // If first claim >= 100, mark qualified + add shareUnits
+      if (toBN(amt) >= FIRST_CLAIM_QUALIFY) {
+        sw.qualifying = (sw.qualifying ?? 0) + 1;
+        p.byWeek[wk].qualifiedForShares = true;
+
+        const per = sw.perDownline!;
+        per[u] = addStr(per[u], amt);
+        sw.shareUnits = addStr(sw.shareUnits, amt);
+      }
+
+      // Make sure this week’s aggregate gets recomputed/flushed in this chunk
+      dirtyWeeks.add(Number(wk));
     }
 
     // bootstrap balances for new users (pre-campaign holdings)
@@ -856,7 +976,7 @@ async function main() {
     cursor = toBlock + 1;
   }
 
-  // ---------------- ELIGIBILITY (final sweep across all weeks) ----------------
+  /* --------------------- FINAL ELIGIBILITY PASS --------------------- */
   // Collect every week index we have data for
   const allWeeksSet = new Set<number>();
   for (const p of Object.values(participants)) {
