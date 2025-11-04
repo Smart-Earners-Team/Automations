@@ -626,6 +626,15 @@
         "qualifying": 0,
         "shareUnits": "0",
         "perDownline": {}
+      },
+      "3": {
+        "newMembers": 1,
+        "firstClaimSum": "1207940117341",
+        "qualifying": 1,
+        "shareUnits": "1207940117341",
+        "perDownline": {
+          "0x3c082c0885bf5ade8a674aed0e0ceb7c38756a9a": "1207940117341"
+        }
       }
     }
   },
@@ -2762,6 +2771,13 @@
         "perDownline": {
           "0x1205ac56b48d0ceb6ad0fc5442adfe1807f801f3": "211212844593"
         }
+      },
+      "3": {
+        "newMembers": 1,
+        "firstClaimSum": "1147220641",
+        "qualifying": 0,
+        "shareUnits": "0",
+        "perDownline": {}
       }
     }
   },
@@ -7638,6 +7654,13 @@
       "0": {
         "newMembers": 2,
         "firstClaimSum": "107309223079",
+        "qualifying": 0,
+        "shareUnits": "0",
+        "perDownline": {}
+      },
+      "3": {
+        "newMembers": 1,
+        "firstClaimSum": "51559279458",
         "qualifying": 0,
         "shareUnits": "0",
         "perDownline": {}
@@ -20809,6 +20832,15 @@
         "perDownline": {
           "0xe5a2fe19b219f8db19a63b77497cefe97314ffea": "117203867388"
         }
+      },
+      "3": {
+        "newMembers": 1,
+        "firstClaimSum": "457556606347",
+        "qualifying": 1,
+        "shareUnits": "457556606347",
+        "perDownline": {
+          "0x5c85b81c52746d0a96cd497ffa8db40b7a719139": "457556606347"
+        }
       }
     }
   },
@@ -24275,6 +24307,11 @@
   },
   "0x88cff38e682e9ddd1c53f26e9374391d4ac3ebf2": {
     "address": "0x88cff38e682e9ddd1c53f26e9374391d4ac3ebf2",
+    "teamSize": 1,
+    "byWeek": {}
+  },
+  "0x8db9ac3a89ce97f6d1b6a6f2476127e271de5cd3": {
+    "address": "0x8db9ac3a89ce97f6d1b6a6f2476127e271de5cd3",
     "teamSize": 1,
     "byWeek": {}
   }
