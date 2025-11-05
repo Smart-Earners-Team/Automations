@@ -53,6 +53,10 @@ jobs:
           VVA_RPC_URL: ${{ secrets.VVA_RPC_56 }}
         run: npx tsx Veritas/blitz-indexer.ts
 
+      - name: Stamp last update time
+        run: |
+          echo "{\"updatedAt\": \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"}" > Veritas/data/last_updated.json
+
       # --- Commit the whole data directory (atomic JSON writes already handled by the script) ---
       - name: Commit data dir (if changed)
         run: |
