@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "scripts": {
     "renew": "node HHV2DEMO/call.js",
     "renew:js": "node HHV2/multicall.js",
@@ -30,24 +31,32 @@
     "vva:claims-snapshot:events": "tsx HHV2DEMO/vva-snapshot-claims-onchain-events.ts",
     "vva:ref-anchors:events": "tsx HHV2DEMO/snapshot-vva-referral-anchors.ts",
     "vva:track-unilevel-onchain": "tsx HHV2DEMO/track-vva-unilevel.ts",
+    "vva:founders-snapshot": "tsx HHV2DEMO/vva-founders-snapshot.ts",
     "vva:staking-snapshot": "tsx HHV2DEMO/export-vva-staking-snapshot.ts --endpoint=https://gateway.thegraph.com/api/subgraphs/id/27KnKCJqV7Nwmww52sbyF63UENSLNuratAsgh3DuLX4Q --pageSize=1000 --outDir=./VVA-Snapshot",
     "poke:svva": "tsx Veritas/vva-poke.ts",
     "settle:svva": "tsx Veritas/vva-settle.ts",
+    "svva:blitz": "tsx Veritas/blitz-indexer.ts",
     "twt:holder:snapshot": "tsx HHV2DEMO/pick-twt-top-5k.ts",
-    "twt:holder:airdrop1": "tsx HHV2DEMO/trbo-airdrop-v1.ts"
+    "xrp:holder:snapshot": "tsx HHV2DEMO/pick-xrp-and-mxrp-100plus.ts",
+    "twt:holder:airdrop1": "tsx HHV2DEMO/trbo-airdrop-v1.ts",
+    "xrp:holder:airdrop1": "tsx HHV2DEMO/pawz-airdrop-v1.ts",
+    "vva:founders:payout": "tsx HHV2DEMO/build-payout-arrays.ts",
+    "vva:founders:filter": "tsx HHV2DEMO/filter-blacklisted.multicall.ts"
   },
   "ts-node": {
     "esm": true
   },
   "dependencies": {
-    "@evmlord/multicall-sdk": "^1.0.1",
+    "@evmlord/multicall-sdk": "^2.0.1",
     "csv-parse": "^6.1.0",
+    "csv-writer": "^1.6.0",
     "dotenv": "^16.5.0",
     "ethers": "^6.13.0",
     "graphql-request": "^7.1.2",
     "p-limit": "^7.1.1",
     "sequelize": "^6.37.7",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "commander": "^14.0.1",

@@ -8,6 +8,7 @@ import {
   ZeroAddress,
 } from "ethers";
 import fs from "fs";
+import { fileURLToPath } from "url";
 import path from "path";
 import RegistryAbi from "./abis/Registry.json";
 import StakingAbi from "./abis/Staking.json";
@@ -46,6 +47,8 @@ const sVVA = new Contract(sVVA_CONTRACT, ERC20_IFACE, provider);
 const mc = new Multicall({ provider, chainId: 56 });
 
 /* -------------------- FILES / PATHS -------------------- */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const dataDir = path.join(__dirname, "data");
 const weeksDir = path.join(dataDir, "weeks");
 const checkpointFile = path.join(dataDir, "checkpoint.json");
