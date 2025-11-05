@@ -352,7 +352,8 @@ async function mcBatchGetReferee(
 
 // Use sVVA.balanceOf(user) to bootstrap pre-campaign principal
 async function mcBatchGetUserBalance(
-  users: string[]
+  users: string[],
+  blockTag: number
 ): Promise<Record<string, string>> {
   if (!users.length) return {};
   const calls: Call3[] = users.map((u) => ({
@@ -364,7 +365,7 @@ async function mcBatchGetUserBalance(
   const out: Record<string, string> = {};
   for (const c of chunk(calls, 1000)) {
     const start = calls.indexOf(c[0]);
-    const ret = await mc.aggregate3(c);
+    const ret = await mc.aggregate3(c, { blockTag });
     ret.forEach((r, i) => {
       const [ok, data] = r;
       const who = users[start + i];
@@ -468,7 +469,10 @@ async function main() {
 
   if (bootstrapUsers.length) {
     console.log(`[bootstrap] fetching balances for ${bootstrapUsers.length}`);
-    const balances = await mcBatchGetUserBalance(bootstrapUsers);
+    const balances = await mcBatchGetUserBalance(
+      bootstrapUsers,
+      Math.max(0, startBlockDefault - 1)
+    );
     for (const [u, bal] of Object.entries(balances)) {
       participants[u].principalNow = bal;
       // seed week 0 minPrincipal (pre-campaign stake may qualify immediately)
@@ -530,7 +534,8 @@ async function main() {
     // queues for multicall
     const needCheckIn: string[] = [];
     const needReferee: string[] = [];
-    const needBalanceBootstrap: string[] = [];
+    const firstSeenBlock: Record<string, number> = {}; // pick the earliest seen block per user
+    // const needBalanceBootstrap: string[] = [];
 
     /* ------------- REGISTRY: ReferralAnchorCreated ------------- */
     for (const log of refLogs) {
@@ -554,7 +559,9 @@ async function main() {
           principalNow: undefined,
           minPrincipalByWeek: {},
         };
-        needBalanceBootstrap.push(user); // new user: bootstrap balance
+        firstSeenBlock[user] = firstSeenBlock[user]
+          ? Math.min(firstSeenBlock[user], log.blockNumber)
+          : log.blockNumber; // new user: bootstrap balance
       } else {
         if (!participants[user].checkInTime)
           participants[user].checkInTime = ts;
@@ -596,7 +603,9 @@ async function main() {
           principalNow: undefined,
           minPrincipalByWeek: {},
         };
-        needBalanceBootstrap.push(user);
+        firstSeenBlock[user] = firstSeenBlock[user]
+          ? Math.min(firstSeenBlock[user], log.blockNumber)
+          : log.blockNumber;
       } else if (!participants[user].referee && referrer !== ZeroAddress) {
         participants[user].referee = referrer;
       } else if (!participants[user].referee && referrer === ZeroAddress) {
@@ -653,7 +662,9 @@ async function main() {
           principalNow: undefined,
           minPrincipalByWeek: {},
         };
-        needBalanceBootstrap.push(user);
+        firstSeenBlock[user] = firstSeenBlock[user]
+          ? Math.min(firstSeenBlock[user], log.blockNumber)
+          : log.blockNumber;
       }
 
       const ts = await getTs(log.blockNumber);
@@ -765,7 +776,9 @@ async function main() {
           principalNow: undefined,
           minPrincipalByWeek: {},
         };
-        needBalanceBootstrap.push(user);
+        firstSeenBlock[user] = firstSeenBlock[user]
+          ? Math.min(firstSeenBlock[user], log.blockNumber)
+          : log.blockNumber;
       }
 
       const ts = await getTs(log.blockNumber);
@@ -801,7 +814,9 @@ async function main() {
           principalNow: undefined,
           minPrincipalByWeek: {},
         };
-        needBalanceBootstrap.push(user);
+        firstSeenBlock[user] = firstSeenBlock[user]
+          ? Math.min(firstSeenBlock[user], log.blockNumber)
+          : log.blockNumber;
       }
 
       const ts = await getTs(log.blockNumber);
@@ -916,21 +931,34 @@ async function main() {
       dirtyWeeks.add(Number(wk));
     }
 
-    // bootstrap balances for new users (pre-campaign holdings)
-    const uniqNewUsers = [...new Set(needBalanceBootstrap)].filter(
+    // Build the set of users that need pre-event balance reads
+    const uniqNewUsers = Object.keys(firstSeenBlock).filter(
       (u) => !participants[u]?.principalNow
     );
+
     if (uniqNewUsers.length) {
-      const map = await mcBatchGetUserBalance(uniqNewUsers);
-      for (const [u, bal] of Object.entries(map)) {
-        if (participants[u] && !participants[u].principalNow) {
-          participants[u].principalNow = bal;
-          // seed week 0 minPrincipal
-          const min0 = toBN(bal) >= MIN_STAKE ? bal : "0";
-          participants[u].minPrincipalByWeek =
-            participants[u].minPrincipalByWeek || {};
-          if (!participants[u].minPrincipalByWeek!["0"]) {
-            participants[u].minPrincipalByWeek!["0"] = min0;
+      const buckets: Record<number, string[]> = {};
+
+      for (const u of uniqNewUsers) {
+        // Use the earliest known block before their first activity
+        const blockTag = (firstSeenBlock[u] ?? startBlockDefault) - 1;
+        const b = Math.max(0, blockTag);
+        (buckets[b] ||= []).push(u);
+      }
+
+      // Run multicall batches per block tag
+      for (const [blockTagStr, usersAtBlock] of Object.entries(buckets)) {
+        const blockTag = Number(blockTagStr);
+        const map = await mcBatchGetUserBalance(usersAtBlock, blockTag);
+
+        for (const [u, bal] of Object.entries(map)) {
+          if (participants[u] && !participants[u].principalNow) {
+            participants[u].principalNow = bal;
+            participants[u].minPrincipalByWeek ||= {};
+            if (!participants[u].minPrincipalByWeek["0"]) {
+              participants[u].minPrincipalByWeek["0"] =
+                toBN(bal) >= MIN_STAKE ? bal : "0";
+            }
           }
         }
       }
