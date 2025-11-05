@@ -26,7 +26,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install ethers @evmlord/multicall-sdk tsx
+          npm install ethers @evmlord/multicall-sdk@latest tsx
 
       # --- Switch (or create) the cache branch BEFORE running the script ---
       - name: Configure Git for Actions
