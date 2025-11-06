@@ -26,8 +26,8 @@ if (!VVA_RPC_URL) {
 }
 
 const blockChunk = 10000;
-const startBlockDefault = 64582380; // 0x59fda2d8207e1bf3e16991878daf739302021489bda215a5f0d0930c6f20c926 demo
-const weekStartUnix = 1760313600; // October 13 demo
+const startBlockDefault = 67306000; // https://bscscan.com/block/countdown/67306000
+const weekStartUnix = 1762480800; // November 6th 9PM EST (November 7th 2AM UTC)
 const MIN_STAKE = parseUnits("200", 9);
 
 const FIRST_CLAIM_QUALIFY = parseUnits("100", 9); // 100 VVA
@@ -436,6 +436,13 @@ async function main() {
   });
   const latestBlock = await provider.getBlockNumber();
 
+  const blockTS = await getTs(latestBlock);
+
+  if (blockTS < weekStartUnix) {
+    console.log(`[ok] not started`);
+    return;
+  }
+
   // Always advance one block past the last processed boundary
   let cursor = Math.max(
     startBlockDefault,
@@ -538,18 +545,19 @@ async function main() {
     const needCheckIn: string[] = [];
     const needReferee: string[] = [];
     const firstSeenBlock: Record<string, number> = {}; // pick the earliest seen block per user
-    // const needBalanceBootstrap: string[] = [];
 
     /* ------------- REGISTRY: ReferralAnchorCreated ------------- */
     for (const log of refLogs) {
+      const ts = await getTs(log.blockNumber); // we can derive check-in from block ts
+
+      if (ts < weekStartUnix) continue; // skip pre-campaign logs
+
       const { args } = registry.interface.parseLog({
         topics: log.topics,
         data: log.data,
       })!;
       const user = (args.user as string).toLowerCase();
       const referee = (args.referee as string).toLowerCase();
-
-      const ts = await getTs(log.blockNumber); // we can derive check-in from block ts
 
       if (!participants[user]) {
         participants[user] = {
@@ -586,6 +594,10 @@ async function main() {
 
     // ---------------- STAKED ----------------
     for (const log of stakedLogs) {
+      const ts = await getTs(log.blockNumber);
+
+      if (ts < weekStartUnix) continue; // skip pre-campaign logs
+
       const parsed = staking.interface.parseLog({
         topics: log.topics,
         data: log.data,
@@ -594,6 +606,10 @@ async function main() {
       const amount = (parsed.args.amount as bigint).toString();
       const referrer = (parsed.args.referrer as string).toLowerCase();
       const claimed = Boolean(parsed.args.claimed);
+
+      const week = getWeekIndex(ts);
+
+      dirtyWeeks.add(week);
 
       if (!participants[user]) {
         participants[user] = {
@@ -615,11 +631,6 @@ async function main() {
         // we’ll try to backfill via multicall
         needReferee.push(user);
       }
-
-      const ts = await getTs(log.blockNumber);
-      const week = getWeekIndex(ts);
-
-      dirtyWeeks.add(week);
 
       participants[user].stakedTotal = addStr(
         participants[user].stakedTotal,
@@ -648,6 +659,10 @@ async function main() {
 
     // ---------------- CLAIMED ----------------
     for (const log of claimLogs) {
+      const ts = await getTs(log.blockNumber);
+
+      if (ts < weekStartUnix) continue; // skip pre-campaign logs
+
       const parsed = staking.interface.parseLog({
         topics: log.topics,
         data: log.data,
@@ -670,7 +685,6 @@ async function main() {
           : log.blockNumber;
       }
 
-      const ts = await getTs(log.blockNumber);
       const week = getWeekIndex(ts);
       const wkKey = String(week);
 
@@ -761,6 +775,10 @@ async function main() {
 
     /* --------------------- FORFEITED --------------------- */
     for (const log of forfeitLogs) {
+      const ts = await getTs(log.blockNumber);
+
+      if (ts < weekStartUnix) continue; // skip pre-campaign logs
+
       const parsed = staking.interface.parseLog({
         topics: log.topics,
         data: log.data,
@@ -784,7 +802,6 @@ async function main() {
           : log.blockNumber;
       }
 
-      const ts = await getTs(log.blockNumber);
       const week = getWeekIndex(ts);
 
       dirtyWeeks.add(week);
@@ -800,6 +817,10 @@ async function main() {
 
     /* --------------------- UNSTAKED --------------------- */
     for (const log of unstakedLogs) {
+      const ts = await getTs(log.blockNumber);
+
+      if (ts < weekStartUnix) continue; // skip pre-campaign logs
+
       const parsed = staking.interface.parseLog({
         topics: log.topics,
         data: log.data,
@@ -822,7 +843,6 @@ async function main() {
           : log.blockNumber;
       }
 
-      const ts = await getTs(log.blockNumber);
       const week = getWeekIndex(ts);
       dirtyWeeks.add(week);
 
