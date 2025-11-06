@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { fileURLToPath } from "url";
 import path from "path";
 
 import * as dotenv from "dotenv";
@@ -14,6 +15,8 @@ import {
 
 import { Multicall, Call3 } from "@evmlord/multicall-sdk";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const CACHE_FILE = path.join(__dirname, "vva-main-cache.json");
 const LOG_FILE = path.join(__dirname, "vva-main-log.txt");
 
