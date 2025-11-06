@@ -5051,8 +5051,8 @@
         "perDownline": {}
       },
       "3": {
-        "newMembers": 1,
-        "firstClaimSum": "443936865",
+        "newMembers": 2,
+        "firstClaimSum": "97155962169",
         "qualifying": 0,
         "shareUnits": "0",
         "perDownline": {}
@@ -24686,12 +24686,13 @@
     "teamSize": 2,
     "byWeek": {
       "3": {
-        "newMembers": 1,
-        "firstClaimSum": "120849935207",
-        "qualifying": 1,
-        "shareUnits": "0",
+        "newMembers": 2,
+        "firstClaimSum": "244914129129",
+        "qualifying": 2,
+        "shareUnits": "124064193922",
         "perDownline": {
-          "0x167e156a7d0cf77645696871635457c6f0dab909": "0"
+          "0x167e156a7d0cf77645696871635457c6f0dab909": "0",
+          "0x37d2e0ce64913bf4feffc21cfe400623346f10f5": "124064193922"
         }
       }
     }
@@ -25307,7 +25308,17 @@
   "0x122a742af1aeccf8997a551fb30ab08394080967": {
     "address": "0x122a742af1aeccf8997a551fb30ab08394080967",
     "teamSize": 2,
-    "byWeek": {}
+    "byWeek": {
+      "3": {
+        "newMembers": 1,
+        "firstClaimSum": "633788027354",
+        "qualifying": 1,
+        "shareUnits": "633788027354",
+        "perDownline": {
+          "0x0356355584d4ee4c1f4df5f245f1aad2261566e1": "633788027354"
+        }
+      }
+    }
   },
   "0xd0e4b1c6b6d8b3faaebf19c280f7c143fea351d9": {
     "address": "0xd0e4b1c6b6d8b3faaebf19c280f7c143fea351d9",
@@ -25469,6 +25480,21 @@
   },
   "0xd07d5c7740de69ab5eb46ecef606d36a968dcc25": {
     "address": "0xd07d5c7740de69ab5eb46ecef606d36a968dcc25",
+    "teamSize": 1,
+    "byWeek": {}
+  },
+  "0x0680feea528f3f5dc0b9e0c542a13e50fbb6f26e": {
+    "address": "0x0680feea528f3f5dc0b9e0c542a13e50fbb6f26e",
+    "teamSize": 1,
+    "byWeek": {}
+  },
+  "0x8864ee4f45f0f72e07ccef4b872648b7dab003db": {
+    "address": "0x8864ee4f45f0f72e07ccef4b872648b7dab003db",
+    "teamSize": 1,
+    "byWeek": {}
+  },
+  "0xfb62eca2fb4c95ae1506310696ba6c1e89e1e745": {
+    "address": "0xfb62eca2fb4c95ae1506310696ba6c1e89e1e745",
     "teamSize": 1,
     "byWeek": {}
   }
