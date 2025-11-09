@@ -14,6 +14,7 @@ import {
 } from "ethers";
 
 import { Multicall, Call3 } from "@evmlord/multicall-sdk";
+import { COMPPLAN_CONTRACT, REGISTRY_CONTRACT } from "./constants";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -75,9 +76,6 @@ if (!process.env.VVA_RPC_URL) {
 }
 
 // ── Config ────────────────────────────────────────────────────────────────────
-const REGISTRY_CONTRACT = "0x028f50D6c826A37D50d81E17B8934c1e98082CA6";
-const COMPPLAN_ADDRESS = "0xAF5B99f0d14e556bAa6F0E28b4d2a09BDD48Ad54";
-
 const PRIVATE_KEY = process.env.VVA_PRIVATE_KEY;
 const CHAIN_ID = 56;
 const READ_BATCH_SIZE = 1000; // how many wallets to read per Multicall
@@ -91,7 +89,7 @@ const provider = new JsonRpcProvider(process.env.VVA_RPC_URL);
 const wallet = new Wallet(PRIVATE_KEY, provider);
 const signer = new NonceManager(wallet.connect(provider));
 const registry = new Contract(REGISTRY_CONTRACT, REGISTRY_ABI, provider);
-const compPlan = new Contract(COMPPLAN_ADDRESS, COMP_PLAN_ABI, signer);
+const compPlan = new Contract(COMPPLAN_CONTRACT, COMP_PLAN_ABI, signer);
 
 // one persistent Multicall instance for reads
 const mc = new Multicall({ chainId: CHAIN_ID, provider });
