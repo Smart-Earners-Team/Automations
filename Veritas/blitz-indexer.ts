@@ -31,6 +31,8 @@ const weekStartUnix = 1762480800; // Nov 6th 9PM EST (Nov 7th 2AM UTC)
 const WEEK_SEC = 7 * 24 * 60 * 60;
 const MIN_STAKE = parseUnits("200", 9);
 
+const MAX_RETRIES = 3;
+
 const FIRST_CLAIM_QUALIFY = parseUnits("100", 9); // 100 VVA
 const SHARES_PER = parseUnits("100", 9); // 100 VVA -> 1 share
 const SHARES_CAP = 20;
@@ -302,7 +304,7 @@ async function mcBatchCheckInTime(
   }));
 
   const out: Record<string, number> = {};
-  for (const c of chunk(calls, 1000)) {
+  for (const c of chunk(calls, 500)) {
     const start = calls.indexOf(c[0]);
     const ret = await mc.aggregate3(c);
     ret.forEach((data, i) => {
@@ -326,7 +328,7 @@ async function mcBatchGetReferee(
     allowFailure: true,
   }));
   const out: Record<string, string> = {};
-  for (const c of chunk(calls, 1000)) {
+  for (const c of chunk(calls, 500)) {
     const start = calls.indexOf(c[0]);
     const ret = await mc.aggregate3(c);
     ret.forEach((data, i) => {
@@ -351,9 +353,10 @@ async function mcBatchGetUserBalance(
     allowFailure: true,
   }));
   const out: Record<string, string> = {};
-  for (const c of chunk(calls, 1000)) {
+  for (const c of chunk(calls, 500)) {
     const start = calls.indexOf(c[0]);
-    const ret = await mc.aggregate3(c, { blockTag });
+    // const ret = await mc.aggregate3(c, { blockTag });
+    const ret = await safeAggregate3(c, { blockTag });
     ret.forEach((r, i) => {
       const [ok, data] = r;
       const who = users[start + i];
@@ -361,6 +364,47 @@ async function mcBatchGetUserBalance(
     });
   }
   return out;
+}
+
+async function safeAggregate3(
+  calls: Call3[],
+  opts?: { blockTag?: number }
+): Promise<ReturnType<typeof mc.aggregate3>> {
+  let attempt = 0;
+  let delay = 300; // ms
+
+  while (true) {
+    try {
+      return await mc.aggregate3(calls, opts);
+    } catch (e: any) {
+      const msg = e?.shortMessage || e?.message || `${e}`;
+      const isProviderBusy =
+        msg.includes("failed to serve request") ||
+        msg.includes("timeout") ||
+        msg.includes("rate") ||
+        msg.includes("gateway") ||
+        msg.includes("CALL_EXCEPTION"); // ethers wraps provider errors like this
+
+      if (!isProviderBusy || attempt >= MAX_RETRIES) {
+        // As a last resort: split big batches to bypass payload limits
+        if (calls.length > 1) {
+          const mid = Math.floor(calls.length / 2);
+          const left = await safeAggregate3(calls.slice(0, mid), opts);
+          const right = await safeAggregate3(calls.slice(mid), opts);
+          // stitch results in original order:
+          // Left + Right are arrays of [success, returnData]
+          // Return same type the SDK returns
+          // @ts-ignore
+          return [...left, ...right];
+        }
+        throw e;
+      }
+
+      await new Promise((r) => setTimeout(r, delay));
+      attempt++;
+      delay *= 2;
+    }
+  }
 }
 
 /* -------------------- SNAPSHOT / LOCATOR -------------------- */
@@ -435,7 +479,7 @@ async function snapshotBalancesAtBlock(
 ): Promise<Record<string, string>> {
   if (!users.length) return {};
   const out: Record<string, string> = {};
-  for (const usersChunk of chunk(users, 1000)) {
+  for (const usersChunk of chunk(users, 500)) {
     const map = await mcBatchGetUserBalance(usersChunk, blockTag);
     Object.assign(out, map);
   }
