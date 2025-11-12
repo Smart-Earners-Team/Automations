@@ -28,7 +28,6 @@ if (!VVA_RPC_URL) {
 const blockChunk = 10000;
 const startBlockDefault = 67306437; // https://bscscan.com/block/countdown/67306437
 const weekStartUnix = 1762480800; // November 6th 9PM EST (November 7th 2AM UTC)
-const WEEK_SEC = 7 * 24 * 60 * 60;
 const MIN_STAKE = parseUnits("200", 9);
 
 const FIRST_CLAIM_QUALIFY = parseUnits("100", 9); // 100 VVA
@@ -97,6 +96,7 @@ type Participant = {
   byWeek?: Record<string, ParticipantWeek>;
   // internal non-persisted marker to avoid double teamSize bumps
   _teamCounted?: boolean;
+  _prebalanceApplied?: boolean; // to avoid double-applying prebalance
 };
 type SponsorWeek = {
   newMembers: number;
@@ -128,9 +128,6 @@ function subFloor(a: string, b: string) {
 function getWeekIndex(ts: number) {
   if (!weekStartUnix || ts < weekStartUnix) return 0;
   return Math.floor((ts - weekStartUnix) / (7 * 24 * 60 * 60));
-}
-function weekBoundaryTs(weekIndex: number) {
-  return weekStartUnix + weekIndex * WEEK_SEC;
 }
 function computeCappedSharesFromUnits(unitsStr: string | undefined): number {
   const units = unitsStr ? toBN(unitsStr) : 0n; // raw 1e9
@@ -362,7 +359,7 @@ async function mcBatchGetUserBalance(
   users: string[],
   blockTag: number
 ): Promise<Record<string, string>> {
-  // console.log({ blockTag });
+  console.log({ blockTag });
   if (!users.length) return {};
   const calls: Call3[] = users.map((u) => ({
     contract: sVVA,
@@ -381,119 +378,6 @@ async function mcBatchGetUserBalance(
     });
   }
   return out;
-}
-
-/* -------------------- SNAPSHOT HELPERS -------------------- */
-
-// Fast locator using time-based guess → small galloping bracket → binary search.
-// Returns the greatest block with timestamp ≤ ts.
-// Fast locator using time-based guess → small galloping bracket → binary search.
-// Returns the greatest block with timestamp ≤ ts.
-async function findBlockAtOrBefore(ts: number): Promise<number> {
-  const latest = await provider.getBlockNumber();
-  const latestTs = await getTs(latest);
-  const anchor = Math.max(0, startBlockDefault - 1);
-  const anchorTs = await getTs(anchor);
-
-  if (ts >= latestTs) return latest;
-  if (ts <= anchorTs) return anchor;
-
-  const secPerBlock = 0.75; // ~0.75 typical
-  const blocksPerSec = 1 / Math.max(1e-6, secPerBlock); // ~1.333…
-  // Time-based first guess near the target:
-  let cand = Math.round(latest - (latestTs - ts) * blocksPerSec);
-  cand = Math.min(Math.max(anchor, cand), latest);
-
-  // If guess lands exactly, great:
-  let tCand = await getTs(cand);
-  if (tCand === ts) return cand;
-
-  // Galloping bracket around the candidate to get [lo, hi] with lo.ts ≤ ts < hi.ts
-  let lo = anchor;
-  let hi = latest;
-
-  // Start with a small step (~60 seconds worth of blocks), then double.
-  let step = Math.max(1, Math.round(60 * blocksPerSec)); // ~80 blocks
-
-  if (tCand <= ts) {
-    lo = cand;
-    let cur = cand;
-    while (cur < latest) {
-      const next = Math.min(latest, cur + step);
-      const tNext = await getTs(next);
-      if (tNext > ts) {
-        lo = cur;
-        hi = next;
-        break;
-      }
-      cur = next;
-      step <<= 1; // exponential grow
-    }
-    // If even latest ≤ ts, return latest
-    if ((await getTs(hi)) <= ts) return hi;
-  } else {
-    hi = cand;
-    let cur = cand;
-    while (cur > anchor) {
-      const prev = Math.max(anchor, cur - step);
-      const tPrev = await getTs(prev);
-      if (tPrev <= ts) {
-        lo = prev;
-        hi = cur;
-        break;
-      }
-      cur = prev;
-      step <<= 1;
-    }
-    // If even anchor > ts, return anchor
-    if ((await getTs(lo)) > ts) return lo;
-  }
-
-  // Tight binary search within tiny bracket.
-  while (lo + 1 < hi) {
-    const mid = Math.floor((lo + hi) / 2);
-    const t = await getTs(mid);
-    if (t <= ts) lo = mid;
-    else hi = mid;
-  }
-  return lo;
-}
-
-async function snapshotBalancesAtBlock(
-  users: string[],
-  blockTag: number
-): Promise<Record<string, string>> {
-  if (!users.length) return {};
-  const out: Record<string, string> = {};
-  for (const usersChunk of chunk(users, 1000)) {
-    const map = await mcBatchGetUserBalance(usersChunk, blockTag);
-    Object.assign(out, map);
-  }
-  return out;
-}
-
-async function writeWeekSnapshot(
-  weekIndex: number,
-  blockTag: number,
-  participants: Record<string, Participant>
-) {
-  const users = Object.keys(participants);
-  if (!users.length) return;
-
-  const balances = await snapshotBalancesAtBlock(users, blockTag);
-
-  for (const u of users) {
-    const p = participants[u];
-    const bal = balances[u.toLowerCase()] ?? "0";
-    p.minPrincipalByWeek ||= {};
-    // Canonical snapshot for the week: principal entering the week
-    p.minPrincipalByWeek[String(weekIndex)] = bal;
-
-    // Keep principalNow in a sane state (not required for eligibility)
-    if (!p.principalNow || toBN(bal) > toBN(p.principalNow)) {
-      p.principalNow = bal;
-    }
-  }
 }
 
 /* -------------------- ELIGIBILITY & SHARES BUILD -------------------- */
@@ -519,6 +403,7 @@ function buildEligibilityForWeeks(
     };
     for (const [addr, p] of Object.entries(participants)) {
       const minStr = (p.minPrincipalByWeek || {})[key];
+      if (!minStr) continue; // user had no activity for that week yet
 
       const minBN = toBN(minStr);
       const sponsorQual = sponsors[addr]?.byWeek?.[key]?.qualifying ?? 0;
@@ -581,6 +466,38 @@ async function main() {
   const topicClaimed = staking.interface.getEvent("Claimed")!.topicHash;
   const topicForfeited = staking.interface.getEvent("Forfeited")!.topicHash;
   const topicUnstaked = staking.interface.getEvent("Unstaked")!.topicHash;
+
+  // Bootstrap pre-existing principal at campaign start for ALL known participants
+  // who have NOT yet had their prebalance applied (even if principalNow is non-zero
+  // because of in-chunk claims).
+  const bootstrapUsers = Object.keys(participants).filter(
+    (u) => !participants[u]._prebalanceApplied
+  );
+
+  if (bootstrapUsers.length) {
+    console.log(`[bootstrap] fetching balances for ${bootstrapUsers.length}`);
+    const balances = await mcBatchGetUserBalance(
+      bootstrapUsers,
+      Math.max(0, startBlockDefault - 1)
+    );
+    for (const [u, bal] of Object.entries(balances)) {
+      const p = participants[u];
+      if (!p) continue;
+
+      // Add the pre-campaign balance ON TOP of anything already in principalNow
+      const pre = bal || "0";
+
+      p.principalNow = addStr(pre, p.principalNow || "0");
+
+      // Seed/raise week 0 min so week 0 never starts at 0 for pre-holders
+      p.minPrincipalByWeek ||= {};
+      const prevW0 = p.minPrincipalByWeek["0"] || "0";
+      p.minPrincipalByWeek["0"] = toBN(pre) > toBN(prevW0) ? pre : prevW0;
+
+      p._prebalanceApplied = true; // idempotency
+    }
+    writeJSON(participantsFile, participants); // persist bootstrap
+  }
 
   while (cursor <= latestBlock) {
     const toBlock = Math.min(cursor + blockChunk - 1, latestBlock);
@@ -1040,56 +957,76 @@ async function main() {
       dirtyWeeks.add(Number(wk));
     }
 
-    /* ---------------- WEEKLY SNAPSHOTS (CANONICAL) ---------------- */
-    // Determine week boundaries crossed by this chunk and take snapshots at those boundaries.
-    const startTs = await getTs(cursor);
-    const endTs = await getTs(toBlock);
+    // Build the set of users that need pre-event balance reads
+    // const uniqNewUsers = Object.keys(firstSeenBlock).filter(
+    //   (u) => !participants[u]?.principalNow
+    // );
 
-    const firstWk = Math.max(0, getWeekIndex(startTs));
-    const lastWk = Math.max(0, getWeekIndex(endTs));
+    const uniqNewUsers = Object.keys(firstSeenBlock); // <<< include all first-seen users
 
-    const boundaryWeeks: number[] = [];
-    for (let wk = firstWk; wk <= lastWk; wk++) {
-      const boundary = weekBoundaryTs(wk);
-      if (boundary >= startTs && boundary <= endTs) boundaryWeeks.push(wk);
-    }
+    // if (uniqNewUsers.length) {
+    //   const buckets: Record<number, string[]> = {};
 
-    for (const wk of boundaryWeeks) {
-      const boundaryTs = weekBoundaryTs(wk);
-      const boundaryBlock = await findBlockAtOrBefore(boundaryTs);
-      console.log(
-        `[snapshot] week ${wk} @ block ${boundaryBlock} (ts=${boundaryTs})`
-      );
-      await writeWeekSnapshot(wk, boundaryBlock, participants);
-      dirtyWeeks.add(wk);
-    }
+    //   for (const u of uniqNewUsers) {
+    //     // Use the earliest known block before their first activity
+    //     const blockTag = (firstSeenBlock[u] ?? startBlockDefault) - 1;
+    //     const b = Math.max(0, blockTag);
+    //     (buckets[b] ||= []).push(u);
+    //   }
 
-    // Backfill snapshots for users first seen in this chunk for all weeks up to lastWk
-    if (Object.keys(firstSeenBlock).length) {
-      const weeksToBackfill: number[] = [];
-      for (let wk = 0; wk <= lastWk; wk++) weeksToBackfill.push(wk);
+    //   // Run multicall batches per block tag
+    //   for (const [blockTagStr, usersAtBlock] of Object.entries(buckets)) {
+    //     const blockTag = Number(blockTagStr);
+    //     const map = await mcBatchGetUserBalance(usersAtBlock, blockTag);
 
-      const boundaryBlocks: Record<number, number> = {};
-      for (const wk of weeksToBackfill) {
-        const ts = weekBoundaryTs(wk);
-        boundaryBlocks[wk] = await findBlockAtOrBefore(ts);
+    //     for (const [u, bal] of Object.entries(map)) {
+    //       if (participants[u] && !participants[u]._prebalanceApplied) {
+    //         const pre = bal || "0";
+
+    //         participants[u].principalNow = bal;
+    //         participants[u].minPrincipalByWeek ||= {};
+    //         if (!participants[u].minPrincipalByWeek["0"]) {
+    //           participants[u].minPrincipalByWeek["0"] = bal;
+    //           // toBN(bal) >= MIN_STAKE ? bal : "0";
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+
+    if (uniqNewUsers.length) {
+      const buckets: Record<number, string[]> = {};
+
+      for (const u of uniqNewUsers) {
+        const blockTag = (firstSeenBlock[u] ?? startBlockDefault) - 1;
+        const b = Math.max(0, blockTag);
+        (buckets[b] ||= []).push(u);
       }
 
-      const newUsers = Object.keys(firstSeenBlock).map((u) => u.toLowerCase());
-      for (const wk of weeksToBackfill) {
-        const blockTag = boundaryBlocks[wk];
-        console.log(
-          `[backfill] week ${wk} for ${newUsers.length} new users @ block ${blockTag}`
-        );
-        const balances = await snapshotBalancesAtBlock(newUsers, blockTag);
-        for (const u of newUsers) {
+      for (const [blockTagStr, usersAtBlock] of Object.entries(buckets)) {
+        const blockTag = Number(blockTagStr);
+        const map = await mcBatchGetUserBalance(usersAtBlock, blockTag);
+
+        for (const [u, bal] of Object.entries(map)) {
           const p = participants[u];
           if (!p) continue;
-          const bal = balances[u] ?? "0";
-          p.minPrincipalByWeek ||= {};
-          p.minPrincipalByWeek[String(wk)] = bal;
+
+          // Apply this pre-event balance once
+          if (!p._prebalanceApplied) {
+            const pre = bal || "0";
+
+            // Principal should include what they already held BEFORE their first on-chain activity
+            p.principalNow = addStr(pre, p.principalNow || "0");
+
+            // Seed/raise week 0 minPrincipal to reflect existing holdings
+            p.minPrincipalByWeek ||= {};
+            const prevW0 = p.minPrincipalByWeek["0"] || "0";
+            // Use the larger of existing week 0 min vs prebalance (they started with at least 'pre')
+            p.minPrincipalByWeek["0"] = toBN(pre) > toBN(prevW0) ? pre : prevW0;
+
+            p._prebalanceApplied = true;
+          }
         }
-        dirtyWeeks.add(wk);
       }
     }
 
@@ -1107,7 +1044,6 @@ async function main() {
         MIN_STAKE,
         sponsors
       );
-
       for (const wk of dirty) {
         const file = path.join(weeksDir, `week_${wk}.json`);
         // merge with existing if needed (keep extra fields)
