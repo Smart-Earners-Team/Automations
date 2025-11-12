@@ -1850,9 +1850,9 @@
         "newMembers": 2,
         "firstClaimSum": "207088182450",
         "qualifying": 1,
-        "shareUnits": "1010066803248",
+        "shareUnits": "1224198753758",
         "perDownline": {
-          "0x8673faf5aee6e493152c3e613b31d425083f274c": "1010066803248"
+          "0x8673faf5aee6e493152c3e613b31d425083f274c": "1224198753758"
         }
       }
     }
@@ -1878,9 +1878,9 @@
         "newMembers": 3,
         "firstClaimSum": "486974374664",
         "qualifying": 1,
-        "shareUnits": "1159879211753",
+        "shareUnits": "1370272541145",
         "perDownline": {
-          "0x1e81cf7b395e04a6cc135a3cd3ea82b51da5228e": "1159879211753"
+          "0x1e81cf7b395e04a6cc135a3cd3ea82b51da5228e": "1370272541145"
         }
       }
     }
@@ -4728,11 +4728,14 @@
     "teamSize": 2,
     "byWeek": {
       "0": {
-        "newMembers": 1,
-        "firstClaimSum": "9964822502",
-        "qualifying": 0,
-        "shareUnits": "0",
-        "perDownline": {}
+        "newMembers": 3,
+        "firstClaimSum": "300606434688",
+        "qualifying": 2,
+        "shareUnits": "290641612186",
+        "perDownline": {
+          "0xeaac0d8b106349754f507a9a49497eae11affeba": "184104257456",
+          "0xd59e767978c212148559ca5732c7d0ec666614db": "106537354730"
+        }
       }
     }
   },
@@ -10764,8 +10767,8 @@
     "teamSize": 1,
     "byWeek": {
       "0": {
-        "newMembers": 1,
-        "firstClaimSum": "222250684586",
+        "newMembers": 2,
+        "firstClaimSum": "224729329451",
         "qualifying": 1,
         "shareUnits": "222250684586",
         "perDownline": {
@@ -11709,5 +11712,18 @@
     "address": "0xe5a295cefdf41887b4e3b0e0f9b54778fa61f65d",
     "teamSize": 2,
     "byWeek": {}
+  },
+  "0xb7f16f432f04f9b55d1e0e4184cc76efb765fbae": {
+    "address": "0xb7f16f432f04f9b55d1e0e4184cc76efb765fbae",
+    "teamSize": 0,
+    "byWeek": {
+      "0": {
+        "newMembers": 1,
+        "firstClaimSum": "4481859896",
+        "qualifying": 0,
+        "shareUnits": "0",
+        "perDownline": {}
+      }
+    }
   }
 }
