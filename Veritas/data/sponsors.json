@@ -717,9 +717,9 @@
         "newMembers": 8,
         "firstClaimSum": "330064402743",
         "qualifying": 1,
-        "shareUnits": "631823715398",
+        "shareUnits": "765101982552",
         "perDownline": {
-          "0x44ba630720c728a9f3895ae099fabac165644b93": "631823715398"
+          "0x44ba630720c728a9f3895ae099fabac165644b93": "765101982552"
         }
       }
     }
@@ -5884,9 +5884,9 @@
         "newMembers": 3,
         "firstClaimSum": "1054872876294",
         "qualifying": 2,
-        "shareUnits": "2421612233567",
+        "shareUnits": "2121612233567",
         "perDownline": {
-          "0x0a7462712d171467501998b4f9d06ccbc6700781": "879913813047",
+          "0x0a7462712d171467501998b4f9d06ccbc6700781": "579913813047",
           "0x1b0f2b03a83c9c8323d1a22ec80fecd14ad35eea": "1541698420520"
         }
       }
@@ -8041,9 +8041,9 @@
         "newMembers": 2,
         "firstClaimSum": "492579304233",
         "qualifying": 2,
-        "shareUnits": "492579304233",
+        "shareUnits": "798137336581",
         "perDownline": {
-          "0x38c6639dd208731e5074765af09d7f5b4f32ff4e": "184001341598",
+          "0x38c6639dd208731e5074765af09d7f5b4f32ff4e": "489559373946",
           "0x2de861a105bbdfc1bc1c50e05d73162c7d67ebc6": "308577962635"
         }
       }
@@ -10838,7 +10838,15 @@
   "0x76afe6f510c896d0347ce694aee38db8a0c07bc9": {
     "address": "0x76afe6f510c896d0347ce694aee38db8a0c07bc9",
     "teamSize": 1,
-    "byWeek": {}
+    "byWeek": {
+      "0": {
+        "newMembers": 1,
+        "firstClaimSum": "80669462748",
+        "qualifying": 0,
+        "shareUnits": "0",
+        "perDownline": {}
+      }
+    }
   },
   "0x724b67ac3ddfd90e0628c920e2fadcef7bf65c37": {
     "address": "0x724b67ac3ddfd90e0628c920e2fadcef7bf65c37",
@@ -11694,6 +11702,11 @@
   },
   "0x1763850e44f03f92a74cd8c2cc31b0888db52001": {
     "address": "0x1763850e44f03f92a74cd8c2cc31b0888db52001",
+    "teamSize": 2,
+    "byWeek": {}
+  },
+  "0xe5a295cefdf41887b4e3b0e0f9b54778fa61f65d": {
+    "address": "0xe5a295cefdf41887b4e3b0e0f9b54778fa61f65d",
     "teamSize": 2,
     "byWeek": {}
   }
