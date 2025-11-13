@@ -608,12 +608,13 @@ function buildEligibilityForWeeks(
       const minBN = toBN(minStr);
       const sponsorQual = sponsors[addr]?.byWeek?.[key]?.qualifying ?? 0;
 
-      const eligibleNow = minBN >= minStake && sponsorQual >= 2;
-
       const units = sponsors[addr]?.byWeek?.[key]?.shareUnits;
       const shares = computeCappedSharesFromUnits(units);
 
       rec.meta[addr] = { shares };
+
+      const eligibleNow = minBN >= minStake && shares >= 2;
+
       if (eligibleNow) rec.eligible.push(addr);
       else rec.ineligible.push(addr);
     }
@@ -761,6 +762,8 @@ async function main() {
       })!;
       const user = (args.user as string).toLowerCase();
       const referee = (args.referee as string).toLowerCase();
+
+      activeUsers.add(user);
 
       if (!participants[user]) {
         participants[user] = {
@@ -1029,6 +1032,15 @@ async function main() {
             const ded = credited; // cap to credited units for same-week deductions
             sw.perDownline![user] = (toBN(perDown) - ded).toString();
             sw.shareUnits = (toBN(sw.shareUnits ?? "0") - ded).toString();
+
+            // if they were counted as qualified and now fell below threshold,
+            // reduce qualifying count
+            if (
+              credited >= FIRST_CLAIM_QUALIFY &&
+              toBN(sw.perDownline![user]) < FIRST_CLAIM_QUALIFY
+            ) {
+              sw.qualifying = Math.max(0, (sw.qualifying ?? 0) - 1);
+            }
           }
         }
       }
