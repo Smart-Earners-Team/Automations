@@ -132,6 +132,9 @@ function computeCappedSharesFromUnits(unitsStr: string | undefined): number {
   const capped = shares > BigInt(SHARES_CAP) ? BigInt(SHARES_CAP) : shares;
   return Number(capped);
 }
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 // --- FS HELPERS ---
 function ensureDirSync(dir: string) {
@@ -276,13 +279,69 @@ function logDiff(
 
 /* -------------------- BLOCK TS CACHE -------------------- */
 const tsCache = new Map<number, number>();
-async function getTs(blockNumber: number) {
-  const hit = tsCache.get(blockNumber);
-  if (hit) return hit;
-  const blk = await provider.getBlock(blockNumber);
-  const ts = Number(blk!.timestamp);
-  tsCache.set(blockNumber, ts);
-  return ts;
+
+// simple global throttle: at most 1 outstanding getBlock() at a time
+let tsQueue: Promise<void> = Promise.resolve();
+
+// async function getTs(blockNumber: number) {
+//   const hit = tsCache.get(blockNumber);
+//   if (hit) return hit;
+//   const blk = await provider.getBlock(blockNumber);
+//   const ts = Number(blk!.timestamp);
+//   tsCache.set(blockNumber, ts);
+//   return ts;
+// }
+
+async function getTs(blockNumber: number): Promise<number> {
+  const cached = tsCache.get(blockNumber);
+  if (cached != null) return cached;
+
+  // serialize calls through a tiny queue to avoid 125/s burst
+  const prev = tsQueue;
+  let release!: () => void;
+  tsQueue = new Promise<void>((r) => (release = r));
+  await prev;
+
+  try {
+    let attempt = 0;
+    let delay = 250; // ms
+
+    // retry loop to handle QuickNode -32007 rate limits gracefully
+    // and other transient provider errors
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      try {
+        const blk = await provider.getBlock(blockNumber);
+        if (!blk) throw new Error(`Missing block ${blockNumber}`);
+        const ts = Number(blk.timestamp);
+        tsCache.set(blockNumber, ts);
+        return ts;
+      } catch (e: any) {
+        const code = e?.error?.code ?? e?.code;
+        const msg: string = e?.message || e?.shortMessage || "";
+
+        const isRateLimit =
+          code === -32007 ||
+          msg.includes("request limit reached") ||
+          msg.includes("rate") ||
+          msg.includes("Too Many Requests");
+
+        if (isRateLimit && attempt < 5) {
+          // backoff and try again
+          await sleep(delay);
+          delay *= 2;
+          attempt++;
+          continue;
+        }
+
+        // not rate-limit or too many retries → surface the error
+        throw e;
+      }
+    }
+  } finally {
+    // let next getTs proceed
+    release();
+  }
 }
 
 /* -------------------- MULTICALL HELPERS -------------------- */
