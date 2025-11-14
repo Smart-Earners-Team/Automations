@@ -59,10 +59,10 @@ const participantsFile = path.join(dataDir, "participants.json");
 const sponsorsFile = path.join(dataDir, "sponsors.json");
 
 // --- TYPES ---
-type WeekMeta = {
+export type WeekMeta = {
   [userAddrLower: string]: { shares: number };
 };
-type WeekAggregate = {
+export type WeekAggregate = {
   week: number;
   eligibility: string[];
   ineligible: string[];
@@ -78,7 +78,7 @@ type ParticipantWeek = {
   forfeits: number;
   qualifiedForShares?: boolean;
 };
-type Participant = {
+export type Participant = {
   address: string;
   referee: string | null;
   checkInTime: number | null;
@@ -104,7 +104,7 @@ type SponsorWeek = {
   shareUnits?: string;
   perDownline?: Record<string, string>;
 };
-type Sponsor = {
+export type Sponsor = {
   address: string;
   teamSize: number;
   byWeek: Record<string, SponsorWeek>;
@@ -112,14 +112,14 @@ type Sponsor = {
 type Checkpoint = { lastProcessedBlock: number };
 
 /* -------------------- HELPERS -------------------- */
-function toBN(v: string | bigint | number) {
+export function toBN(v: string | bigint | number) {
   return toBigInt(v);
 }
 function addStr(a: string | undefined, b: string) {
   const A = a ? toBN(a) : 0n;
   return (A + toBN(b)).toString();
 }
-function getWeekIndex(ts: number) {
+export function getWeekIndex(ts: number) {
   if (!weekStartUnix || ts < weekStartUnix) return 0;
   return Math.floor((ts - weekStartUnix) / WEEK_SEC);
 }
@@ -137,10 +137,10 @@ function sleep(ms: number) {
 }
 
 // --- FS HELPERS ---
-function ensureDirSync(dir: string) {
+export function ensureDirSync(dir: string) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 }
-function readJSON<T>(file: string, fallback: T): T {
+export function readJSON<T>(file: string, fallback: T): T {
   try {
     const raw = fs.readFileSync(file, "utf8");
     return JSON.parse(raw) as T;
@@ -163,7 +163,7 @@ function atomicWriteJSON(file: string, data: any) {
   }
   fs.renameSync(tmp, file);
 }
-function writeJSON(file: string, data: any) {
+export function writeJSON(file: string, data: any) {
   atomicWriteJSON(file, data);
 }
 function ensureFileSync(file: string, defaultJson: any = {}) {
@@ -608,12 +608,13 @@ function buildEligibilityForWeeks(
       const minBN = toBN(minStr);
       const sponsorQual = sponsors[addr]?.byWeek?.[key]?.qualifying ?? 0;
 
-      const eligibleNow = minBN >= minStake && sponsorQual >= 2;
-
       const units = sponsors[addr]?.byWeek?.[key]?.shareUnits;
       const shares = computeCappedSharesFromUnits(units);
 
       rec.meta[addr] = { shares };
+
+      const eligibleNow = minBN >= minStake && sponsorQual >= 2 && shares >= 2;
+
       if (eligibleNow) rec.eligible.push(addr);
       else rec.ineligible.push(addr);
     }
@@ -762,6 +763,8 @@ async function main() {
       const user = (args.user as string).toLowerCase();
       const referee = (args.referee as string).toLowerCase();
 
+      activeUsers.add(user);
+
       if (!participants[user]) {
         participants[user] = {
           address: user,
@@ -894,7 +897,21 @@ async function main() {
         participants[user].firstClaimAt = ts;
         participants[user].firstClaimAmt = amount;
 
-        if (referee && referee !== ZeroAddress) {
+        // Only count "new members" if they SIGNED UP during the campaign
+        const joinedAt = participants[user].checkInTime;
+
+        // Must: (1) be a campaign signup AND (2) signup week == this claim week
+        const isCampaignSignup = joinedAt != null && joinedAt >= weekStartUnix;
+        const signupWeek = joinedAt != null ? getWeekIndex(joinedAt) : -1;
+        const countsForThisWeek = isCampaignSignup && signupWeek === week;
+
+        if (!countsForThisWeek) {
+          // Either pre-campaign signup, or signed up in a different week than this claim.
+          // Still backfill referee for tree correctness.
+          if (!referee) {
+            needReferee.push(user);
+          }
+        } else if (referee && referee !== ZeroAddress) {
           const ref = referee.toLowerCase();
           initSponsorIfMissing(sponsors, ref);
           sponsors[ref].byWeek = sponsors[ref].byWeek || {};
@@ -1029,6 +1046,15 @@ async function main() {
             const ded = credited; // cap to credited units for same-week deductions
             sw.perDownline![user] = (toBN(perDown) - ded).toString();
             sw.shareUnits = (toBN(sw.shareUnits ?? "0") - ded).toString();
+
+            // if they were counted as qualified and now fell below threshold,
+            // reduce qualifying count
+            if (
+              credited >= FIRST_CLAIM_QUALIFY &&
+              toBN(sw.perDownline![user]) < FIRST_CLAIM_QUALIFY
+            ) {
+              sw.qualifying = Math.max(0, (sw.qualifying ?? 0) - 1);
+            }
           }
         }
       }
@@ -1073,8 +1099,18 @@ async function main() {
       const p = participants[u];
       if (!p || !p.firstClaimAt || !p.referee) continue;
 
-      const wk = String(getWeekIndex(p.firstClaimAt));
+      const claimWeek = getWeekIndex(p.firstClaimAt);
+      const wk = String(claimWeek);
       const ref = p.referee.toLowerCase();
+
+      // Only treat them as a "new member" if they signed up during campaign
+      const joinedAt = p.checkInTime;
+      const isCampaignSignup = joinedAt != null && joinedAt >= weekStartUnix;
+
+      const signupWeek = joinedAt != null ? getWeekIndex(joinedAt) : -1;
+      const countsForThisWeek = isCampaignSignup && signupWeek === claimWeek;
+
+      if (!countsForThisWeek) continue; // must be campaign signup AND same week
 
       p.byWeek = p.byWeek || {};
       p.byWeek[wk] = initParticipantWeek(p.byWeek[wk]);
