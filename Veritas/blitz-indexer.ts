@@ -119,7 +119,7 @@ function addStr(a: string | undefined, b: string) {
   const A = a ? toBN(a) : 0n;
   return (A + toBN(b)).toString();
 }
-function getWeekIndex(ts: number) {
+export function getWeekIndex(ts: number) {
   if (!weekStartUnix || ts < weekStartUnix) return 0;
   return Math.floor((ts - weekStartUnix) / WEEK_SEC);
 }
