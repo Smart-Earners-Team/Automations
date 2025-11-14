@@ -613,7 +613,7 @@ function buildEligibilityForWeeks(
 
       rec.meta[addr] = { shares };
 
-      const eligibleNow = minBN >= minStake && shares >= 2;
+      const eligibleNow = minBN >= minStake && sponsorQual >= 2 && shares >= 2;
 
       if (eligibleNow) rec.eligible.push(addr);
       else rec.ineligible.push(addr);
@@ -897,7 +897,18 @@ async function main() {
         participants[user].firstClaimAt = ts;
         participants[user].firstClaimAmt = amount;
 
-        if (referee && referee !== ZeroAddress) {
+        // Only count "new members" if they SIGNED UP during the campaign
+        const joinedAt = participants[user].checkInTime;
+        const isCampaignSignup = joinedAt != null && joinedAt >= weekStartUnix;
+
+        if (!isCampaignSignup) {
+          // Old signup: they still have a referee, but they do NOT give the sponsor
+          // newMembers/qualifying/shareUnits for the campaign.
+          if (!referee) {
+            // still try to backfill referee so the tree is correct
+            needReferee.push(user);
+          }
+        } else if (referee && referee !== ZeroAddress) {
           const ref = referee.toLowerCase();
           initSponsorIfMissing(sponsors, ref);
           sponsors[ref].byWeek = sponsors[ref].byWeek || {};
@@ -1087,6 +1098,12 @@ async function main() {
 
       const wk = String(getWeekIndex(p.firstClaimAt));
       const ref = p.referee.toLowerCase();
+
+      // Only treat them as a "new member" if they signed up during campaign
+      const joinedAt = p.checkInTime;
+      const isCampaignSignup = joinedAt != null && joinedAt >= weekStartUnix;
+
+      if (!isCampaignSignup) continue; // pre-campaign signup → no campaign newMember
 
       p.byWeek = p.byWeek || {};
       p.byWeek[wk] = initParticipantWeek(p.byWeek[wk]);
