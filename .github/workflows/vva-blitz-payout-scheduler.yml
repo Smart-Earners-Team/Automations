@@ -50,6 +50,7 @@ jobs:
 
       - name: Run weekly payout (just-ended week)
         env:
+          VVA_PRIVATE_KEY: ${{ secrets.VVA_P_KEY }}
           VVA_RPC_URL: ${{ secrets.VVA_RPC_56 }}
         run: npx tsx Veritas/blitz-payout.ts --auto-week
 
