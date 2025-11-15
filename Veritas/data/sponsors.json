@@ -6322,7 +6322,7 @@
   },
   "0x420f13742b6ce3ac277fe381abf088df5518c994": {
     "address": "0x420f13742b6ce3ac277fe381abf088df5518c994",
-    "teamSize": 3,
+    "teamSize": 4,
     "byWeek": {
       "0": {
         "newMembers": 3,
@@ -13770,7 +13770,17 @@
   "0x24448faa514201b500d008fcb14e031936e8a3e4": {
     "address": "0x24448faa514201b500d008fcb14e031936e8a3e4",
     "teamSize": 2,
-    "byWeek": {}
+    "byWeek": {
+      "1": {
+        "newMembers": 1,
+        "firstClaimSum": "102584268633",
+        "qualifying": 1,
+        "shareUnits": "102584268633",
+        "perDownline": {
+          "0x574242da7b0f5b91c1246873cd8eeba5019d9f52": "102584268633"
+        }
+      }
+    }
   },
   "0xa298367ae983f4f87a12b76f5d096f94a84a2614": {
     "address": "0xa298367ae983f4f87a12b76f5d096f94a84a2614",
