@@ -1,6 +1,9 @@
 {
   "week": 1,
-  "eligibility": [],
+  "eligibility": [
+    "0xb3ce2dd0f7cb6fed255adf6252a8050201f621f8",
+    "0xfeb92b21996d22d3be1d6e2b7142b60112d3d46f"
+  ],
   "ineligible": [
     "0xb58c1f7e0852db282494bb6b207783d1329b9aa3",
     "0xd28f24f83f557e8f72806d82a517daf51c7309f0",
@@ -330,7 +333,6 @@
     "0xf2c7192382c78679409f2a673d394a5179131d57",
     "0x373f5e37c3d326773ed1096d97cfb28f8d9c3b5b",
     "0x515d825d505c20a0d8321ad7648e5463e2a30c18",
-    "0xb3ce2dd0f7cb6fed255adf6252a8050201f621f8",
     "0xeda3d89c9299c8b92c4ff15312fdae49231afa23",
     "0x5d09ebfc7f79f727e049b9b288f0faf90a46f6fa",
     "0x3400926a398280db1c669cb79bf92638886bf6d4",
@@ -575,7 +577,6 @@
     "0x3e600f48d39a17cd60b2a89bcdecd7697a49bfcc",
     "0xc23f4a2e25f995a07c2b5f5b9856e3b456732f75",
     "0x35da78480666eb99bc209eccefd373698711d0b5",
-    "0xfeb92b21996d22d3be1d6e2b7142b60112d3d46f",
     "0xaf3dee3264414c63fdb0757b89c12ad1034f9fbf",
     "0xaca4887fc4163ff8ea9cb43666992a4e4eb76f8a",
     "0xbd9556bae8f08e1cbe566e2b8190b33261945953",
@@ -2519,7 +2520,11 @@
     "0x1e56538f33159189e099d1bce847fc153297a07e",
     "0xf95547d59cfae3722a938a09fc4152cb64baf0d6",
     "0x7be38f8176a64fe2a245e94933fe0ce417ea1a07",
-    "0x60cf3b8b93225f702bd806a48dcaf364bf588ea2"
+    "0x60cf3b8b93225f702bd806a48dcaf364bf588ea2",
+    "0x1e307b1841b7b7efc872ff0d4dbdebe7993a4df5",
+    "0x7c182bf5fec82ce1f0c4071bb0625a5fc0953eb1",
+    "0xd369024fa210c327040648220fe50ca05f873a9c",
+    "0xee5ddf1094497b4b1f903b999666fccc0cf04040"
   ],
   "meta": {
     "0xb58c1f7e0852db282494bb6b207783d1329b9aa3": {
@@ -3126,7 +3131,7 @@
       "shares": 0
     },
     "0x1060db7b9463708c1a09a29d537d3c8d5c161c07": {
-      "shares": 0
+      "shares": 12
     },
     "0x8673faf5aee6e493152c3e613b31d425083f274c": {
       "shares": 0
@@ -3507,7 +3512,7 @@
       "shares": 0
     },
     "0xb3ce2dd0f7cb6fed255adf6252a8050201f621f8": {
-      "shares": 0
+      "shares": 4
     },
     "0xeda3d89c9299c8b92c4ff15312fdae49231afa23": {
       "shares": 0
@@ -4242,7 +4247,7 @@
       "shares": 9
     },
     "0xfeb92b21996d22d3be1d6e2b7142b60112d3d46f": {
-      "shares": 0
+      "shares": 3
     },
     "0xaf3dee3264414c63fdb0757b89c12ad1034f9fbf": {
       "shares": 0
@@ -9141,7 +9146,7 @@
       "shares": 0
     },
     "0x7b6af8b284b2fa6c335ef074d3032d0476c6c60a": {
-      "shares": 0
+      "shares": 2
     },
     "0xaeb4f96930b908f6d56fd3af92846bb3a489b956": {
       "shares": 0
@@ -9579,7 +9584,7 @@
       "shares": 0
     },
     "0x8b48285a47f7aba706312b085dda89d11c628db1": {
-      "shares": 0
+      "shares": 1
     },
     "0x1dfdee38c0a831d0f5cf8264bc50cbca26d15489": {
       "shares": 0
@@ -10074,6 +10079,18 @@
       "shares": 0
     },
     "0x60cf3b8b93225f702bd806a48dcaf364bf588ea2": {
+      "shares": 0
+    },
+    "0x1e307b1841b7b7efc872ff0d4dbdebe7993a4df5": {
+      "shares": 0
+    },
+    "0x7c182bf5fec82ce1f0c4071bb0625a5fc0953eb1": {
+      "shares": 0
+    },
+    "0xd369024fa210c327040648220fe50ca05f873a9c": {
+      "shares": 0
+    },
+    "0xee5ddf1094497b4b1f903b999666fccc0cf04040": {
       "shares": 0
     }
   }
