@@ -7,7 +7,6 @@ import {
   toBigInt,
   ZeroAddress,
 } from "ethers";
-import fs from "fs";
 import { fileURLToPath } from "url";
 import path from "path";
 import RegistryAbi from "./abis/Registry.json";
@@ -18,6 +17,19 @@ import {
   sVVA_CONTRACT,
 } from "./constants";
 import { Call3, Multicall } from "@evmlord/multicall-sdk";
+import {
+  Checkpoint,
+  ensureDirSync,
+  ensureFileSync,
+  Participant,
+  ParticipantWeek,
+  readJSON,
+  Sponsor,
+  SponsorWeek,
+  WeekAggregate,
+  WeekMeta,
+  writeJSON,
+} from "./helpers";
 
 /* -------------------- ENV / CONSTANTS -------------------- */
 const VVA_RPC_URL = process.env.VVA_RPC_URL;
@@ -58,59 +70,6 @@ const checkpointFile = path.join(dataDir, "checkpoint.json");
 const participantsFile = path.join(dataDir, "participants.json");
 const sponsorsFile = path.join(dataDir, "sponsors.json");
 
-// --- TYPES ---
-export type WeekMeta = {
-  [userAddrLower: string]: { shares: number };
-};
-export type WeekAggregate = {
-  week: number;
-  eligibility: string[];
-  ineligible: string[];
-  meta?: WeekMeta;
-  [k: string]: any;
-};
-type ParticipantWeek = {
-  staked: string;
-  claimed: string;
-  forfeited: string;
-  stakes: number;
-  claims: number;
-  forfeits: number;
-  qualifiedForShares?: boolean;
-};
-export type Participant = {
-  address: string;
-  referee: string | null;
-  checkInTime: number | null;
-  stakedTotal: string;
-  claimedTotal: string;
-  forfeitedTotal: string;
-  firstStakeAt?: number;
-  firstStakeAmt?: string;
-  firstClaimAt?: number;
-  firstClaimAmt?: string;
-  lastStakeAt?: number;
-  lastClaimAt?: number;
-  lastForfeitAt?: number;
-  principalNow?: string; // authoritative: set from end-of-chunk block balance
-  minPrincipalByWeek?: Record<string, string>; // set ONLY by weekly snapshots/backfills
-  byWeek?: Record<string, ParticipantWeek>;
-  _teamCounted?: boolean; // internal
-};
-type SponsorWeek = {
-  newMembers: number;
-  firstClaimSum: string;
-  qualifying?: number;
-  shareUnits?: string;
-  perDownline?: Record<string, string>;
-};
-export type Sponsor = {
-  address: string;
-  teamSize: number;
-  byWeek: Record<string, SponsorWeek>;
-};
-type Checkpoint = { lastProcessedBlock: number };
-
 /* -------------------- HELPERS -------------------- */
 export function toBN(v: string | bigint | number) {
   return toBigInt(v);
@@ -134,42 +93,6 @@ function computeCappedSharesFromUnits(unitsStr: string | undefined): number {
 }
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-// --- FS HELPERS ---
-export function ensureDirSync(dir: string) {
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-}
-export function readJSON<T>(file: string, fallback: T): T {
-  try {
-    const raw = fs.readFileSync(file, "utf8");
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
-}
-function atomicWriteJSON(file: string, data: any) {
-  ensureDirSync(path.dirname(file));
-  const tmp = `${file}.tmp-${Date.now()}-${Math.random()
-    .toString(16)
-    .slice(2)}`;
-  const buf = Buffer.from(JSON.stringify(data, null, 2), "utf8");
-  const fd = fs.openSync(tmp, "w");
-  try {
-    fs.writeFileSync(fd, buf);
-    fs.fsyncSync(fd);
-  } finally {
-    fs.closeSync(fd);
-  }
-  fs.renameSync(tmp, file);
-}
-export function writeJSON(file: string, data: any) {
-  atomicWriteJSON(file, data);
-}
-function ensureFileSync(file: string, defaultJson: any = {}) {
-  ensureDirSync(path.dirname(file));
-  if (!fs.existsSync(file))
-    fs.writeFileSync(file, JSON.stringify(defaultJson, null, 2), "utf8");
 }
 
 /* -------------------- RECORD MUTATORS -------------------- */
@@ -1167,7 +1090,7 @@ async function main() {
 
     // Backfill snapshots for users first seen in this chunk
     // for all FULLY COMPLETED weeks up to (lastWk - 1).
-    if (Object.keys(firstSeenBlock).length) {
+    if (Object.keys(firstSeenBlock).length /*  && lastWk > 0 */) {
       const weeksToBackfill: number[] = [];
       const completedWeek = Math.max(0, lastWk - 1);
       for (let wk = 0; wk <= completedWeek; wk++) weeksToBackfill.push(wk);

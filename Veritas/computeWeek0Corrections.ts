@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { formatUnits, parseUnits } from "ethers";
-import { readJSON, WeekAggregate } from "./blitz-indexer";
+import { readJSON, WeekAggregate } from "./helpers";
 
 const WEEK0_POOL_STR = "15000";
 const TOKEN_DECIMALS = 9;
