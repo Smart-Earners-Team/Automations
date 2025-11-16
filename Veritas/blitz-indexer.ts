@@ -559,7 +559,7 @@ async function writeWeekSnapshot(
     const p = participants[u];
     const bal = balances[u.toLowerCase()] ?? "0";
     p.minPrincipalByWeek ||= {};
-    // Canonical snapshot for the week: principal entering the week
+    // Canonical snapshot for the week: principal at END of the week
     p.minPrincipalByWeek[String(weekIndex)] = bal;
     // NOTE: do NOT touch principalNow here; it is set from end-of-chunk balance.
   }
@@ -1142,34 +1142,44 @@ async function main() {
     const firstWk = Math.max(0, getWeekIndex(startTs));
     const lastWk = Math.max(0, getWeekIndex(endTs));
 
+    // boundaryWeeks contains week indices we JUST ENTERED in this chunk.
+    // Entering week `wk` means we just finished week `wk - 1`.
     const boundaryWeeks: number[] = [];
     for (let wk = firstWk; wk <= lastWk; wk++) {
       const boundary = weekBoundaryTs(wk);
-      if (boundary >= startTs && boundary <= endTs) boundaryWeeks.push(wk);
+      if (boundary >= startTs && boundary <= endTs && wk > 0)
+        boundaryWeeks.push(wk);
     }
 
     for (const wk of boundaryWeeks) {
-      const boundaryTs = weekBoundaryTs(wk);
+      const boundaryTs = weekBoundaryTs(wk); // start of wk == end of wk-1
       const boundaryBlock = await findBlockAtOrBefore(boundaryTs);
+      const completedWeek = wk - 1;
+
       console.log(
-        `[snapshot] week ${wk} @ block ${boundaryBlock} (ts=${boundaryTs})`
+        `[snapshot] week ${completedWeek} @ block ${boundaryBlock} (ts=${boundaryTs})`
       );
-      await writeWeekSnapshot(wk, boundaryBlock, participants);
-      dirtyWeeks.add(wk);
+
+      await writeWeekSnapshot(completedWeek, boundaryBlock, participants);
+
+      dirtyWeeks.add(completedWeek);
     }
 
-    // Backfill snapshots for users first seen in this chunk for all weeks up to lastWk
+    // Backfill snapshots for users first seen in this chunk
+    // for all FULLY COMPLETED weeks up to (lastWk - 1).
     if (Object.keys(firstSeenBlock).length) {
       const weeksToBackfill: number[] = [];
-      for (let wk = 0; wk <= lastWk; wk++) weeksToBackfill.push(wk);
+      const completedWeek = Math.max(0, lastWk - 1);
+      for (let wk = 0; wk <= completedWeek; wk++) weeksToBackfill.push(wk);
 
       const boundaryBlocks: Record<number, number> = {};
       for (const wk of weeksToBackfill) {
-        const ts = weekBoundaryTs(wk);
-        boundaryBlocks[wk] = await findBlockAtOrBefore(ts);
+        const tsEnd = weekBoundaryTs(wk + 1);
+        boundaryBlocks[wk] = await findBlockAtOrBefore(tsEnd);
       }
 
       const newUsers = Object.keys(firstSeenBlock).map((u) => u.toLowerCase());
+
       for (const wk of weeksToBackfill) {
         const blockTag = boundaryBlocks[wk];
         console.log(
