@@ -4010,6 +4010,13 @@
           "0xeb422e0a357ecf478a2ecc3d20570a858d839bf5": "111662987224",
           "0x0499f28675c16553127abdcb6a6fadf32f082ba5": "102346009575"
         }
+      },
+      "1": {
+        "newMembers": 1,
+        "firstClaimSum": "87583677901",
+        "qualifying": 0,
+        "shareUnits": "0",
+        "perDownline": {}
       }
     }
   },
@@ -6104,7 +6111,7 @@
   },
   "0x955c807487e2fecff8fbe9b3bbd751d90742128b": {
     "address": "0x955c807487e2fecff8fbe9b3bbd751d90742128b",
-    "teamSize": 3,
+    "teamSize": 4,
     "byWeek": {
       "0": {
         "newMembers": 1,
@@ -6504,7 +6511,7 @@
   },
   "0xc463c53beec28fb6576d373debda59de1f0c44e7": {
     "address": "0xc463c53beec28fb6576d373debda59de1f0c44e7",
-    "teamSize": 1,
+    "teamSize": 2,
     "byWeek": {
       "0": {
         "newMembers": 1,
@@ -7072,7 +7079,18 @@
   "0x6211f5d6d884248ad099e78110921c7eeb6b436b": {
     "address": "0x6211f5d6d884248ad099e78110921c7eeb6b436b",
     "teamSize": 3,
-    "byWeek": {}
+    "byWeek": {
+      "1": {
+        "newMembers": 2,
+        "firstClaimSum": "2026470977414",
+        "qualifying": 2,
+        "shareUnits": "2026470977414",
+        "perDownline": {
+          "0xeaa1e89d20b79475ac172747371295aec68fb344": "1013235488707",
+          "0x790eb92f77ece013267591c7bf1277f855a65d22": "1013235488707"
+        }
+      }
+    }
   },
   "0x1763850e44f03f92a74cd8c2cc31b0888db52001": {
     "address": "0x1763850e44f03f92a74cd8c2cc31b0888db52001",
@@ -7424,7 +7442,7 @@
   },
   "0x50c40686215c6769e182c528d4833f2134e9a7ab": {
     "address": "0x50c40686215c6769e182c528d4833f2134e9a7ab",
-    "teamSize": 1,
+    "teamSize": 2,
     "byWeek": {}
   },
   "0x8286dd88ac12ab00a373a5fa8ed69a1c6e545e7d": {
@@ -8246,6 +8264,11 @@
   "0x17e6ba83013cee3d53fca84b7d9094744826923c": {
     "address": "0x17e6ba83013cee3d53fca84b7d9094744826923c",
     "teamSize": 3,
+    "byWeek": {}
+  },
+  "0x2ba3af8e7b3b4746af1c575528a6f6d291387039": {
+    "address": "0x2ba3af8e7b3b4746af1c575528a6f6d291387039",
+    "teamSize": 1,
     "byWeek": {}
   }
 }
