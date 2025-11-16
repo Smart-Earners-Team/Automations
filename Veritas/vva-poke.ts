@@ -70,7 +70,7 @@ const CHAIN_ID = 56;
 const READ_BATCH_SIZE = 1000; // how many wallets to read per Multicall
 const PAGES_PER_CALL = 5; // how many pages we batch in one aggregate3
 const BATCH_SIZE = READ_BATCH_SIZE * PAGES_PER_CALL; // 5 000 addresses
-const POKE_BATCH_SIZE = 100; // how many addresses to poke per tx
+const POKE_BATCH_SIZE = 2048; // how many addresses to poke per tx
 const GAS_HEADROOM_BPS = 500n; // +5% on top of estimate
 const RPC_URL = "https://bsc-rpc.publicnode.com";
 
@@ -308,7 +308,7 @@ async function fetchAllWallets(pageSize = READ_BATCH_SIZE): Promise<string[]> {
  */
 async function filterAddressesByBalance(
   wallets: string[],
-  threshold = 30n * 10n ** 9n
+  threshold = 27n * 10n ** 9n
 ): Promise<string[]> {
   // sanitize: keep only valid, lowercased checks for dedupe
   const uniqueValid = Array.from(
@@ -545,7 +545,7 @@ async function main() {
     const { size, gasLimit } = await findMaxFittingCalls(
       pokeCalls,
       i,
-      27_000_000n
+      28_000_000n
     ); // 90% of 30M
     const slice = pokeCalls.slice(i, i + size);
 
