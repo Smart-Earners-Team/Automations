@@ -56,8 +56,9 @@ function mulDivFloor(amountBigInt: bigint, num: number, den: number): bigint {
 
 function main() {
   ensureDirSync(patchDir);
+  /*
   ensureFileSync(outJsonPath, {});
-  ensureFileSync(outCsvPath);
+  ensureFileSync(outCsvPath);*/
 
   console.log("Reading week_0 aggregates...");
 
