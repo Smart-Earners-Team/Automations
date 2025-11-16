@@ -2,7 +2,12 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { formatUnits, parseUnits } from "ethers";
-import { readJSON, WeekAggregate } from "./helpers";
+import {
+  ensureDirSync,
+  ensureFileSync,
+  readJSON,
+  WeekAggregate,
+} from "./helpers";
 
 const WEEK0_POOL_STR = "15000";
 const TOKEN_DECIMALS = 9;
@@ -12,6 +17,12 @@ const WEEK0_POOL = parseUnits(WEEK0_POOL_STR, TOKEN_DECIMALS);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const patchDir = path.join(__dirname, "patch");
+
+const outJsonPath = path.join(patchDir, "week0_corrections.json");
+
+const outCsvPath = path.join(patchDir, "week0_corrections.csv");
 
 const OLD_WEEK_PATH = path.join(__dirname, "data_v1", "weeks", "week_0.json");
 const NEW_WEEK_PATH = path.join(__dirname, "data", "weeks", "week_0.json");
@@ -44,6 +55,10 @@ function mulDivFloor(amountBigInt: bigint, num: number, den: number): bigint {
 }
 
 function main() {
+  ensureDirSync(patchDir);
+  ensureFileSync(outJsonPath, {});
+  ensureFileSync(outCsvPath);
+
   console.log("Reading week_0 aggregates...");
 
   // We know these files exist, so fallback is just a type helper
@@ -182,10 +197,8 @@ function main() {
     corrections,
   };
 
-  const outJsonPath = path.join(__dirname, "patch", "week0_corrections.json");
   fs.writeFileSync(outJsonPath, JSON.stringify(outJson, null, 2), "utf8");
 
-  const outCsvPath = path.join(__dirname, "patch", "week0_corrections.csv");
   const csvLines = [
     [
       "address",
