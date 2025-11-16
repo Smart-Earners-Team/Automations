@@ -47,6 +47,8 @@ jobs:
           fi
 
       - name: Calculate Week 0 delta
+        env:
+          VVA_RPC_URL: ${{ secrets.VVA_RPC_56 }}
         run: npx tsx Veritas/computeWeek0Corrections.ts
 
       # --- Commit the whole patch directory (atomic JSON writes already handled by the script) ---
