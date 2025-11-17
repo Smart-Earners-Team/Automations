@@ -974,13 +974,15 @@
         }
       },
       "1": {
-        "newMembers": 2,
-        "firstClaimSum": "218800261347",
-        "qualifying": 2,
-        "shareUnits": "218800261347",
+        "newMembers": 4,
+        "firstClaimSum": "441711477743",
+        "qualifying": 4,
+        "shareUnits": "441711477743",
         "perDownline": {
           "0x34d7ff6b0eb92ed4fbb2d597acc9f072f89415c0": "111944319759",
-          "0x7eaa486279ab819fafca04ddbc10f4a701f49484": "106855941588"
+          "0x7eaa486279ab819fafca04ddbc10f4a701f49484": "106855941588",
+          "0x2158097693a7f50055224df2f158af73ca861caf": "111455608198",
+          "0x85200440488a08e5e58be641a789246eb418a57b": "111455608198"
         }
       }
     }
@@ -2675,7 +2677,7 @@
   },
   "0x330e8defef60daa6a3b8b87fa78ba58635d8b1ef": {
     "address": "0x330e8defef60daa6a3b8b87fa78ba58635d8b1ef",
-    "teamSize": 1,
+    "teamSize": 2,
     "byWeek": {}
   },
   "0xa48f8ca1da17918950360559b460563be5987329": {
@@ -2852,7 +2854,7 @@
   },
   "0x408300dda121c8500e81c1eecb9dedfbcdb672cc": {
     "address": "0x408300dda121c8500e81c1eecb9dedfbcdb672cc",
-    "teamSize": 1,
+    "teamSize": 2,
     "byWeek": {}
   },
   "0xfc0a66c7e0752f5da6e1c2883c08a1ab878bea22": {
@@ -8366,7 +8368,15 @@
   "0xcff7955ccc82c939a79b88bd592cae32b92f89d6": {
     "address": "0xcff7955ccc82c939a79b88bd592cae32b92f89d6",
     "teamSize": 1,
-    "byWeek": {}
+    "byWeek": {
+      "1": {
+        "newMembers": 1,
+        "firstClaimSum": "13172026423",
+        "qualifying": 0,
+        "shareUnits": "0",
+        "perDownline": {}
+      }
+    }
   },
   "0xe0652afb2369760ef01d3b159c2e4b7b405bdb0b": {
     "address": "0xe0652afb2369760ef01d3b159c2e4b7b405bdb0b",
@@ -8495,6 +8505,11 @@
   },
   "0x4c91c0bd18151fcd60710887219e5aeb7588c71c": {
     "address": "0x4c91c0bd18151fcd60710887219e5aeb7588c71c",
+    "teamSize": 1,
+    "byWeek": {}
+  },
+  "0x99a1dba35c351bf31146d67aefed342de835cabf": {
+    "address": "0x99a1dba35c351bf31146d67aefed342de835cabf",
     "teamSize": 1,
     "byWeek": {}
   }
