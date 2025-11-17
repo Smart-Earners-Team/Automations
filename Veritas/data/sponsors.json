@@ -1072,7 +1072,17 @@
   "0xc834ea2340d10ce409881bd4339bfd1f5db1d4fc": {
     "address": "0xc834ea2340d10ce409881bd4339bfd1f5db1d4fc",
     "teamSize": 12,
-    "byWeek": {}
+    "byWeek": {
+      "1": {
+        "newMembers": 1,
+        "firstClaimSum": "232824717748",
+        "qualifying": 1,
+        "shareUnits": "232824717748",
+        "perDownline": {
+          "0x08f1a3c1c32e6f2355124e28ec2830951919599f": "232824717748"
+        }
+      }
+    }
   },
   "0x6832947138772f22c83417c9b047d4a8968ae6b3": {
     "address": "0x6832947138772f22c83417c9b047d4a8968ae6b3",
@@ -1571,7 +1581,7 @@
   },
   "0x1264c84d1d71224b4f177e0549d70ed76678202c": {
     "address": "0x1264c84d1d71224b4f177e0549d70ed76678202c",
-    "teamSize": 3,
+    "teamSize": 4,
     "byWeek": {}
   },
   "0xaa1b82f4d4ff8ecf1a15440de0d3372ecd6776e9": {
@@ -2363,12 +2373,13 @@
         }
       },
       "1": {
-        "newMembers": 1,
-        "firstClaimSum": "120562002476",
-        "qualifying": 1,
-        "shareUnits": "120562002476",
+        "newMembers": 2,
+        "firstClaimSum": "230426785901",
+        "qualifying": 2,
+        "shareUnits": "230426785901",
         "perDownline": {
-          "0x4a25cb6b773ee6306df081df3003f4301e6aa2c1": "120562002476"
+          "0x4a25cb6b773ee6306df081df3003f4301e6aa2c1": "120562002476",
+          "0xd22a734381a3770463253f8dd291f2b3ee34ba0f": "109864783425"
         }
       }
     }
@@ -4891,6 +4902,13 @@
         "perDownline": {
           "0xf9a1bd62d889c1638edbb285d1c12c02522b71ff": "140899625909"
         }
+      },
+      "1": {
+        "newMembers": 1,
+        "firstClaimSum": "83195658782",
+        "qualifying": 0,
+        "shareUnits": "0",
+        "perDownline": {}
       }
     }
   },
@@ -8564,7 +8582,17 @@
   "0x849f03bf799e39469d8c56ae690e7f8c1c9996fb": {
     "address": "0x849f03bf799e39469d8c56ae690e7f8c1c9996fb",
     "teamSize": 1,
-    "byWeek": {}
+    "byWeek": {
+      "1": {
+        "newMembers": 1,
+        "firstClaimSum": "191691002750",
+        "qualifying": 1,
+        "shareUnits": "191691002750",
+        "perDownline": {
+          "0x554506f861c7d108e69a92959fadd869cc2f571b": "191691002750"
+        }
+      }
+    }
   },
   "0xeb88c6f0560d4fc6bcbb66baa4679b2efb597504": {
     "address": "0xeb88c6f0560d4fc6bcbb66baa4679b2efb597504",
