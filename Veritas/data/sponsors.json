@@ -1402,14 +1402,15 @@
         }
       },
       "1": {
-        "newMembers": 3,
-        "firstClaimSum": "415394983552",
-        "qualifying": 2,
-        "shareUnits": "309005473409",
+        "newMembers": 4,
+        "firstClaimSum": "519222213834",
+        "qualifying": 3,
+        "shareUnits": "412832703691",
         "perDownline": {
           "0xad9289538c888aba90c51b3748effef3e1f4552b": "105345687500",
           "0x2c14129928aaf7de17c1ba519b61de9d89f8e3c2": "203659785909",
-          "0x555649e20fe55208886164f84fbf943573d25ef0": "0"
+          "0x555649e20fe55208886164f84fbf943573d25ef0": "0",
+          "0x144e993c19d6cf18a2d1ebef396e7d411dfb56fe": "103827230282"
         }
       }
     }
@@ -2441,7 +2442,7 @@
   },
   "0xf8172f27a1b88ab6f22fadee57bfca05b8fd3fb1": {
     "address": "0xf8172f27a1b88ab6f22fadee57bfca05b8fd3fb1",
-    "teamSize": 1,
+    "teamSize": 2,
     "byWeek": {
       "0": {
         "newMembers": 1,
@@ -6567,14 +6568,15 @@
         "perDownline": {}
       },
       "1": {
-        "newMembers": 3,
-        "firstClaimSum": "317176992168",
-        "qualifying": 3,
-        "shareUnits": "317176992168",
+        "newMembers": 4,
+        "firstClaimSum": "423564721945",
+        "qualifying": 4,
+        "shareUnits": "423564721945",
         "perDownline": {
           "0xe0b70ce7dda80fd9294d6c9d8f7c9d56f3888ad6": "102064215365",
           "0x56e4a6927b9719a9d294a41f165194bb7537802b": "107687983672",
-          "0x45a2762f4801802fc17a622eed02cbb60af36393": "107424793131"
+          "0x45a2762f4801802fc17a622eed02cbb60af36393": "107424793131",
+          "0xd23cae331fd58bf277be4ab20361e3c22b1c0781": "106387729777"
         }
       }
     }
@@ -9982,6 +9984,11 @@
   },
   "0xfe109544434638e33f809c700817a0149ced23bb": {
     "address": "0xfe109544434638e33f809c700817a0149ced23bb",
+    "teamSize": 1,
+    "byWeek": {}
+  },
+  "0xbeae8035cd8d51bcf731f01566d3c340c39fd78c": {
+    "address": "0xbeae8035cd8d51bcf731f01566d3c340c39fd78c",
     "teamSize": 1,
     "byWeek": {}
   }
