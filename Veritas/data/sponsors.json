@@ -387,7 +387,7 @@
   },
   "0x2dc7bed90c07952f213676db9d42ebe966653f86": {
     "address": "0x2dc7bed90c07952f213676db9d42ebe966653f86",
-    "teamSize": 48,
+    "teamSize": 50,
     "byWeek": {
       "0": {
         "newMembers": 3,
@@ -1954,12 +1954,13 @@
     "teamSize": 5,
     "byWeek": {
       "1": {
-        "newMembers": 1,
-        "firstClaimSum": "1969360255813",
-        "qualifying": 1,
-        "shareUnits": "1969360255813",
+        "newMembers": 2,
+        "firstClaimSum": "2085880847617",
+        "qualifying": 2,
+        "shareUnits": "2085880847617",
         "perDownline": {
-          "0xc9835a531aef8fb96cd5201d3ca5eaaeb719bbd2": "1969360255813"
+          "0xc9835a531aef8fb96cd5201d3ca5eaaeb719bbd2": "1969360255813",
+          "0xbaf3b94b0026731ac99f1294665c13ae7712aa8b": "116520591804"
         }
       }
     }
@@ -3059,7 +3060,7 @@
   },
   "0x408300dda121c8500e81c1eecb9dedfbcdb672cc": {
     "address": "0x408300dda121c8500e81c1eecb9dedfbcdb672cc",
-    "teamSize": 4,
+    "teamSize": 5,
     "byWeek": {}
   },
   "0xfc0a66c7e0752f5da6e1c2883c08a1ab878bea22": {
@@ -8002,9 +8003,9 @@
         "newMembers": 2,
         "firstClaimSum": "243102721881",
         "qualifying": 2,
-        "shareUnits": "243102721881",
+        "shareUnits": "340777342066",
         "perDownline": {
-          "0xa203ceaad61d4adc2052b11a20f9db20291da82d": "122385084193",
+          "0xa203ceaad61d4adc2052b11a20f9db20291da82d": "220059704378",
           "0xa7c2df42f32f03704e5709373a069fb1a94ebf03": "120717637688"
         }
       }
@@ -9854,7 +9855,18 @@
   "0xebe54f2547da57fded5b228d1465cd8d8aa93dd5": {
     "address": "0xebe54f2547da57fded5b228d1465cd8d8aa93dd5",
     "teamSize": 2,
-    "byWeek": {}
+    "byWeek": {
+      "1": {
+        "newMembers": 2,
+        "firstClaimSum": "2033997453066",
+        "qualifying": 2,
+        "shareUnits": "2033997453066",
+        "perDownline": {
+          "0xc45a74f3537ec73cf30bd72dcca1812c49406a4f": "1017854542999",
+          "0x42f1bccdde11ed33a6c60742459a00cde8a6651a": "1016142910067"
+        }
+      }
+    }
   },
   "0xb2dd848367c351c35216153c266fb6a76c235179": {
     "address": "0xb2dd848367c351c35216153c266fb6a76c235179",
@@ -10001,6 +10013,11 @@
   },
   "0xbeae8035cd8d51bcf731f01566d3c340c39fd78c": {
     "address": "0xbeae8035cd8d51bcf731f01566d3c340c39fd78c",
+    "teamSize": 1,
+    "byWeek": {}
+  },
+  "0x5ff345dbd678cab4208b47e683779a6fd3686229": {
+    "address": "0x5ff345dbd678cab4208b47e683779a6fd3686229",
     "teamSize": 1,
     "byWeek": {}
   }
