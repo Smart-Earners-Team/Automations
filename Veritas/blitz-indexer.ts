@@ -359,13 +359,28 @@ async function safeAggregate3(
     try {
       return await mc.aggregate3(calls, opts);
     } catch (e: any) {
-      const msg = e?.shortMessage || e?.message || `${e}`;
+      // Pull out as much context as possible
+      const topMsg = e?.shortMessage || e?.message || "";
+      const nestedMsg =
+        e?.info?.error?.message || e?.error?.message || e?.reason || "";
+      const combinedMsg = (topMsg + " | " + nestedMsg).toLowerCase();
+
+      const topCode = e?.code ?? e?.error?.code;
+      const nestedCode = e?.info?.error?.code;
+
       const isProviderBusy =
-        msg.includes("failed to serve request") ||
-        msg.includes("timeout") ||
-        msg.includes("rate") ||
-        msg.includes("gateway") ||
-        msg.includes("CALL_EXCEPTION"); // ethers wraps provider errors like this
+        // QuickNode / infra flakes
+        combinedMsg.includes("failed to serve request") ||
+        combinedMsg.includes("timeout") ||
+        combinedMsg.includes("rate limit") ||
+        combinedMsg.includes("too many requests") ||
+        combinedMsg.includes("gateway") ||
+        combinedMsg.includes("temporarily unavailable") ||
+        combinedMsg.includes("missing revert data") || // <-- your case
+        nestedCode === -32004 || // failed to serve request
+        nestedCode === -32007 || // rate limit
+        // Ethers wraps upstream RPC failures as CALL_EXCEPTION with no revert data
+        (topCode === "CALL_EXCEPTION" && !e?.revert && !e?.data);
 
       if (!isProviderBusy || attempt >= MAX_RETRIES) {
         // As a last resort: split big batches to bypass payload limits
@@ -373,15 +388,14 @@ async function safeAggregate3(
           const mid = Math.floor(calls.length / 2);
           const left = await safeAggregate3(calls.slice(0, mid), opts);
           const right = await safeAggregate3(calls.slice(mid), opts);
-          // stitch results in original order:
-          // Left + Right are arrays of [success, returnData]
-          // Return same type the SDK returns
-          // @ts-ignore
+          // @ts-ignore - Multicall SDK returns an array-like structure
           return [...left, ...right];
         }
+        // truly unrecoverable
         throw e;
       }
 
+      // transient error → backoff and retry
       await new Promise((r) => setTimeout(r, delay));
       attempt++;
       delay *= 2;
