@@ -15,16 +15,19 @@ import {
 
 import { Multicall, Call3, Call3Value } from "@evmlord/multicall-sdk";
 
-const CACHE_FILE = path.join(__dirname, "vva-main-cache.json");
-const LOG_FILE = path.join(__dirname, "vva-main-log.txt");
-
 // ── ABIs ──────────────────────────────────────────────────────────────────────
 import erc20ABI from "../HHV2/ERC20ABI.json";
+import { fileURLToPath } from "node:url";
 
 const REGISTRY_ABI = [
   "function getAllUsers() view returns (uint256)",
   "function getParticipants(uint256 pageNumber, uint256 pageLength) view returns (address[])",
 ];
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const CACHE_FILE = path.join(__dirname, "vva-main-cache.json");
+const LOG_FILE = path.join(__dirname, "vva-main-log.txt");
 
 /* ── Dual logger ─────────────────────────────────────────────────── */
 // open once in “append” mode
@@ -545,7 +548,7 @@ async function main() {
     const { size, gasLimit } = await findMaxFittingCalls(
       pokeCalls,
       i,
-      28_000_000n
+      29_000_000n
     ); // 90% of 30M
     const slice = pokeCalls.slice(i, i + size);
 
