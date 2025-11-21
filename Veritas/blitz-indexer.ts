@@ -9,6 +9,7 @@ import {
 } from "ethers";
 import { fileURLToPath } from "url";
 import path from "path";
+import { Call3, Multicall } from "@evmlord/multicall-sdk";
 import RegistryAbi from "./abis/Registry.json";
 import StakingAbi from "./abis/Staking.json";
 import {
@@ -16,7 +17,6 @@ import {
   STAKING_CONTRACT,
   sVVA_CONTRACT,
 } from "./constants";
-import { Call3, Multicall } from "@evmlord/multicall-sdk";
 import {
   Checkpoint,
   ensureDirSync,
@@ -710,7 +710,30 @@ async function main() {
       }
 
       if (referee && referee !== ZeroAddress) {
-        initSponsorIfMissing(sponsors, referee);
+        const ref = referee.toLowerCase();
+
+        initSponsorIfMissing(sponsors, ref);
+
+        // ensure sponsor is also a participant so we can snapshot their principal
+        if (!participants[ref]) {
+          participants[ref] = {
+            address: ref,
+            referee: null,
+            checkInTime: null,
+            stakedTotal: "0",
+            claimedTotal: "0",
+            forfeitedTotal: "0",
+            principalNow: undefined,
+            minPrincipalByWeek: {},
+          };
+
+          // treat them as "first seen" in this chunk so backfill will
+          // populate minPrincipalByWeek for all completed weeks
+          firstSeenBlock[ref] = firstSeenBlock[ref]
+            ? Math.min(firstSeenBlock[ref], log.blockNumber)
+            : log.blockNumber;
+        }
+
         if (!participants[user]._teamCounted) {
           sponsors[referee].teamSize++;
           participants[user]._teamCounted = true;
@@ -1003,12 +1026,29 @@ async function main() {
       const map = await mcBatchGetReferee(uniqMissingRefs);
       for (const [u, r] of Object.entries(map)) {
         if (participants[u] && !participants[u].referee) {
-          participants[u].referee =
-            r && r !== ZeroAddress ? r.toLowerCase() : null;
-          if (participants[u].referee) {
-            initSponsorIfMissing(sponsors, participants[u].referee!);
+          const ref = r && r !== ZeroAddress ? r.toLowerCase() : null;
+          participants[u].referee = ref;
+          if (ref) {
+            initSponsorIfMissing(sponsors, ref);
+
+            // ensure sponsor has a participant record
+            if (!participants[ref]) {
+              participants[ref] = {
+                address: ref,
+                referee: null,
+                checkInTime: null,
+                stakedTotal: "0",
+                claimedTotal: "0",
+                forfeitedTotal: "0",
+                principalNow: undefined,
+                minPrincipalByWeek: {},
+              };
+              // we don't know their exact first event block; treat as seen now
+              firstSeenBlock[ref] = firstSeenBlock[ref] ?? cursor;
+            }
+
             if (!participants[u]._teamCounted) {
-              sponsors[participants[u].referee!].teamSize++;
+              sponsors[ref].teamSize++;
               participants[u]._teamCounted = true;
             }
             newlyBackfilled.push(u);
