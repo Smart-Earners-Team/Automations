@@ -12,14 +12,14 @@ import {
   NonceManager,
 } from "ethers";
 import { DISTRIBUTOR_CONTRACT, VVA_CONTRACT } from "./constants";
+import { getWeekIndex, toBN } from "./blitz-indexer";
 import {
   ensureDirSync,
-  getWeekIndex,
   readJSON,
-  toBN,
-  writeJSON,
   type WeekAggregate,
-} from "./blitz-indexer";
+  writeJSON,
+} from "./helpers";
+
 // import { getBlitzWeek } from "./fetch";
 
 // -------------------- ENV / CONSTANTS -------------------- //
