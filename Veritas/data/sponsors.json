@@ -12914,13 +12914,14 @@
     "teamSize": 3,
     "byWeek": {
       "2": {
-        "newMembers": 2,
-        "firstClaimSum": "254426234686",
-        "qualifying": 2,
-        "shareUnits": "254426234686",
+        "newMembers": 3,
+        "firstClaimSum": "381639352029",
+        "qualifying": 3,
+        "shareUnits": "381639352029",
         "perDownline": {
           "0x022cabecf722515936690f705335cbdbf3754828": "127213117343",
-          "0x112fea1380f877c99c620c57574d3b0f86433966": "127213117343"
+          "0x112fea1380f877c99c620c57574d3b0f86433966": "127213117343",
+          "0x9e77ddf9cac5704d4ca3a6a9e1a2ac659ce5ed46": "127213117343"
         }
       }
     }
@@ -13179,17 +13180,47 @@
   "0x022cabecf722515936690f705335cbdbf3754828": {
     "address": "0x022cabecf722515936690f705335cbdbf3754828",
     "teamSize": 1,
-    "byWeek": {}
+    "byWeek": {
+      "2": {
+        "newMembers": 1,
+        "firstClaimSum": "126655790073",
+        "qualifying": 1,
+        "shareUnits": "126655790073",
+        "perDownline": {
+          "0x3c015e63200b33675c0b3ee122e33e5a393a3281": "126655790073"
+        }
+      }
+    }
   },
   "0x112fea1380f877c99c620c57574d3b0f86433966": {
     "address": "0x112fea1380f877c99c620c57574d3b0f86433966",
     "teamSize": 1,
-    "byWeek": {}
+    "byWeek": {
+      "2": {
+        "newMembers": 1,
+        "firstClaimSum": "126655790073",
+        "qualifying": 1,
+        "shareUnits": "126655790073",
+        "perDownline": {
+          "0x5cb8c2727047b6f258a0888d70ba5050c6f50a28": "126655790073"
+        }
+      }
+    }
   },
   "0x9e77ddf9cac5704d4ca3a6a9e1a2ac659ce5ed46": {
     "address": "0x9e77ddf9cac5704d4ca3a6a9e1a2ac659ce5ed46",
     "teamSize": 1,
-    "byWeek": {}
+    "byWeek": {
+      "2": {
+        "newMembers": 1,
+        "firstClaimSum": "126655790073",
+        "qualifying": 1,
+        "shareUnits": "126655790073",
+        "perDownline": {
+          "0xba2de9a0836a735c97c578f0abaf2f534f86e699": "126655790073"
+        }
+      }
+    }
   },
   "0x3a8ff4f65c92aa97c8f363cc65d3ae4ccbcc24c3": {
     "address": "0x3a8ff4f65c92aa97c8f363cc65d3ae4ccbcc24c3",
