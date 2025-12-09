@@ -1530,7 +1530,7 @@
   },
   "0xe09c1e372a033582a598b8e67213019aadf9918d": {
     "address": "0xe09c1e372a033582a598b8e67213019aadf9918d",
-    "teamSize": 4,
+    "teamSize": 6,
     "byWeek": {
       "0": {
         "newMembers": 2,
@@ -1701,7 +1701,7 @@
   },
   "0x8ee9e7c74f04d0ab5913fca4b04fb8807f139b38": {
     "address": "0x8ee9e7c74f04d0ab5913fca4b04fb8807f139b38",
-    "teamSize": 7,
+    "teamSize": 8,
     "byWeek": {
       "0": {
         "newMembers": 1,
@@ -11098,7 +11098,7 @@
   },
   "0x03b1cbf567dc1a672642f8013631277a05e4cda6": {
     "address": "0x03b1cbf567dc1a672642f8013631277a05e4cda6",
-    "teamSize": 5,
+    "teamSize": 6,
     "byWeek": {
       "1": {
         "newMembers": 1,
@@ -14796,7 +14796,15 @@
   "0xcebdcc35d8f0eda8c74c0926f5fd2b0541f3ea20": {
     "address": "0xcebdcc35d8f0eda8c74c0926f5fd2b0541f3ea20",
     "teamSize": 5,
-    "byWeek": {}
+    "byWeek": {
+      "4": {
+        "newMembers": 1,
+        "firstClaimSum": "18388003303",
+        "qualifying": 0,
+        "shareUnits": "0",
+        "perDownline": {}
+      }
+    }
   },
   "0x9d8c24c0abe05baea8182e2a2935bf5b2b4567bd": {
     "address": "0x9d8c24c0abe05baea8182e2a2935bf5b2b4567bd",
@@ -16597,12 +16605,13 @@
     "teamSize": 3,
     "byWeek": {
       "4": {
-        "newMembers": 1,
-        "firstClaimSum": "101461695947",
-        "qualifying": 1,
-        "shareUnits": "101461695947",
+        "newMembers": 2,
+        "firstClaimSum": "269426558260",
+        "qualifying": 2,
+        "shareUnits": "334731548436",
         "perDownline": {
-          "0x2a45b3ef7174f1cce636c04f75650e2deabad030": "101461695947"
+          "0x2a45b3ef7174f1cce636c04f75650e2deabad030": "166766686123",
+          "0xb62c29d5ca9d6374ba8d128a8397509994cca9a6": "167964862313"
         }
       }
     }
@@ -17352,6 +17361,11 @@
   },
   "0x36ba944539fe5285702d707dca731037a5bbc23e": {
     "address": "0x36ba944539fe5285702d707dca731037a5bbc23e",
+    "teamSize": 1,
+    "byWeek": {}
+  },
+  "0xf68ede6f9c01242298b444db626c717517adac44": {
+    "address": "0xf68ede6f9c01242298b444db626c717517adac44",
     "teamSize": 1,
     "byWeek": {}
   }
