@@ -52,7 +52,7 @@ jobs:
         env:
           VVA_PRIVATE_KEY: ${{ secrets.VVA_P_KEY }}
           VVA_RPC_URL: ${{ secrets.VVA_RPC_56 }}
-        run: npx tsx Veritas/blitz-payout.ts --auto-week
+        run: npx tsx Veritas/blitz-payout.ts --auto-week --dry
 
       # --- Commit the whole data directory (atomic JSON writes already handled by the script) ---
       - name: Commit data dir (if changed)
