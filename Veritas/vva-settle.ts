@@ -561,7 +561,7 @@ async function main() {
     const { size, gasLimit } = await findMaxSettleSlice(
       i,
       qualifiedAddrs,
-      27_000_000n // ~90% of 30M
+     16777216// 27_000_000n // ~90% of 30M
     );
     const slice = qualifiedAddrs.slice(i, i + size);
 
