@@ -180292,7 +180292,7 @@
     "referee": "0xe3c35303c1134cf9fb72757ed251af9ba818870d",
     "checkInTime": null,
     "stakedTotal": "239966870473",
-    "claimedTotal": "238955930964",
+    "claimedTotal": "245741752327",
     "forfeitedTotal": "0",
     "minPrincipalByWeek": {
       "0": "65768855874",
@@ -180350,11 +180350,19 @@
         "stakes": 2,
         "claims": 1,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "0",
+        "claimed": "6785821363",
+        "forfeited": "0",
+        "stakes": 0,
+        "claims": 1,
+        "forfeits": 0
       }
     },
     "_teamCounted": true,
-    "principalNow": "428552359006",
-    "lastClaimAt": 1768883149,
+    "principalNow": "442880273867",
+    "lastClaimAt": 1769145087,
     "firstClaimAt": 1765001118,
     "firstClaimAmt": "157876870770"
   },
