@@ -97714,9 +97714,9 @@
     "referee": "0xd841dc2aa60d337d3cfbe8b3e8bc4df2f9bc6492",
     "checkInTime": null,
     "stakedTotal": "10649052865",
-    "claimedTotal": "9416117567",
+    "claimedTotal": "12056190329",
     "forfeitedTotal": "0",
-    "principalNow": "267619712309",
+    "principalNow": "277015765784",
     "minPrincipalByWeek": {
       "0": "139135391799",
       "1": "155854157594",
@@ -97789,9 +97789,17 @@
         "stakes": 1,
         "claims": 1,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "0",
+        "claimed": "2640072762",
+        "forfeited": "0",
+        "stakes": 0,
+        "claims": 1,
+        "forfeits": 0
       }
     },
-    "lastClaimAt": 1768814567,
+    "lastClaimAt": 1769174493,
     "firstClaimAt": 1762549170,
     "firstClaimAmt": "1140238025",
     "_teamCounted": true
@@ -168305,9 +168313,9 @@
     "referee": "0xb7f16f432f04f9b55d1e0e4184cc76efb765fbae",
     "checkInTime": null,
     "stakedTotal": "133314882735",
-    "claimedTotal": "123210778865",
+    "claimedTotal": "158618811271",
     "forfeitedTotal": "0",
-    "principalNow": "945340106198",
+    "principalNow": "1108947038768",
     "minPrincipalByWeek": {
       "0": "484797240186",
       "1": "531512969799",
@@ -168396,9 +168404,17 @@
         "stakes": 1,
         "claims": 0,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "0",
+        "claimed": "35408032406",
+        "forfeited": "0",
+        "stakes": 0,
+        "claims": 1,
+        "forfeits": 0
       }
     },
-    "lastClaimAt": 1766204962,
+    "lastClaimAt": 1769175030,
     "firstClaimAt": 1762931908,
     "firstClaimAmt": "4481859896",
     "_teamCounted": true
@@ -339275,6 +339291,29 @@
     "address": "0x3ff38ed8c7529b09ad98d150496800b429d9a7e7",
     "referee": "0xba0f978d03621681a8bf7e9753f8618f6bf0dfda",
     "checkInTime": 1769165342,
+    "stakedTotal": "0",
+    "claimedTotal": "0",
+    "forfeitedTotal": "0",
+    "principalNow": "0",
+    "minPrincipalByWeek": {
+      "0": "0",
+      "1": "0",
+      "2": "0",
+      "3": "0",
+      "4": "0",
+      "5": "0",
+      "6": "0",
+      "7": "0",
+      "8": "0",
+      "9": "0",
+      "10": "0"
+    },
+    "_teamCounted": true
+  },
+  "0xf39ff6a0f31c17a44535902bcb5850eaf61b76c5": {
+    "address": "0xf39ff6a0f31c17a44535902bcb5850eaf61b76c5",
+    "referee": "0xaa4445cd6a62c20d3d3d027b2514ef12e7d77177",
+    "checkInTime": 1769174853,
     "stakedTotal": "0",
     "claimedTotal": "0",
     "forfeitedTotal": "0",
