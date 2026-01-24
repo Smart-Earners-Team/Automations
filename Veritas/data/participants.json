@@ -3049,10 +3049,10 @@
     "address": "0xf7a66163423c0f0efd0aed8f2696780a1e5d5374",
     "referee": "0x92a082464a89969386b5c2951035daf24a950c76",
     "checkInTime": null,
-    "stakedTotal": "137156340291",
+    "stakedTotal": "141258423476",
     "claimedTotal": "92397144009",
     "forfeitedTotal": "0",
-    "principalNow": "303232574604",
+    "principalNow": "307898003331",
     "minPrincipalByWeek": {
       "0": "86486103428",
       "1": "94820023443",
@@ -3066,7 +3066,7 @@
       "9": "289198831476",
       "10": "303990324667"
     },
-    "lastStakeAt": 1769064529,
+    "lastStakeAt": 1769264738,
     "firstStakeAt": 1762482888,
     "firstStakeAmt": "2380508328",
     "byWeek": {
@@ -3155,6 +3155,14 @@
         "claimed": "0",
         "forfeited": "0",
         "stakes": 5,
+        "claims": 0,
+        "forfeits": 0
+      },
+      "11": {
+        "staked": "4102083185",
+        "claimed": "0",
+        "forfeited": "0",
+        "stakes": 1,
         "claims": 0,
         "forfeits": 0
       }
@@ -9914,10 +9922,10 @@
     "address": "0xf31798c5dc65b462001c7473b8bf02aa4d3da4f8",
     "referee": "0x9caf037f63e49f972558e62c817e0be16e146233",
     "checkInTime": null,
-    "stakedTotal": "8767692294119",
-    "claimedTotal": "8854381426251",
+    "stakedTotal": "8958561184601",
+    "claimedTotal": "8896679510800",
     "forfeitedTotal": "0",
-    "principalNow": "12930091759334",
+    "principalNow": "13040893706473",
     "minPrincipalByWeek": {
       "0": "1287640508449",
       "1": "1907983802225",
@@ -9931,7 +9939,7 @@
       "9": "11321362331163",
       "10": "12723308679326"
     },
-    "lastStakeAt": 1769178702,
+    "lastStakeAt": 1769266690,
     "firstStakeAt": 1762486968,
     "firstStakeAmt": "28389544121",
     "byWeek": {
@@ -10024,15 +10032,15 @@
         "forfeits": 0
       },
       "11": {
-        "staked": "42075169532",
-        "claimed": "111144857288",
+        "staked": "232944060014",
+        "claimed": "153442941837",
         "forfeited": "0",
-        "stakes": 2,
-        "claims": 1,
+        "stakes": 4,
+        "claims": 2,
         "forfeits": 0
       }
     },
-    "lastClaimAt": 1769178671,
+    "lastClaimAt": 1769266655,
     "firstClaimAt": 1762486938,
     "firstClaimAmt": "28414172077",
     "_teamCounted": true
@@ -13195,10 +13203,10 @@
     "address": "0xddcd6b3b733dbbcc48ab00f70fabdf11c82e8396",
     "referee": "0xf31798c5dc65b462001c7473b8bf02aa4d3da4f8",
     "checkInTime": null,
-    "stakedTotal": "3231927518450",
-    "claimedTotal": "3248887704994",
+    "stakedTotal": "3340444204100",
+    "claimedTotal": "3270553593078",
     "forfeitedTotal": "0",
-    "principalNow": "6112916027352",
+    "principalNow": "6166968256334",
     "minPrincipalByWeek": {
       "0": "1202259034897",
       "1": "1365932577035",
@@ -13212,7 +13220,7 @@
       "9": "5283017763859",
       "10": "6003137348736"
     },
-    "lastClaimAt": 1769178739,
+    "lastClaimAt": 1769266731,
     "byWeek": {
       "0": {
         "staked": "31188891408",
@@ -13303,18 +13311,18 @@
         "forfeits": 0
       },
       "11": {
-        "staked": "21551706748",
-        "claimed": "64654458081",
+        "staked": "130068392398",
+        "claimed": "86320346165",
         "forfeited": "0",
-        "stakes": 1,
-        "claims": 1,
+        "stakes": 2,
+        "claims": 2,
         "forfeits": 0
       }
     },
     "firstClaimAt": 1762486815,
     "firstClaimAmt": "5031804888",
     "_teamCounted": true,
-    "lastStakeAt": 1769178755,
+    "lastStakeAt": 1769266782,
     "firstStakeAt": 1762491391,
     "firstStakeAmt": "5025356982"
   },
@@ -17786,10 +17794,10 @@
     "address": "0x0db24c27a1c20525423cfe8dc8d47b21951b9c88",
     "referee": "0xc2483aafa2ca25b1b5c8bc07630fc3999e0cca3e",
     "checkInTime": null,
-    "stakedTotal": "1109932643727",
-    "claimedTotal": "1082136917426",
+    "stakedTotal": "1136440024438",
+    "claimedTotal": "1142163362024",
     "forfeitedTotal": "0",
-    "principalNow": "4632525954254",
+    "principalNow": "4717095606071",
     "minPrincipalByWeek": {
       "0": "1787748629199",
       "1": "2056936514360",
@@ -17803,7 +17811,7 @@
       "9": "4277291691365",
       "10": "4597964101993"
     },
-    "lastStakeAt": 1769181395,
+    "lastStakeAt": 1769265285,
     "firstStakeAt": 1762516670,
     "firstStakeAmt": "10208046314",
     "byWeek": {
@@ -17896,15 +17904,15 @@
         "forfeits": 0
       },
       "11": {
-        "staked": "59710099400",
-        "claimed": "0",
+        "staked": "86217480111",
+        "claimed": "60026444598",
         "forfeited": "0",
-        "stakes": 1,
-        "claims": 0,
+        "stakes": 2,
+        "claims": 1,
         "forfeits": 0
       }
     },
-    "lastClaimAt": 1769002861,
+    "lastClaimAt": 1769265218,
     "firstClaimAt": 1762516334,
     "firstClaimAmt": "18409228333",
     "_teamCounted": true
@@ -17913,10 +17921,10 @@
     "address": "0xf9637d241284e46d3dbf5a4af37a8d47b45aa90e",
     "referee": "0x88147eaf981871594431196636c077bcb72a6c1f",
     "checkInTime": null,
-    "stakedTotal": "5642221408882",
-    "claimedTotal": "4766899901225",
+    "stakedTotal": "5740282903688",
+    "claimedTotal": "5757816944134",
     "forfeitedTotal": "0",
-    "principalNow": "81595948618204",
+    "principalNow": "83019162489014",
     "minPrincipalByWeek": {
       "0": "46244300642262",
       "1": "49695736326902",
@@ -17930,7 +17938,7 @@
       "9": "76570863101738",
       "10": "80896240107873"
     },
-    "lastStakeAt": 1769177299,
+    "lastStakeAt": 1769265674,
     "firstStakeAt": 1762522253,
     "firstStakeAmt": "53997626325",
     "byWeek": {
@@ -18023,15 +18031,15 @@
         "forfeits": 0
       },
       "11": {
-        "staked": "985694813761",
-        "claimed": "91629839626",
+        "staked": "1083756308567",
+        "claimed": "1082546882535",
         "forfeited": "0",
-        "stakes": 2,
-        "claims": 1,
+        "stakes": 3,
+        "claims": 2,
         "forfeits": 0
       }
     },
-    "lastClaimAt": 1769177226,
+    "lastClaimAt": 1769265617,
     "firstClaimAt": 1762522234,
     "firstClaimAmt": "53942170820",
     "_teamCounted": true
@@ -31453,10 +31461,10 @@
     "address": "0x91c9926b5e754c8fc249ad4d14d7fdb9932a6023",
     "referee": "0xa2df2a0b80a68790f43d71981444ccaa39f113af",
     "checkInTime": null,
-    "stakedTotal": "161815012891",
+    "stakedTotal": "168113295103",
     "claimedTotal": "166406051873",
     "forfeitedTotal": "0",
-    "principalNow": "2044542270219",
+    "principalNow": "2055374292555",
     "minPrincipalByWeek": {
       "0": "966679045025",
       "1": "1078751599491",
@@ -31561,10 +31569,10 @@
         "forfeits": 0
       },
       "11": {
-        "staked": "0",
+        "staked": "6298282212",
         "claimed": "5481083765",
         "forfeited": "0",
-        "stakes": 0,
+        "stakes": 1,
         "claims": 1,
         "forfeits": 0
       }
@@ -31572,7 +31580,7 @@
     "firstClaimAt": 1762490000,
     "firstClaimAmt": "2654680012",
     "_teamCounted": true,
-    "lastStakeAt": 1769047036,
+    "lastStakeAt": 1769266391,
     "firstStakeAt": 1762531203,
     "firstStakeAmt": "1993863160"
   },
@@ -53685,10 +53693,10 @@
     "address": "0x1d0f8ba1cea1e7ea7cc0a3984f0e64a7fc436022",
     "referee": "0xe932029931b950f3bf86d3b50ee5deac8915a27d",
     "checkInTime": null,
-    "stakedTotal": "583863729869",
-    "claimedTotal": "576503817472",
+    "stakedTotal": "615556987458",
+    "claimedTotal": "604346341516",
     "forfeitedTotal": "0",
-    "principalNow": "1875566117653",
+    "principalNow": "1927518322522",
     "minPrincipalByWeek": {
       "0": "733250978943",
       "1": "834889881621",
@@ -53702,7 +53710,7 @@
       "9": "1718699312589",
       "10": "1875566117653"
     },
-    "lastStakeAt": 1769091615,
+    "lastStakeAt": 1769265861,
     "firstStakeAt": 1762514435,
     "firstStakeAmt": "10596402397",
     "byWeek": {
@@ -53793,9 +53801,17 @@
         "stakes": 5,
         "claims": 5,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "31693257589",
+        "claimed": "27842524044",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
-    "lastClaimAt": 1769091594,
+    "lastClaimAt": 1769265846,
     "firstClaimAt": 1762514420,
     "firstClaimAmt": "13039980989",
     "_teamCounted": true
@@ -53804,10 +53820,10 @@
     "address": "0x5ee4ea719e8bf01e89e576bdfea9b96d7aeb1cf8",
     "referee": "0x1d0f8ba1cea1e7ea7cc0a3984f0e64a7fc436022",
     "checkInTime": null,
-    "stakedTotal": "422935094748",
-    "claimedTotal": "413209614130",
+    "stakedTotal": "458126594383",
+    "claimedTotal": "443536460978",
     "forfeitedTotal": "0",
-    "principalNow": "1067482144182",
+    "principalNow": "1111531063284",
     "minPrincipalByWeek": {
       "0": "354822753195",
       "1": "415007540287",
@@ -53821,7 +53837,7 @@
       "9": "946778342311",
       "10": "1067482144182"
     },
-    "lastStakeAt": 1769091663,
+    "lastStakeAt": 1769265914,
     "firstStakeAt": 1762514507,
     "firstStakeAmt": "11808995244",
     "byWeek": {
@@ -53912,9 +53928,17 @@
         "stakes": 4,
         "claims": 4,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "35191499635",
+        "claimed": "30326846848",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
-    "lastClaimAt": 1769091644,
+    "lastClaimAt": 1769265896,
     "firstClaimAt": 1762514485,
     "firstClaimAmt": "15136726756",
     "_teamCounted": true
@@ -53923,10 +53947,10 @@
     "address": "0xa298367ae983f4f87a12b76f5d096f94a84a2614",
     "referee": "0x5ee4ea719e8bf01e89e576bdfea9b96d7aeb1cf8",
     "checkInTime": null,
-    "stakedTotal": "537372473664",
-    "claimedTotal": "526066181982",
+    "stakedTotal": "581625865031",
+    "claimedTotal": "563767382760",
     "forfeitedTotal": "0",
-    "principalNow": "863510964421",
+    "principalNow": "912312266414",
     "minPrincipalByWeek": {
       "0": "178122989903",
       "1": "223605011302",
@@ -53940,7 +53964,7 @@
       "9": "738033073062",
       "10": "863510964421"
     },
-    "lastStakeAt": 1769091716,
+    "lastStakeAt": 1769265974,
     "firstStakeAt": 1762514567,
     "firstStakeAmt": "15078313711",
     "byWeek": {
@@ -54031,9 +54055,17 @@
         "stakes": 4,
         "claims": 4,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "44253391367",
+        "claimed": "37701200778",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
-    "lastClaimAt": 1769091702,
+    "lastClaimAt": 1769265951,
     "firstClaimAt": 1762514551,
     "firstClaimAmt": "19701348448",
     "_teamCounted": true
@@ -54272,10 +54304,10 @@
     "address": "0x62dd7bef40d6f07afdc507ac38ad956438038b43",
     "referee": "0xfa8e16e33dd0b61cdbf94aa46602cd3ee0313743",
     "checkInTime": null,
-    "stakedTotal": "445682352946",
-    "claimedTotal": "456851785926",
+    "stakedTotal": "447430242812",
+    "claimedTotal": "458593688752",
     "forfeitedTotal": "0",
-    "principalNow": "404478730599",
+    "principalNow": "411420051885",
     "minPrincipalByWeek": {
       "0": "1072167856001",
       "1": "1225057933653",
@@ -54289,7 +54321,7 @@
       "9": "357706351792",
       "10": "404478730599"
     },
-    "lastStakeAt": 1769092471,
+    "lastStakeAt": 1769266813,
     "firstStakeAt": 1762515050,
     "firstStakeAmt": "13071755176",
     "byWeek": {
@@ -54348,9 +54380,17 @@
         "stakes": 5,
         "claims": 4,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "1747889866",
+        "claimed": "1741902826",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
-    "lastClaimAt": 1769092449,
+    "lastClaimAt": 1769266797,
     "firstClaimAt": 1762515032,
     "firstClaimAmt": "7049591441",
     "_teamCounted": true
@@ -55166,10 +55206,10 @@
     "address": "0xba2c0f3415b329295867b1fb4970f28124320663",
     "referee": "0x6e9e21373419e3e9395c2888edc1d6ef71142343",
     "checkInTime": null,
-    "stakedTotal": "661414138406",
-    "claimedTotal": "673560898270",
+    "stakedTotal": "670983473699",
+    "claimedTotal": "679264113645",
     "forfeitedTotal": "0",
-    "principalNow": "852778817001",
+    "principalNow": "863000070142",
     "minPrincipalByWeek": {
       "0": "152281861069",
       "1": "105616286417",
@@ -55183,7 +55223,7 @@
       "9": "765697516963",
       "10": "838866088120"
     },
-    "lastStakeAt": 1769179303,
+    "lastStakeAt": 1769265063,
     "firstStakeAt": 1762516292,
     "firstStakeAmt": "9370654479",
     "byWeek": {
@@ -55276,15 +55316,15 @@
         "forfeits": 0
       },
       "11": {
-        "staked": "5673158876",
-        "claimed": "7607162947",
+        "staked": "15242494169",
+        "claimed": "13310378322",
         "forfeited": "0",
-        "stakes": 1,
-        "claims": 1,
+        "stakes": 2,
+        "claims": 2,
         "forfeits": 0
       }
     },
-    "lastClaimAt": 1769179290,
+    "lastClaimAt": 1769265049,
     "firstClaimAt": 1762516278,
     "firstClaimAmt": "10106784037",
     "_teamCounted": true
@@ -55928,10 +55968,10 @@
     "address": "0x6e9e21373419e3e9395c2888edc1d6ef71142343",
     "referee": "0xfc4f32ba73974939ee983538248fa92afd73bcd7",
     "checkInTime": null,
-    "stakedTotal": "800838512318",
-    "claimedTotal": "802378408360",
+    "stakedTotal": "810342403800",
+    "claimedTotal": "809454834544",
     "forfeitedTotal": "0",
-    "principalNow": "1386999673469",
+    "principalNow": "1401424449286",
     "minPrincipalByWeek": {
       "0": "295212798332",
       "1": "275509930019",
@@ -55945,7 +55985,7 @@
       "9": "1266121253844",
       "10": "1368308493172"
     },
-    "lastStakeAt": 1769179347,
+    "lastStakeAt": 1769265093,
     "firstStakeAt": 1762516640,
     "firstStakeAmt": "7200286120",
     "byWeek": {
@@ -56038,15 +56078,15 @@
         "forfeits": 0
       },
       "11": {
-        "staked": "7039132731",
-        "claimed": "8405916006",
+        "staked": "16543024213",
+        "claimed": "15482342190",
         "forfeited": "0",
-        "stakes": 1,
-        "claims": 1,
+        "stakes": 2,
+        "claims": 2,
         "forfeits": 0
       }
     },
-    "lastClaimAt": 1769179336,
+    "lastClaimAt": 1769265081,
     "firstClaimAt": 1762516626,
     "firstClaimAmt": "589316633",
     "_teamCounted": true
@@ -56182,10 +56222,10 @@
     "address": "0xc5006c3308135cfa8d96a5d31bd8350330db6fb9",
     "referee": "0xfc4f32ba73974939ee983538248fa92afd73bcd7",
     "checkInTime": null,
-    "stakedTotal": "590791575532",
-    "claimedTotal": "595024446201",
+    "stakedTotal": "591835524189",
+    "claimedTotal": "595646627767",
     "forfeitedTotal": "0",
-    "principalNow": "1231981849155",
+    "principalNow": "1239131093087",
     "minPrincipalByWeek": {
       "0": "286237369855",
       "1": "275695538632",
@@ -56199,7 +56239,7 @@
       "9": "1158979235967",
       "10": "1221966713647"
     },
-    "lastStakeAt": 1769179376,
+    "lastStakeAt": 1769265126,
     "firstStakeAt": 1762516670,
     "firstStakeAmt": "164213871",
     "byWeek": {
@@ -56292,16 +56332,16 @@
         "forfeits": 0
       },
       "11": {
-        "staked": "618902609",
-        "claimed": "829889150",
+        "staked": "1662851266",
+        "claimed": "1452070716",
         "forfeited": "0",
-        "stakes": 1,
-        "claims": 1,
+        "stakes": 2,
+        "claims": 2,
         "forfeits": 0
       }
     },
     "_teamCounted": true,
-    "lastClaimAt": 1769179365,
+    "lastClaimAt": 1769265110,
     "firstClaimAt": 1762599522,
     "firstClaimAmt": "166386151"
   },
@@ -56563,10 +56603,10 @@
     "address": "0xfc4f32ba73974939ee983538248fa92afd73bcd7",
     "referee": "0x494106c5bc8d23f5d648cee546d7f0cef2254a04",
     "checkInTime": null,
-    "stakedTotal": "2461728084981",
-    "claimedTotal": "2480854082519",
+    "stakedTotal": "2478428957866",
+    "claimedTotal": "2496196324948",
     "forfeitedTotal": "0",
-    "principalNow": "6160921743144",
+    "principalNow": "6208904661631",
     "minPrincipalByWeek": {
       "0": "1842392508584",
       "1": "1833186126945",
@@ -56580,7 +56620,7 @@
       "9": "5731665169185",
       "10": "6098532644430"
     },
-    "lastStakeAt": 1769179422,
+    "lastStakeAt": 1769265157,
     "firstStakeAt": 1762516768,
     "firstStakeAmt": "7689153415",
     "byWeek": {
@@ -56673,15 +56713,15 @@
         "forfeits": 0
       },
       "11": {
-        "staked": "15261387320",
-        "claimed": "16547813399",
+        "staked": "31962260205",
+        "claimed": "31890055828",
         "forfeited": "0",
-        "stakes": 1,
-        "claims": 1,
+        "stakes": 2,
+        "claims": 2,
         "forfeits": 0
       }
     },
-    "lastClaimAt": 1769179409,
+    "lastClaimAt": 1769265144,
     "firstClaimAt": 1762516754,
     "firstClaimAmt": "4027496995",
     "_teamCounted": true
@@ -61617,10 +61657,10 @@
     "address": "0xfa8e16e33dd0b61cdbf94aa46602cd3ee0313743",
     "referee": "0x9679d691cb4e6226e5be4ebb7f173fafd0a19fbf",
     "checkInTime": null,
-    "stakedTotal": "434240447845",
-    "claimedTotal": "596624493347",
+    "stakedTotal": "437608176957",
+    "claimedTotal": "599977967298",
     "forfeitedTotal": "0",
-    "principalNow": "422919123124",
+    "principalNow": "431709059686",
     "minPrincipalByWeek": {
       "0": "1536588633914",
       "1": "1746207704517",
@@ -61634,7 +61674,7 @@
       "9": "351671498439",
       "10": "422919123124"
     },
-    "lastClaimAt": 1769092406,
+    "lastClaimAt": 1769266678,
     "byWeek": {
       "0": {
         "staked": "240116517591",
@@ -61715,12 +61755,20 @@
         "stakes": 5,
         "claims": 3,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "3367729112",
+        "claimed": "3353473951",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
     "firstClaimAt": 1762549855,
     "firstClaimAmt": "159900784883",
     "_teamCounted": true,
-    "lastStakeAt": 1769092420,
+    "lastStakeAt": 1769266757,
     "firstStakeAt": 1762602690,
     "firstStakeAmt": "13092218971"
   },
@@ -62613,10 +62661,10 @@
     "address": "0x7c03eac77c7ef4c42646af7ccdb532051fd2f068",
     "referee": "0x442e84418686319553c1b769d0ab5e61ded0a9bb",
     "checkInTime": null,
-    "stakedTotal": "2445977723653",
-    "claimedTotal": "2988714041878",
+    "stakedTotal": "2475947720953",
+    "claimedTotal": "3020203076028",
     "forfeitedTotal": "0",
-    "principalNow": "4337355557078",
+    "principalNow": "4424599628132",
     "minPrincipalByWeek": {
       "0": "6137998550128",
       "1": "6538237842591",
@@ -62630,7 +62678,7 @@
       "9": "4720560052298",
       "10": "4337355557078"
     },
-    "lastClaimAt": 1769092197,
+    "lastClaimAt": 1769266419,
     "byWeek": {
       "0": {
         "staked": "1142550668803",
@@ -62719,12 +62767,20 @@
         "stakes": 8,
         "claims": 6,
         "forfeits": 1
+      },
+      "11": {
+        "staked": "29969997300",
+        "claimed": "31489034150",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
     "firstClaimAt": 1762549506,
     "firstClaimAmt": "542404951235",
     "_teamCounted": true,
-    "lastStakeAt": 1769092219,
+    "lastStakeAt": 1769266459,
     "firstStakeAt": 1762602429,
     "firstStakeAmt": "45128479762"
   },
@@ -62732,10 +62788,10 @@
     "address": "0x48b65fb885c18b6f33bc8bf6b3982c4f953b1e18",
     "referee": "0x7c03eac77c7ef4c42646af7ccdb532051fd2f068",
     "checkInTime": null,
-    "stakedTotal": "1625860408236",
-    "claimedTotal": "2313208414564",
+    "stakedTotal": "1648758495647",
+    "claimedTotal": "2335470893749",
     "forfeitedTotal": "0",
-    "principalNow": "3042560720702",
+    "principalNow": "3103934147337",
     "minPrincipalByWeek": {
       "0": "5090968238846",
       "1": "5790291777264",
@@ -62749,7 +62805,7 @@
       "9": "2780186254355",
       "10": "3042560720702"
     },
-    "lastClaimAt": 1769092117,
+    "lastClaimAt": 1769266337,
     "byWeek": {
       "0": {
         "staked": "689374585359",
@@ -62838,12 +62894,20 @@
         "stakes": 8,
         "claims": 6,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "22898087411",
+        "claimed": "22262479185",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
     "firstClaimAt": 1762549579,
     "firstClaimAmt": "688237843373",
     "_teamCounted": true,
-    "lastStakeAt": 1769092148,
+    "lastStakeAt": 1769266350,
     "firstStakeAt": 1762602504,
     "firstStakeAmt": "33718562472"
   },
@@ -62851,10 +62915,10 @@
     "address": "0x722befdc41d455a117a5ebad16e9d2742f9e8d4b",
     "referee": "0x48b65fb885c18b6f33bc8bf6b3982c4f953b1e18",
     "checkInTime": null,
-    "stakedTotal": "1376537053268",
-    "claimedTotal": "1805214072923",
+    "stakedTotal": "1391908432967",
+    "claimedTotal": "1820467374187",
     "forfeitedTotal": "0",
-    "principalNow": "2023666623882",
+    "principalNow": "2064933380997",
     "minPrincipalByWeek": {
       "0": "4084860941079",
       "1": "4632187083746",
@@ -62868,7 +62932,7 @@
       "9": "1824388959714",
       "10": "2023666623882"
     },
-    "lastClaimAt": 1769092267,
+    "lastClaimAt": 1769266523,
     "byWeek": {
       "0": {
         "staked": "729010354671",
@@ -62957,12 +63021,20 @@
         "stakes": 8,
         "claims": 6,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "15371379699",
+        "claimed": "15253301264",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
     "firstClaimAt": 1762549653,
     "firstClaimAmt": "425823742206",
     "_teamCounted": true,
-    "lastStakeAt": 1769092287,
+    "lastStakeAt": 1769266544,
     "firstStakeAt": 1762602559,
     "firstStakeAmt": "28342610380"
   },
@@ -62970,10 +63042,10 @@
     "address": "0x580ff318c9f7dae87ced90707e7536067b5003bc",
     "referee": "0x722befdc41d455a117a5ebad16e9d2742f9e8d4b",
     "checkInTime": null,
-    "stakedTotal": "1264435160488",
-    "claimedTotal": "1590782100602",
+    "stakedTotal": "1274949241456",
+    "claimedTotal": "1601199169236",
     "forfeitedTotal": "0",
-    "principalNow": "1040781856678",
+    "principalNow": "1064577775642",
     "minPrincipalByWeek": {
       "0": "3038131169741",
       "1": "3443619216280",
@@ -62987,7 +63059,7 @@
       "9": "913492917454",
       "10": "1040781856678"
     },
-    "lastClaimAt": 1769092312,
+    "lastClaimAt": 1769266576,
     "byWeek": {
       "0": {
         "staked": "498917705404",
@@ -63076,12 +63148,20 @@
         "stakes": 6,
         "claims": 5,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "10514080968",
+        "claimed": "10417068634",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
     "firstClaimAt": 1762549720,
     "firstClaimAmt": "320027523928",
     "_teamCounted": true,
-    "lastStakeAt": 1769092334,
+    "lastStakeAt": 1769266590,
     "firstStakeAt": 1762602610,
     "firstStakeAmt": "20955966379"
   },
@@ -63089,10 +63169,10 @@
     "address": "0x9679d691cb4e6226e5be4ebb7f173fafd0a19fbf",
     "referee": "0x580ff318c9f7dae87ced90707e7536067b5003bc",
     "checkInTime": null,
-    "stakedTotal": "689683687032",
-    "claimedTotal": "906662735231",
+    "stakedTotal": "696386672697",
+    "claimedTotal": "913280638802",
     "forfeitedTotal": "0",
-    "principalNow": "549439713816",
+    "principalNow": "563120453513",
     "minPrincipalByWeek": {
       "0": "2128473655338",
       "1": "2419339869786",
@@ -63106,7 +63186,7 @@
       "9": "454439126828",
       "10": "549439713816"
     },
-    "lastClaimAt": 1769092363,
+    "lastClaimAt": 1769266624,
     "byWeek": {
       "0": {
         "staked": "380223195874",
@@ -63187,12 +63267,20 @@
         "stakes": 6,
         "claims": 5,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "6702985665",
+        "claimed": "6617903571",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
     "firstClaimAt": 1762549800,
     "firstClaimAmt": "214588176478",
     "_teamCounted": true,
-    "lastStakeAt": 1769092373,
+    "lastStakeAt": 1769266647,
     "firstStakeAt": 1762602657,
     "firstStakeAmt": "16262218842"
   },
@@ -67986,10 +68074,10 @@
     "address": "0x59bc74e3739e75ab3e8212aa6b972df14f4e0d56",
     "referee": "0x626c901b70dd9421cad53899a638cd6a0d041ad6",
     "checkInTime": null,
-    "stakedTotal": "7097386953749",
-    "claimedTotal": "7167143439148",
+    "stakedTotal": "7426017606134",
+    "claimedTotal": "7277028222087",
     "forfeitedTotal": "0",
-    "principalNow": "32338571849940",
+    "principalNow": "33109704197395",
     "minPrincipalByWeek": {
       "0": "14640372519104",
       "1": "16786051166447",
@@ -68003,7 +68091,7 @@
       "9": "30278731340889",
       "10": "32581003154335"
     },
-    "lastStakeAt": 1769008011,
+    "lastStakeAt": 1769265627,
     "firstStakeAt": 1762522235,
     "firstStakeAmt": "76180029984",
     "byWeek": {
@@ -68094,9 +68182,17 @@
         "stakes": 4,
         "claims": 4,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "328630652385",
+        "claimed": "109884782939",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
-    "lastClaimAt": 1769007908,
+    "lastClaimAt": 1769265569,
     "firstClaimAt": 1762522175,
     "firstClaimAmt": "83672695004",
     "_teamCounted": true
@@ -73217,10 +73313,10 @@
     "address": "0x330deabe0f59b1536e790e160d158d2d2ad58f2d",
     "referee": "0x359d0e2168ec3d7448aa5347a0a320db334c5abf",
     "checkInTime": null,
-    "stakedTotal": "1553239949723",
-    "claimedTotal": "1558673089271",
+    "stakedTotal": "1590788930913",
+    "claimedTotal": "1611022077756",
     "forfeitedTotal": "0",
-    "principalNow": "10395222653893",
+    "principalNow": "10502645722092",
     "minPrincipalByWeek": {
       "0": "4790059499029",
       "1": "5413025431778",
@@ -73324,18 +73420,18 @@
         "forfeits": 0
       },
       "11": {
-        "staked": "7457329040",
-        "claimed": "0",
+        "staked": "45006310230",
+        "claimed": "52348988485",
         "forfeited": "0",
-        "stakes": 1,
-        "claims": 0,
+        "stakes": 2,
+        "claims": 1,
         "forfeits": 0
       }
     },
-    "lastStakeAt": 1769186314,
+    "lastStakeAt": 1769264752,
     "firstStakeAt": 1762564249,
     "firstStakeAmt": "19547993154",
-    "lastClaimAt": 1769097857,
+    "lastClaimAt": 1769264724,
     "firstClaimAt": 1762564224,
     "firstClaimAmt": "39146126241",
     "_teamCounted": true
@@ -76208,10 +76304,10 @@
     "address": "0xd88d2b02c7dd29d08023e2355876480c87f4e948",
     "referee": "0x70b74c4b2867e1e001c184b16d24d281a9045720",
     "checkInTime": null,
-    "stakedTotal": "279350601253",
-    "claimedTotal": "280185118036",
+    "stakedTotal": "280037901957",
+    "claimedTotal": "280594741465",
     "forfeitedTotal": "0",
-    "principalNow": "278684267547",
+    "principalNow": "280570365322",
     "minPrincipalByWeek": {
       "0": "1855005702",
       "1": "2033756605",
@@ -76291,19 +76387,19 @@
         "forfeits": 1
       },
       "11": {
-        "staked": "407464674",
-        "claimed": "591700093",
+        "staked": "1094765378",
+        "claimed": "1001323522",
         "forfeited": "0",
-        "stakes": 1,
-        "claims": 1,
+        "stakes": 2,
+        "claims": 2,
         "forfeits": 0
       }
     },
-    "lastStakeAt": 1769177704,
+    "lastStakeAt": 1769264981,
     "firstStakeAt": 1764511443,
     "firstStakeAmt": "6223852426",
     "_teamCounted": true,
-    "lastClaimAt": 1769177670,
+    "lastClaimAt": 1769264942,
     "firstClaimAt": 1764596447,
     "firstClaimAmt": "6306206847"
   },
@@ -79765,10 +79861,10 @@
     "address": "0xff42ef9c74584ea869002973d092fd53bae721ce",
     "referee": "0xf0c28b2c3bdb30fa2dd2e12f59fbb54c7aef3f11",
     "checkInTime": null,
-    "stakedTotal": "87154195274",
-    "claimedTotal": "85887193438",
+    "stakedTotal": "89652366610",
+    "claimedTotal": "88376807801",
     "forfeitedTotal": "0",
-    "principalNow": "1530649367682",
+    "principalNow": "1552814890754",
     "minPrincipalByWeek": {
       "0": "754885573518",
       "1": "835919684292",
@@ -79782,7 +79878,7 @@
       "9": "1447955631622",
       "10": "1530649367682"
     },
-    "lastStakeAt": 1769080927,
+    "lastStakeAt": 1769265120,
     "firstStakeAt": 1762530944,
     "firstStakeAmt": "2089583672",
     "byWeek": {
@@ -79873,10 +79969,18 @@
         "stakes": 5,
         "claims": 5,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "2498171336",
+        "claimed": "2489614363",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
     "_teamCounted": true,
-    "lastClaimAt": 1769080904,
+    "lastClaimAt": 1769265099,
     "firstClaimAt": 1762607989,
     "firstClaimAmt": "2117225436"
   },
@@ -86275,10 +86379,10 @@
     "address": "0x95220d291393e77b7b6e718f1c3d2661b65b1726",
     "referee": "0x85db4ddc94731d944408479091b7af1b1c524b7f",
     "checkInTime": null,
-    "stakedTotal": "62897243068",
-    "claimedTotal": "61888205646",
+    "stakedTotal": "66662125979",
+    "claimedTotal": "65118006447",
     "forfeitedTotal": "0",
-    "principalNow": "451240670810",
+    "principalNow": "469476189890",
     "minPrincipalByWeek": {
       "0": "298691932389",
       "1": "231616499975",
@@ -86292,7 +86396,7 @@
       "9": "436404973110",
       "10": "460329036435"
     },
-    "lastStakeAt": 1768850530,
+    "lastStakeAt": 1769267989,
     "firstStakeAt": 1762536133,
     "firstStakeAmt": "1358582802",
     "byWeek": {
@@ -86383,9 +86487,17 @@
         "stakes": 1,
         "claims": 1,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "3764882911",
+        "claimed": "3229800801",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
-    "lastClaimAt": 1768850467,
+    "lastClaimAt": 1769267959,
     "firstClaimAt": 1762536081,
     "firstClaimAmt": "1017593712",
     "_teamCounted": true
@@ -92456,10 +92568,10 @@
     "address": "0x53956d91251112b249764877272233bc7ac2d000",
     "referee": "0x50c4c6147879a2a52fe19c10b7d124cdb834614e",
     "checkInTime": null,
-    "stakedTotal": "149080124463",
-    "claimedTotal": "147995585507",
+    "stakedTotal": "153927437640",
+    "claimedTotal": "156993691883",
     "forfeitedTotal": "0",
-    "principalNow": "1586721961320",
+    "principalNow": "1624159653984",
     "minPrincipalByWeek": {
       "0": "1767541024158",
       "1": "1916308836665",
@@ -92473,7 +92585,7 @@
       "9": "1499682957060",
       "10": "1594662771225"
     },
-    "lastStakeAt": 1769039900,
+    "lastStakeAt": 1769266373,
     "firstStakeAt": 1762541028,
     "firstStakeAmt": "4819932701",
     "byWeek": {
@@ -92556,9 +92668,17 @@
         "stakes": 2,
         "claims": 2,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "4847313177",
+        "claimed": "8998106376",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
-    "lastClaimAt": 1769039833,
+    "lastClaimAt": 1769266327,
     "firstClaimAt": 1762540941,
     "firstClaimAmt": "4146782547",
     "_teamCounted": true
@@ -108406,10 +108526,10 @@
     "address": "0x6357a86f264b43fa21e70a920bc20a58c178d693",
     "referee": "0xe0046bdc92a08fe4741decb056a6935377101ccc",
     "checkInTime": null,
-    "stakedTotal": "2955626287809",
-    "claimedTotal": "2974232855848",
+    "stakedTotal": "3025535142921",
+    "claimedTotal": "3015897741162",
     "forfeitedTotal": "0",
-    "principalNow": "2524682931233",
+    "principalNow": "2579723632885",
     "minPrincipalByWeek": {
       "0": "297179419502",
       "1": "358070269321",
@@ -108423,7 +108543,7 @@
       "9": "2055414743955",
       "10": "2464432256312"
     },
-    "lastStakeAt": 1769182818,
+    "lastStakeAt": 1769266802,
     "firstStakeAt": 1762562158,
     "firstStakeAmt": "32610327022",
     "byWeek": {
@@ -108516,15 +108636,15 @@
         "forfeits": 0
       },
       "11": {
-        "staked": "41445307318",
-        "claimed": "41726097160",
+        "staked": "111354162430",
+        "claimed": "83390982474",
         "forfeited": "0",
-        "stakes": 1,
-        "claims": 1,
+        "stakes": 2,
+        "claims": 2,
         "forfeits": 0
       }
     },
-    "lastClaimAt": 1769182593,
+    "lastClaimAt": 1769266658,
     "firstClaimAt": 1762562050,
     "firstClaimAmt": "22316994855",
     "_teamCounted": true
@@ -157170,7 +157290,7 @@
     "stakedTotal": "2508247365418",
     "claimedTotal": "2521824585402",
     "forfeitedTotal": "0",
-    "principalNow": "3460041243741",
+    "principalNow": "3469721724407",
     "minPrincipalByWeek": {
       "0": "78640703155",
       "1": "372452494262",
@@ -157283,7 +157403,7 @@
         "forfeited": "0",
         "stakes": 2,
         "claims": 1,
-        "forfeits": 0
+        "forfeits": 1
       }
     },
     "lastClaimAt": 1769197596,
@@ -160323,10 +160443,10 @@
     "address": "0x9cd6f0c73f094ad07bcba4d1103423f54fa4f1e4",
     "referee": "0x22af76eee61926ac731497c4e22ec0e081b26397",
     "checkInTime": 1762812168,
-    "stakedTotal": "472109986658",
-    "claimedTotal": "471481932186",
+    "stakedTotal": "479833810155",
+    "claimedTotal": "477902444106",
     "forfeitedTotal": "0",
-    "principalNow": "795451997648",
+    "principalNow": "812097738951",
     "minPrincipalByWeek": {
       "0": "293406515331",
       "1": "336042815911",
@@ -160341,7 +160461,7 @@
       "10": "795451997648"
     },
     "_teamCounted": true,
-    "lastStakeAt": 1769078253,
+    "lastStakeAt": 1769266186,
     "firstStakeAt": 1762812342,
     "firstStakeAmt": "282053670217",
     "byWeek": {
@@ -160433,9 +160553,17 @@
         "stakes": 5,
         "claims": 4,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "7723823497",
+        "claimed": "6420511920",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
-    "lastClaimAt": 1769078219,
+    "lastClaimAt": 1769266147,
     "firstClaimAt": 1762898470,
     "firstClaimAmt": "285785221660"
   },
@@ -165665,10 +165793,10 @@
     "address": "0x9ed46e829401d6ed17525ee95d170881012515d7",
     "referee": "0x6c7f6ea737bdf1e48380bdfe9d528c25507d9de7",
     "checkInTime": null,
-    "stakedTotal": "1338779881399",
-    "claimedTotal": "1356106179301",
+    "stakedTotal": "1340986394444",
+    "claimedTotal": "1359031800627",
     "forfeitedTotal": "0",
-    "principalNow": "3260550540313",
+    "principalNow": "3305389284349",
     "minPrincipalByWeek": {
       "0": "615687480731",
       "1": "684142620915",
@@ -165682,7 +165810,7 @@
       "9": "3095351043847",
       "10": "3260550540313"
     },
-    "lastStakeAt": 1769090402,
+    "lastStakeAt": 1769265327,
     "firstStakeAt": 1762870659,
     "firstStakeAmt": "7485629703",
     "byWeek": {
@@ -165773,10 +165901,18 @@
         "stakes": 3,
         "claims": 3,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "2206513045",
+        "claimed": "2925621326",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
     "_teamCounted": true,
-    "lastClaimAt": 1768958469,
+    "lastClaimAt": 1769265297,
     "firstClaimAt": 1762991953,
     "firstClaimAmt": "10259453373"
   },
@@ -178313,10 +178449,10 @@
     "address": "0x7dc10e591fb3ffbf141aff030261bc6b4be9f9ea",
     "referee": "0x239026fcb4b030f4a0678333f69e56453e05cf8b",
     "checkInTime": 1762984129,
-    "stakedTotal": "261867715049",
-    "claimedTotal": "264566529405",
+    "stakedTotal": "265382936485",
+    "claimedTotal": "265268360588",
     "forfeitedTotal": "0",
-    "principalNow": "446122124711",
+    "principalNow": "449187519069",
     "minPrincipalByWeek": {
       "0": "185467548749",
       "1": "203339457128",
@@ -178331,7 +178467,7 @@
       "10": "440714994204"
     },
     "_teamCounted": true,
-    "lastStakeAt": 1769180968,
+    "lastStakeAt": 1769264885,
     "firstStakeAt": 1762984265,
     "firstStakeAmt": "183043282151",
     "byWeek": {
@@ -178409,15 +178545,15 @@
         "forfeits": 0
       },
       "11": {
-        "staked": "698132465",
-        "claimed": "2094375953",
+        "staked": "4213353901",
+        "claimed": "2796207136",
         "forfeited": "0",
-        "stakes": 1,
-        "claims": 1,
+        "stakes": 2,
+        "claims": 2,
         "forfeits": 0
       }
     },
-    "lastClaimAt": 1769180938,
+    "lastClaimAt": 1769264853,
     "firstClaimAt": 1763065661,
     "firstClaimAmt": "185467548749"
   },
@@ -179475,10 +179611,10 @@
     "address": "0xec0f63c3826c865c74cb0b9fb9e9d99ef8865059",
     "referee": "0x4c2984a1f823c5f2b10e080923177d9f91ae03d8",
     "checkInTime": null,
-    "stakedTotal": "471329098412",
+    "stakedTotal": "472420739447",
     "claimedTotal": "472336533487",
     "forfeitedTotal": "0",
-    "principalNow": "333055308155",
+    "principalNow": "334819841268",
     "minPrincipalByWeek": {
       "0": "102190223701",
       "1": "112037414369",
@@ -179492,7 +179628,7 @@
       "9": "307101346267",
       "10": "330570484871"
     },
-    "lastStakeAt": 1769178446,
+    "lastStakeAt": 1769265388,
     "firstStakeAt": 1762991705,
     "firstStakeAmt": "33537929396",
     "byWeek": {
@@ -179553,10 +179689,10 @@
         "forfeits": 0
       },
       "11": {
-        "staked": "216802857",
+        "staked": "1308443892",
         "claimed": "0",
         "forfeited": "0",
-        "stakes": 1,
+        "stakes": 2,
         "claims": 0,
         "forfeits": 0
       }
@@ -199499,10 +199635,10 @@
     "address": "0x2e9cd068388d00cc4cf360560ce9ff3729b4b161",
     "referee": "0x8d7f974b1d4e48338ee1e92d93419a799c4977f4",
     "checkInTime": null,
-    "stakedTotal": "112137882316",
+    "stakedTotal": "121528272995",
     "claimedTotal": "109272977775",
     "forfeitedTotal": "0",
-    "principalNow": "2543468101000",
+    "principalNow": "2634615198518",
     "minPrincipalByWeek": {
       "0": "1302222891366",
       "1": "1427706882292",
@@ -199516,7 +199652,7 @@
       "9": "2471055098849",
       "10": "2601178055410"
     },
-    "lastStakeAt": 1768840301,
+    "lastStakeAt": 1769265630,
     "firstStakeAt": 1763611616,
     "firstStakeAmt": "11169580513",
     "byWeek": {
@@ -199598,6 +199734,14 @@
         "forfeited": "0",
         "stakes": 3,
         "claims": 1,
+        "forfeits": 0
+      },
+      "11": {
+        "staked": "9390390679",
+        "claimed": "0",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 0,
         "forfeits": 0
       }
     },
@@ -321322,10 +321466,10 @@
     "address": "0xbca3b8c387617147a14b013d4a1daa53be6bb1c2",
     "referee": "0xd4d951f59b5917c7a867e01eb6be5e715a15070e",
     "checkInTime": 1766118965,
-    "stakedTotal": "950243192031",
-    "claimedTotal": "926207417044",
+    "stakedTotal": "964545555358",
+    "claimedTotal": "955107968964",
     "forfeitedTotal": "0",
-    "principalNow": "1106285643003",
+    "principalNow": "1141047316490",
     "minPrincipalByWeek": {
       "0": "0",
       "1": "0",
@@ -321340,7 +321484,7 @@
       "10": "1098031985856"
     },
     "_teamCounted": true,
-    "lastStakeAt": 1769178041,
+    "lastStakeAt": 1769265985,
     "firstStakeAt": 1766378084,
     "firstStakeAmt": "28604726655",
     "byWeek": {
@@ -321386,15 +321530,15 @@
         "forfeits": 0
       },
       "11": {
-        "staked": "14302363327",
-        "claimed": "0",
+        "staked": "28604726654",
+        "claimed": "28900551920",
         "forfeited": "0",
-        "stakes": 1,
-        "claims": 0,
+        "stakes": 2,
+        "claims": 1,
         "forfeits": 0
       }
     },
-    "lastClaimAt": 1769063063,
+    "lastClaimAt": 1769265956,
     "firstClaimAt": 1766469731,
     "firstClaimAmt": "479696793549"
   },
@@ -334639,10 +334783,10 @@
     "address": "0x14b222ec8addc8032b3118342304c7fcd61ce343",
     "referee": "0xd760ea03891fc8edc0ac6592344ae27c51913cca",
     "checkInTime": 1767737591,
-    "stakedTotal": "6618154583",
-    "claimedTotal": "1515397027",
+    "stakedTotal": "12500958658",
+    "claimedTotal": "7039346378",
     "forfeitedTotal": "0",
-    "principalNow": "1561402173",
+    "principalNow": "7178034889",
     "minPrincipalByWeek": {
       "0": "0",
       "1": "0",
@@ -334657,7 +334801,7 @@
       "10": "1633092759"
     },
     "_teamCounted": true,
-    "lastStakeAt": 1768569790,
+    "lastStakeAt": 1769266000,
     "firstStakeAt": 1767824544,
     "firstStakeAmt": "735350509",
     "byWeek": {
@@ -334684,9 +334828,17 @@
         "stakes": 1,
         "claims": 0,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "5882804075",
+        "claimed": "5523949351",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
-    "lastClaimAt": 1768214353,
+    "lastClaimAt": 1769265926,
     "firstClaimAt": 1768214353,
     "firstClaimAmt": "1515397027"
   },
@@ -335038,8 +335190,8 @@
     "address": "0x7b9d393c8b066f40a02df4c5d664d5523709a537",
     "referee": "0x031eb32d29565c25131356cc1b28f8d8faf7c317",
     "checkInTime": null,
-    "stakedTotal": "102635449648",
-    "claimedTotal": "102856175014",
+    "stakedTotal": "103208971562",
+    "claimedTotal": "103427732445",
     "forfeitedTotal": "0",
     "minPrincipalByWeek": {
       "0": "112857329421",
@@ -335054,7 +335206,7 @@
       "9": "309354782965",
       "10": "326782326458"
     },
-    "lastStakeAt": 1769091256,
+    "lastStakeAt": 1769264955,
     "firstStakeAt": 1767813134,
     "firstStakeAmt": "99025738005",
     "byWeek": {
@@ -335081,11 +335233,19 @@
         "stakes": 4,
         "claims": 4,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "573521914",
+        "claimed": "571557431",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 1,
+        "forfeits": 0
       }
     },
     "_teamCounted": true,
-    "principalNow": "326782326458",
-    "lastClaimAt": 1769091216,
+    "principalNow": "331554544968",
+    "lastClaimAt": 1769264911,
     "firstClaimAt": 1767910431,
     "firstClaimAmt": "99769580816"
   },
@@ -344565,9 +344725,9 @@
     "referee": "0x4a59404d2b519d3d84bef670f749e2ea26ada5b7",
     "checkInTime": 1769057705,
     "stakedTotal": "200000000000",
-    "claimedTotal": "0",
+    "claimedTotal": "203077128988",
     "forfeitedTotal": "0",
-    "principalNow": "0",
+    "principalNow": "203077128988",
     "minPrincipalByWeek": {
       "0": "0",
       "1": "0",
@@ -344593,8 +344753,19 @@
         "stakes": 1,
         "claims": 0,
         "forfeits": 0
+      },
+      "11": {
+        "staked": "0",
+        "claimed": "203077128988",
+        "forfeited": "0",
+        "stakes": 0,
+        "claims": 1,
+        "forfeits": 0
       }
-    }
+    },
+    "lastClaimAt": 1769267855,
+    "firstClaimAt": 1769267855,
+    "firstClaimAmt": "203077128988"
   },
   "0xab95c005eba24f0e14d4b6bcd2184f90ca8fb8dd": {
     "address": "0xab95c005eba24f0e14d4b6bcd2184f90ca8fb8dd",
@@ -345464,6 +345635,42 @@
         "stakes": 0,
         "claims": 0,
         "forfeits": 1
+      }
+    }
+  },
+  "0x0712c80c2366a71ab92d6bac97de6c166ae466cf": {
+    "address": "0x0712c80c2366a71ab92d6bac97de6c166ae466cf",
+    "referee": "0xc9bb18bd0e621bf6272e3b9bcc4d97e42d3d4691",
+    "checkInTime": 1769264571,
+    "stakedTotal": "10000000000",
+    "claimedTotal": "0",
+    "forfeitedTotal": "0",
+    "principalNow": "0",
+    "minPrincipalByWeek": {
+      "0": "0",
+      "1": "0",
+      "2": "0",
+      "3": "0",
+      "4": "0",
+      "5": "0",
+      "6": "0",
+      "7": "0",
+      "8": "0",
+      "9": "0",
+      "10": "0"
+    },
+    "_teamCounted": true,
+    "lastStakeAt": 1769265752,
+    "firstStakeAt": 1769265752,
+    "firstStakeAmt": "10000000000",
+    "byWeek": {
+      "11": {
+        "staked": "10000000000",
+        "claimed": "0",
+        "forfeited": "0",
+        "stakes": 1,
+        "claims": 0,
+        "forfeits": 0
       }
     }
   }
