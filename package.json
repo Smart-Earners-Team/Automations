@@ -38,12 +38,16 @@
     "svva:blitz": "tsx Veritas/blitz-indexer.ts",
     "svva:blitz:payout": "tsx Veritas/blitz-payout.ts",
     "twt:holder:snapshot": "tsx HHV2DEMO/pick-twt-top-5k.ts",
+    "vva:final:snapshot": "tsx HHV2DEMO/pick-final-vva-snapshot.ts",
     "vva:holder:snapshot": "tsx HHV2DEMO/pick-vva-top-300.ts",
     "xrp:holder:snapshot": "tsx HHV2DEMO/pick-xrp-and-mxrp-100plus.ts",
     "twt:holder:airdrop1": "tsx HHV2DEMO/trbo-airdrop-v1.ts",
     "xrp:holder:airdrop1": "tsx HHV2DEMO/pawz-airdrop-v1.ts",
     "vva:founders:payout": "tsx HHV2DEMO/build-payout-arrays.ts",
-    "vva:founders:filter": "tsx HHV2DEMO/filter-blacklisted.multicall.ts"
+    "vva:founders:filter": "tsx HHV2DEMO/filter-blacklisted.multicall.ts",
+    "vva:migrate:1to1:eoa": "tsx Veritas/migrate-1to1-v2-from-json.ts",
+    "vva:oracle:cron": "tsx Veritas/oracle-update-cron.ts",
+    "run:flow": "tsx HHV2DEMO/poc-bsc-token-chain.ts"
   },
   "ts-node": {
     "esm": true

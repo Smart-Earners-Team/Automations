@@ -1,0 +1,31 @@
+name: VVA TWAP Scheduler
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+
+  # Allows us to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  call-function:
+    runs-on: ubuntu-latest # small, quick-to-start runner
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: |
+          npm install ethers tsx
+
+      - name: Update VVA-DAI TWAP Oracle
+        env:
+          VVA_PRIVATE_KEY: ${{ secrets.VVA_P_KEY }}
+          VVA_RPC_URL: ${{ secrets.VVA_RPC_56 }}
+        run: npx tsx Veritas/oracle-update-cron.ts
