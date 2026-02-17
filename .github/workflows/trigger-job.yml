@@ -1,0 +1,19 @@
+name: Trigger Vercel Job
+
+on:
+    schedule:
+        - cron: "0 * * * *" # every hour
+    workflow_dispatch: # allows manual run from GitHub UI
+
+jobs:
+    trigger:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+            - run: node trigger-job.mjs
+              env:
+                  JOB_BASE_URL: ${{ secrets.VJBU }}
+                  JOB_CRON_SECRET: ${{ secrets.VJCS }}
