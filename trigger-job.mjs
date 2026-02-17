@@ -40,14 +40,20 @@ async function two() {
   console.log("✅ Job triggered successfully");
 }
 
-one().catch((err) => {
-  console.error("❌ Failed to trigger job 1:");
-  console.error(err);
-  process.exit(1);
-});
+// Initialize with an immediately invoked async function
+(async () => {
+  const results = await Promise.allSettled([one(), two()]);
 
-two().catch((err) => {
-  console.error("❌ Failed to trigger job 2:");
-  console.error(err);
-  process.exit(1);
-});
+  results.forEach((result, index) => {
+    if (result.status === "rejected") {
+      console.error(`❌ Job ${index + 1} failed:`);
+      console.error(result.reason);
+    }
+  });
+
+  if (results.some((r) => r.status === "rejected")) {
+    process.exit(1);
+  }
+
+  console.log("✅ All jobs completed");
+})();
