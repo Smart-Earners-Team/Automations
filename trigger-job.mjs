@@ -20,7 +20,7 @@ async function one() {
     throw new Error(`Request failed: ${res.status} ${text}`);
   }
 
-  console.log("✅ Job triggered successfully");
+  console.log("✅ Job one triggered successfully");
 }
 
 async function two() {
@@ -37,7 +37,7 @@ async function two() {
     throw new Error(`Request failed: ${res.status} ${text}`);
   }
 
-  console.log("✅ Job triggered successfully");
+  console.log("✅ Job two triggered successfully");
 }
 
 // Initialize with an immediately invoked async function
